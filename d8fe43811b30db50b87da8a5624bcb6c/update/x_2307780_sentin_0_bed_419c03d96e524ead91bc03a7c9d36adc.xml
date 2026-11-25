@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="x_2307780_sentin_0_bed">
+    <x_2307780_sentin_0_bed action="INSERT_OR_UPDATE">
+        <bed_code>HDU-01</bed_code>
+        <block_reason>Bed rail awaiting repair</block_reason>
+        <care_level>hdu</care_level>
+        <department_label>Critical Care</department_label>
+        <display_order>6</display_order>
+        <in_service>true</in_service>
+        <occupancy>vacant</occupancy>
+        <readiness>blocked</readiness>
+        <readiness_since/>
+        <room_label>HDU Bay 1</room_label>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-11-25 10:07:40</sys_created_on>
+        <sys_id>419c03d96e524ead91bc03a7c9d36adc</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-11-25 10:07:40</sys_updated_on>
+        <ward_label>HDU</ward_label>
+    </x_2307780_sentin_0_bed>
+</record_update>
