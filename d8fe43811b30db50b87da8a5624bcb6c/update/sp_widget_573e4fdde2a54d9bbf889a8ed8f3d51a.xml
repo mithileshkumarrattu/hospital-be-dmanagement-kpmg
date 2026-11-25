@@ -1,0 +1,1235 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function() {
+    var c = this;
+
+    /* ── State ────────────────────────────────────────────────────────── */
+    c.beds          = c.data.beds    || [];
+    c.counts        = c.data.counts  || {};
+    c.userRoles     = c.data.userRoles || {};
+    c.selectedBed   = null;
+    c.showDrawer    = false;
+    c.searchQuery   = '';
+    c.statusFilter  = '';
+    c.wardFilter    = '';
+    c.loading       = false;
+    c.actionLoading = false;
+    c.faultReason   = '';
+    c.recleaningReason = '';
+    c.successMessage = '';
+    c.errorMessage   = '';
+
+    /* ── Unique wards for filter dropdown ──────────────────────────────── */
+    c.getUniqueWards = function() {
+        var wards = [];
+        var seen  = {};
+        for (var i = 0; i < c.beds.length; i++) {
+            var w = c.beds[i].ward_label;
+            if (w && !seen[w]) { seen[w] = true; wards.push(w); }
+        }
+        return wards.sort();
+    };
+
+    /* ── Filter logic ─────────────────────────────────────────────────── */
+    c.filteredBeds = function() {
+        var out = [];
+        for (var i = 0; i < c.beds.length; i++) {
+            var bed = c.beds[i];
+
+            // Search
+            if (c.searchQuery) {
+                var q = c.searchQuery.toLowerCase();
+                var hit = (bed.bed_code && bed.bed_code.toLowerCase().indexOf(q) !== -1) ||
+                          (bed.ward_label && bed.ward_label.toLowerCase().indexOf(q) !== -1) ||
+                          (bed.room_label && bed.room_label.toLowerCase().indexOf(q) !== -1) ||
+                          (bed.department_label && bed.department_label.toLowerCase().indexOf(q) !== -1);
+                if (!hit) continue;
+            }
+
+            // Status filter
+            if (c.statusFilter) {
+                if (c.statusFilter === 'available') {
+                    if (!(bed.occupancy === 'vacant' && bed.in_service && bed.readiness === 'ready')) continue;
+                } else if (c.statusFilter === 'cleaning') {
+                    if (bed.readiness !== 'awaiting_cleaning' && bed.readiness !== 'cleaning_in_progress') continue;
+                } else if (c.statusFilter === 'nurse_check') {
+                    if (bed.readiness !== 'awaiting_nurse_check') continue;
+                } else if (c.statusFilter === 'occupied') {
+                    if (bed.occupancy !== 'occupied') continue;
+                } else if (c.statusFilter === 'held') {
+                    if (bed.occupancy !== 'held') continue;
+                } else if (c.statusFilter === 'blocked') {
+                    if (bed.readiness !== 'blocked') continue;
+                }
+            }
+
+            // Ward filter
+            if (c.wardFilter && bed.ward_label !== c.wardFilter) continue;
+
+            out.push(bed);
+        }
+        return out;
+    };
+
+    /* ── Group beds by room ───────────────────────────────────────────── */
+    c.groupedBeds = function() {
+        var filtered = c.filteredBeds();
+        var groups = {};
+        var order  = [];
+        for (var i = 0; i < filtered.length; i++) {
+            var key = filtered[i].room_label;
+            if (!groups[key]) { groups[key] = []; order.push(key); }
+            groups[key].push(filtered[i]);
+        }
+        var result = [];
+        for (var j = 0; j < order.length; j++) {
+            result.push({ room: order[j], beds: groups[order[j]] });
+        }
+        return result;
+    };
+
+    /* ── Drawer ───────────────────────────────────────────────────────── */
+    c.openDrawer = function(bed) {
+        c.selectedBed      = bed;
+        c.showDrawer       = true;
+        c.successMessage   = '';
+        c.errorMessage     = '';
+        c.faultReason      = '';
+        c.recleaningReason = '';
+    };
+    c.closeDrawer = function() {
+        c.showDrawer    = false;
+        c.selectedBed   = null;
+        c.successMessage = '';
+        c.errorMessage   = '';
+    };
+
+    /* ── Perform an action ────────────────────────────────────────────── */
+    c.performAction = function(action, extraData) {
+        c.actionLoading  = true;
+        c.successMessage = '';
+        c.errorMessage   = '';
+
+        var payload = {
+            action:  action,
+            bed_id:  c.selectedBed.sys_id,
+            fault_reason:      extraData && extraData.fault_reason      ? extraData.fault_reason      : '',
+            recleaning_reason: extraData && extraData.recleaning_reason ? extraData.recleaning_reason : ''
+        };
+
+        c.server.get(payload).then(function(response) {
+            c.actionLoading = false;
+            if (response.data.error) {
+                c.errorMessage = response.data.error;
+            } else {
+                c.successMessage = response.data.success || 'Action completed.';
+                c.beds   = response.data.beds;
+                c.counts = response.data.counts;
+                // Refresh selected bed
+                if (c.selectedBed) {
+                    var updated = null;
+                    for (var i = 0; i < c.beds.length; i++) {
+                        if (c.beds[i].sys_id === c.selectedBed.sys_id) { updated = c.beds[i]; break; }
+                    }
+                    if (updated) { c.selectedBed = updated; }
+                }
+                c.faultReason      = '';
+                c.recleaningReason = '';
+            }
+        });
+    };
+
+    /* ── Available actions for the current bed + user role ─────────────── */
+    c.getAvailableActions = function(bed) {
+        if (!bed) return [];
+        var actions = [];
+        var isHK    = c.userRoles.housekeeping || c.userRoles.bed_admin || c.userRoles.admin;
+        var isNurse = c.userRoles.nurse        || c.userRoles.bed_admin || c.userRoles.admin;
+
+        if (bed.occupancy === 'vacant' && bed.in_service) {
+            if (isHK) {
+                if (bed.readiness === 'awaiting_cleaning') {
+                    actions.push({ id: 'start_cleaning',   label: 'Start Cleaning',       icon: 'fa-play',                cls: 'btn-primary' });
+                }
+                if (bed.readiness === 'cleaning_in_progress') {
+                    actions.push({ id: 'complete_cleaning', label: 'Complete Cleaning',     icon: 'fa-check',               cls: 'btn-success' });
+                }
+                if (bed.readiness === 'awaiting_cleaning' || bed.readiness === 'cleaning_in_progress') {
+                    actions.push({ id: 'report_fault',      label: 'Report Fault',          icon: 'fa-exclamation-triangle', cls: 'btn-warning' });
+                }
+            }
+            if (isNurse && bed.readiness === 'awaiting_nurse_check') {
+                actions.push({ id: 'confirm_ready',         label: 'Confirm Ready',         icon: 'fa-check-circle',         cls: 'btn-success' });
+                actions.push({ id: 'return_for_recleaning',  label: 'Return for Recleaning', icon: 'fa-undo',                 cls: 'btn-warning' });
+            }
+        }
+        return actions;
+    };
+
+    /* ── Status display info (uses FontAwesome icon class names) ───────── */
+    c.getStatusInfo = function(bed) {
+        if (!bed) return {};
+        if (bed.readiness === 'blocked')       return { icon: 'fa-wrench',          cls: 'status-blocked',           label: 'Blocked' };
+        if (!bed.in_service)                   return { icon: 'fa-ban',             cls: 'status-oos',               label: 'Out of Service' };
+        if (bed.occupancy === 'occupied')      return { icon: 'fa-circle',          cls: 'status-occupied',          label: 'Occupied' };
+        if (bed.occupancy === 'held')          return { icon: 'fa-lock',            cls: 'status-held',              label: 'Held / Reserved' };
+        switch (bed.readiness) {
+            case 'ready':                return { icon: 'fa-check-circle',   cls: 'status-ready',             label: 'Ready' };
+            case 'awaiting_cleaning':    return { icon: 'fa-clock-o',        cls: 'status-awaiting-cleaning', label: 'Awaiting Cleaning' };
+            case 'cleaning_in_progress': return { icon: 'fa-refresh',        cls: 'status-cleaning',          label: 'Cleaning in Progress' };
+            case 'awaiting_nurse_check': return { icon: 'fa-check-square-o', cls: 'status-nurse-check',       label: 'Awaiting Nurse Check' };
+            case 'not_assessed':         return { icon: 'fa-minus',          cls: 'status-not-assessed',      label: 'Not Assessed' };
+            default:                     return { icon: 'fa-question',       cls: 'status-unknown',           label: bed.readiness_display || 'Unknown' };
+        }
+    };
+
+    /* ── Next responsible role text ────────────────────────────────────── */
+    c.getNextResponsible = function(bed) {
+        if (!bed || !bed.in_service || bed.occupancy !== 'vacant') return '';
+        switch (bed.readiness) {
+            case 'awaiting_cleaning':    return 'Housekeeping to start cleaning';
+            case 'cleaning_in_progress': return 'Housekeeping to complete cleaning';
+            case 'awaiting_nurse_check': return 'Ward nurse to inspect and confirm readiness';
+            case 'blocked':              return 'Maintenance / Bed Admin to resolve block';
+            case 'ready':                return 'Reception – bed is available for admission';
+            default:                     return '';
+        }
+    };
+
+    /* ── Computed helpers ──────────────────────────────────────────────── */
+    c.isAvailableNow = function(bed) {
+        return bed && bed.occupancy === 'vacant' && bed.in_service && bed.readiness === 'ready';
+    };
+
+    c.getCareLevelClass = function(bed) {
+        if (!bed) return '';
+        switch (bed.care_level) {
+            case 'icu': return 'care-icu';
+            case 'hdu': return 'care-hdu';
+            default:    return 'care-general';
+        }
+    };
+
+    /* ── Filter helpers ───────────────────────────────────────────────── */
+    c.setFilter = function(filter) {
+        c.statusFilter = (c.statusFilter === filter) ? '' : filter;
+    };
+
+    c.clearFilters = function() {
+        c.searchQuery  = '';
+        c.statusFilter = '';
+        c.wardFilter   = '';
+    };
+
+    c.hasActiveFilters = function() {
+        return c.searchQuery || c.statusFilter || c.wardFilter;
+    };
+
+    /* ── Refresh ──────────────────────────────────────────────────────── */
+    c.refresh = function() {
+        c.loading = true;
+        c.server.get({}).then(function(response) {
+            c.beds      = response.data.beds;
+            c.counts    = response.data.counts;
+            c.userRoles = response.data.userRoles;
+            c.loading   = false;
+        });
+    };
+};
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css>/* ═══════════════════════════════════════════════════════════════════════════
+   Bed Operations Board – Hospital-themed dashboard
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Container ─────────────────────────────────────────────────────────────── */
+.bed-ops-container {
+  background: #F5F7F8;
+  min-height: 100vh;
+  padding: 24px;
+  color: #172C32;
+}
+
+/* ── Header ────────────────────────────────────────────────────────────────── */
+.bed-ops-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.bed-ops-title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  color: #172C32;
+}
+
+.bed-ops-title .fa {
+  color: #08656A;
+  margin-right: 8px;
+}
+
+.btn-refresh {
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+/* ── Action Cards ──────────────────────────────────────────────────────────── */
+.action-cards-row {
+  margin-bottom: 20px;
+}
+
+.action-card {
+  border-radius: 10px;
+  padding: 20px;
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  margin-bottom: 16px;
+  min-height: 110px;
+}
+
+.action-card:hover,
+.action-card:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+  outline: none;
+}
+
+.action-card.card-active {
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5), 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.card-inventory  { background: #08656A; }
+.card-cleaning   { background: #2C3E6B; }
+.card-checks     { background: #1A4A5A; }
+
+.card-count {
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.card-label {
+  font-size: 15px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.card-detail {
+  font-size: 13px;
+  opacity: 0.8;
+  margin-top: 4px;
+}
+
+/* ── Summary Bar ───────────────────────────────────────────────────────────── */
+.summary-bar {
+  background: #FFFFFF;
+  border-radius: 8px;
+  padding: 14px 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.summary-item {
+  font-size: 14px;
+  color: #53656A;
+}
+
+.summary-item strong {
+  color: #172C32;
+  font-size: 18px;
+  margin-right: 4px;
+}
+
+.summary-divider {
+  color: #D0D5D8;
+  font-size: 14px;
+}
+
+.summary-available strong {
+  color: #2D8A39;
+}
+
+/* ── Filter Bar ────────────────────────────────────────────────────────────── */
+.filter-bar {
+  background: #FFFFFF;
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.filter-col {
+  margin-bottom: 8px;
+}
+
+.filter-bar .form-control {
+  border-radius: 6px;
+  border-color: #D0D5D8;
+  height: 36px;
+  font-size: 14px;
+}
+
+.filter-bar .form-control:focus {
+  border-color: #08656A;
+  box-shadow: 0 0 0 2px rgba(8, 101, 106, 0.15);
+}
+
+.filter-bar .input-group-addon {
+  border-radius: 6px 0 0 6px;
+  border-color: #D0D5D8;
+  background: #F5F7F8;
+  color: #53656A;
+}
+
+.btn-clear-filters {
+  border-radius: 6px;
+  font-size: 13px;
+  height: 36px;
+}
+
+/* ── Bed Grid ──────────────────────────────────────────────────────────────── */
+.bed-grid {
+  margin-bottom: 24px;
+}
+
+.room-group {
+  margin-bottom: 24px;
+}
+
+.room-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #53656A;
+  margin: 0 0 12px 0;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #E0E4E6;
+}
+
+.room-label .fa {
+  margin-right: 6px;
+  color: #08656A;
+}
+
+.bed-card {
+  background: #FFFFFF;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  border-left: 4px solid #D0D5D8;
+}
+
+.bed-card:hover,
+.bed-card:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  outline: none;
+}
+
+/* Status border colors */
+.bed-card.status-ready             { border-left-color: #2D8A39; }
+.bed-card.status-held              { border-left-color: #3B82F6; }
+.bed-card.status-occupied          { border-left-color: #DC2626; }
+.bed-card.status-awaiting-cleaning { border-left-color: #EA8C00; }
+.bed-card.status-cleaning          { border-left-color: #EA8C00; }
+.bed-card.status-nurse-check       { border-left-color: #D4A017; }
+.bed-card.status-blocked           { border-left-color: #64748B; }
+.bed-card.status-oos               { border-left-color: #9CA3AF; }
+.bed-card.status-not-assessed      { border-left-color: #9CA3AF; }
+
+.bed-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.bed-code {
+  font-size: 17px;
+  font-weight: 700;
+  color: #172C32;
+}
+
+/* ── Care Level Badges ─────────────────────────────────────────────────────── */
+.care-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.care-general { background: #E8F5E9; color: #2D8A39; }
+.care-hdu     { background: #FFF3E0; color: #E65100; }
+.care-icu     { background: #FFEBEE; color: #C62828; }
+
+/* ── Bed Card Status Row ───────────────────────────────────────────────────── */
+.bed-card-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bed-card-status .status-icon {
+  font-size: 14px;
+}
+
+.status-text {
+  font-size: 13px;
+  color: #53656A;
+  font-weight: 500;
+}
+
+/* Status icon colors */
+.status-ready             .status-icon { color: #2D8A39; }
+.status-held              .status-icon { color: #3B82F6; }
+.status-occupied          .status-icon { color: #DC2626; }
+.status-awaiting-cleaning .status-icon { color: #EA8C00; }
+.status-cleaning          .status-icon { color: #EA8C00; }
+.status-nurse-check       .status-icon { color: #D4A017; }
+.status-blocked           .status-icon { color: #64748B; }
+.status-oos               .status-icon { color: #9CA3AF; }
+.status-not-assessed      .status-icon { color: #9CA3AF; }
+
+/* ── Empty State ───────────────────────────────────────────────────────────── */
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  color: #53656A;
+}
+
+.empty-state .fa {
+  color: #CBD5E1;
+  margin-bottom: 12px;
+}
+
+/* ── Drawer Overlay ────────────────────────────────────────────────────────── */
+.drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 1040;
+}
+
+/* ── Detail Drawer ─────────────────────────────────────────────────────────── */
+.detail-drawer {
+  position: fixed;
+  top: 0;
+  right: -440px;
+  width: 420px;
+  height: 100%;
+  background: #FFFFFF;
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.12);
+  z-index: 1050;
+  overflow-y: auto;
+  transition: right 0.25s ease;
+}
+
+.detail-drawer.drawer-open {
+  right: 0;
+}
+
+.drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid #E0E4E6;
+  position: sticky;
+  top: 0;
+  background: #FFFFFF;
+  z-index: 1;
+}
+
+.drawer-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #172C32;
+}
+
+.drawer-close {
+  color: #53656A;
+  padding: 4px 8px;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+.drawer-close:hover,
+.drawer-close:focus {
+  color: #172C32;
+  text-decoration: none;
+}
+
+.drawer-body {
+  padding: 20px 24px;
+}
+
+/* ── Drawer Sections ───────────────────────────────────────────────────────── */
+.detail-section {
+  margin-bottom: 24px;
+}
+
+.section-heading {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #53656A;
+  margin: 0 0 12px 0;
+}
+
+.detail-list {
+  margin: 0;
+}
+
+.detail-list dt {
+  font-size: 12px;
+  color: #7A8A90;
+  font-weight: 400;
+  margin-bottom: 1px;
+}
+
+.detail-list dd {
+  font-size: 14px;
+  color: #172C32;
+  margin-bottom: 10px;
+  margin-left: 0;
+  font-weight: 500;
+}
+
+/* ── Status Panel ──────────────────────────────────────────────────────────── */
+.status-panel {
+  background: #F8FAFB;
+  border-radius: 6px;
+  padding: 10px 14px;
+}
+
+.status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 0;
+}
+
+.status-row + .status-row {
+  border-top: 1px solid #E8ECEE;
+}
+
+.status-key {
+  font-size: 13px;
+  color: #53656A;
+}
+
+.status-val {
+  font-size: 13px;
+  font-weight: 600;
+  color: #172C32;
+}
+
+.status-val .fa {
+  margin-right: 4px;
+}
+
+.svc-yes { color: #2D8A39; }
+.svc-no  { color: #DC2626; }
+
+.val-danger    { color: #DC2626; }
+.val-available { color: #2D8A39; }
+.val-unavailable { color: #53656A; }
+
+/* ── Next Responsible ──────────────────────────────────────────────────────── */
+.next-responsible-box {
+  background: #E8F5F5;
+  border-radius: 6px;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: #08656A;
+  font-weight: 500;
+}
+
+.next-responsible-box .fa {
+  margin-right: 8px;
+}
+
+/* ── Info Messages ─────────────────────────────────────────────────────────── */
+.info-msg {
+  padding: 8px 0;
+  font-size: 14px;
+  color: #53656A;
+}
+
+.info-msg .fa {
+  margin-right: 6px;
+  color: #08656A;
+}
+
+.info-ready .fa {
+  color: #2D8A39;
+}
+
+/* ── Action Items ──────────────────────────────────────────────────────────── */
+.action-item {
+  margin-bottom: 12px;
+}
+
+.action-input {
+  margin-bottom: 8px;
+}
+
+.action-input label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #172C32;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.required-star {
+  color: #DC2626;
+}
+
+.action-btn {
+  border-radius: 6px;
+  font-weight: 600;
+  padding: 10px 16px;
+  font-size: 14px;
+}
+
+.action-btn .fa {
+  margin-right: 6px;
+}
+
+/* ── Alerts ────────────────────────────────────────────────────────────────── */
+.alert-sm {
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 16px;
+  padding: 10px 14px;
+}
+
+.alert-sm .fa {
+  margin-right: 6px;
+}
+
+/* ── Responsive ────────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .bed-ops-container {
+    padding: 12px;
+  }
+
+  .bed-ops-title {
+    font-size: 20px;
+  }
+
+  .detail-drawer {
+    width: 100%;
+    right: -100%;
+  }
+
+  .summary-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .summary-divider {
+    display: none;
+  }
+
+  .action-card {
+    min-height: auto;
+  }
+
+  .card-count {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bed-ops-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .btn-refresh {
+    align-self: flex-end;
+  }
+}
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>x_2307780_sentin_0_bed_operations_board</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {
+}]]></link>
+        <name>Bed Operations Board</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+    /* ── Handle POST actions ──────────────────────────────────────────── */
+    var action = input ? input.action : null;
+    if (action) {
+        var bedId = input.bed_id;
+        if (!bedId) {
+            data.error = 'No bed ID provided';
+        } else {
+            var result = processAction(action, bedId + '', input);
+            if (result.error) {
+                data.error = result.error;
+            } else {
+                data.success = result.success;
+            }
+        }
+    }
+
+    /* ── Always load fresh bed data ───────────────────────────────────── */
+    loadBeds();
+    loadUserRoles();
+
+    /* ────────────────────────────────────────────────────────────────── */
+    function processAction(act, id, inp) {
+        // Stale-read protection: reload the bed from the database
+        var gr = new GlideRecord('x_2307780_sentin_0_bed');
+        if (!gr.get(id)) {
+            return { error: 'Bed not found' };
+        }
+
+        var occupancy  = gr.getValue('occupancy');
+        var readiness  = gr.getValue('readiness');
+        var inService  = gr.getValue('in_service') == '1' || gr.getValue('in_service') == 'true';
+        var bedCode    = gr.getValue('bed_code');
+
+        switch (act) {
+
+            /* ── Housekeeping actions ─────────────────────────────────── */
+            case 'start_cleaning':
+                if (!gs.hasRole('x_2307780_sentin_0.housekeeping')) {
+                    return { error: 'You do not have the housekeeping role required for this action.' };
+                }
+                if (occupancy !== 'vacant' || !inService || readiness !== 'awaiting_cleaning') {
+                    return { error: 'Cannot start cleaning: bed ' + bedCode + ' is currently ' + occupancy + ' / ' + readiness + (inService ? '' : ' / out of service') + '. Expected: vacant, in service, awaiting cleaning.' };
+                }
+                gr.setValue('readiness', 'cleaning_in_progress');
+                gr.setValue('readiness_since', new GlideDateTime());
+                gr.update();
+                return { success: 'Cleaning started for bed ' + bedCode + '.' };
+
+            case 'complete_cleaning':
+                if (!gs.hasRole('x_2307780_sentin_0.housekeeping')) {
+                    return { error: 'You do not have the housekeeping role required for this action.' };
+                }
+                if (occupancy !== 'vacant' || !inService || readiness !== 'cleaning_in_progress') {
+                    return { error: 'Cannot complete cleaning: bed ' + bedCode + ' is currently ' + occupancy + ' / ' + readiness + (inService ? '' : ' / out of service') + '. Expected: vacant, in service, cleaning in progress.' };
+                }
+                gr.setValue('readiness', 'awaiting_nurse_check');
+                gr.setValue('readiness_since', new GlideDateTime());
+                gr.update();
+                return { success: 'Cleaning completed for bed ' + bedCode + '. Awaiting nurse check.' };
+
+            case 'report_fault':
+                if (!gs.hasRole('x_2307780_sentin_0.housekeeping')) {
+                    return { error: 'You do not have the housekeeping role required for this action.' };
+                }
+                if (occupancy !== 'vacant' || !inService || (readiness !== 'awaiting_cleaning' && readiness !== 'cleaning_in_progress')) {
+                    return { error: 'Cannot report fault: bed ' + bedCode + ' is currently ' + occupancy + ' / ' + readiness + (inService ? '' : ' / out of service') + '. Expected: vacant, in service, awaiting cleaning or cleaning in progress.' };
+                }
+                var faultReason = inp.fault_reason ? (inp.fault_reason + '').trim() : '';
+                if (!faultReason) {
+                    return { error: 'A fault reason is required when reporting a fault.' };
+                }
+                gr.setValue('readiness', 'blocked');
+                gr.setValue('block_reason', faultReason);
+                gr.setValue('readiness_since', new GlideDateTime());
+                gr.update();
+                return { success: 'Fault reported for bed ' + bedCode + ': ' + faultReason };
+
+            /* ── Nurse actions ────────────────────────────────────────── */
+            case 'confirm_ready':
+                if (!gs.hasRole('x_2307780_sentin_0.nurse')) {
+                    return { error: 'You do not have the nurse role required for this action.' };
+                }
+                if (occupancy !== 'vacant' || !inService || readiness !== 'awaiting_nurse_check') {
+                    return { error: 'Cannot confirm ready: bed ' + bedCode + ' is currently ' + occupancy + ' / ' + readiness + (inService ? '' : ' / out of service') + '. Expected: vacant, in service, awaiting nurse check.' };
+                }
+                gr.setValue('readiness', 'ready');
+                gr.setValue('readiness_since', new GlideDateTime());
+                gr.update();
+                return { success: 'Bed ' + bedCode + ' confirmed ready for admission.' };
+
+            case 'return_for_recleaning':
+                if (!gs.hasRole('x_2307780_sentin_0.nurse')) {
+                    return { error: 'You do not have the nurse role required for this action.' };
+                }
+                if (occupancy !== 'vacant' || !inService || readiness !== 'awaiting_nurse_check') {
+                    return { error: 'Cannot return for recleaning: bed ' + bedCode + ' is currently ' + occupancy + ' / ' + readiness + (inService ? '' : ' / out of service') + '. Expected: vacant, in service, awaiting nurse check.' };
+                }
+                gr.setValue('readiness', 'awaiting_cleaning');
+                gr.setValue('readiness_since', new GlideDateTime());
+                gr.update();
+                return { success: 'Bed ' + bedCode + ' returned for recleaning.' };
+
+            default:
+                return { error: 'Unknown action: ' + act };
+        }
+    }
+
+    /* ── Load all beds ────────────────────────────────────────────────── */
+    function loadBeds() {
+        var beds = [];
+        var bedGR = new GlideRecord('x_2307780_sentin_0_bed');
+        bedGR.orderBy('display_order');
+        bedGR.setLimit(500);
+        bedGR.query();
+        while (bedGR.next()) {
+            beds.push({
+                sys_id:            bedGR.getUniqueValue(),
+                bed_code:          bedGR.getValue('bed_code'),
+                department_label:  bedGR.getValue('department_label'),
+                ward_label:        bedGR.getValue('ward_label'),
+                room_label:        bedGR.getValue('room_label'),
+                care_level:        bedGR.getValue('care_level'),
+                care_level_display:bedGR.getDisplayValue('care_level'),
+                occupancy:         bedGR.getValue('occupancy'),
+                occupancy_display: bedGR.getDisplayValue('occupancy'),
+                readiness:         bedGR.getValue('readiness'),
+                readiness_display: bedGR.getDisplayValue('readiness'),
+                in_service:        bedGR.getValue('in_service') == '1' || bedGR.getValue('in_service') == 'true',
+                readiness_since:   bedGR.getDisplayValue('readiness_since'),
+                block_reason:      bedGR.getValue('block_reason'),
+                display_order:     bedGR.getValue('display_order')
+            });
+        }
+        data.beds = beds;
+
+        // Compute counts
+        var counts = {
+            total_inventory: 0,
+            occupied: 0,
+            held: 0,
+            available_now: 0,
+            awaiting_cleaning: 0,
+            cleaning_in_progress: 0,
+            awaiting_nurse_check: 0,
+            blocked: 0
+        };
+        for (var i = 0; i < beds.length; i++) {
+            var b = beds[i];
+            counts.total_inventory++;
+            if (b.occupancy === 'occupied') counts.occupied++;
+            if (b.occupancy === 'held') counts.held++;
+            if (b.occupancy === 'vacant' && b.in_service && b.readiness === 'ready') counts.available_now++;
+            if (b.readiness === 'awaiting_cleaning') counts.awaiting_cleaning++;
+            if (b.readiness === 'cleaning_in_progress') counts.cleaning_in_progress++;
+            if (b.readiness === 'awaiting_nurse_check') counts.awaiting_nurse_check++;
+            if (b.readiness === 'blocked') counts.blocked++;
+        }
+        data.counts = counts;
+    }
+
+    /* ── Current user's roles ─────────────────────────────────────────── */
+    function loadUserRoles() {
+        data.userRoles = {
+            reception:    gs.hasRole('x_2307780_sentin_0.reception'),
+            housekeeping: gs.hasRole('x_2307780_sentin_0.housekeeping'),
+            nurse:        gs.hasRole('x_2307780_sentin_0.nurse'),
+            bed_admin:    gs.hasRole('x_2307780_sentin_0.bed_admin'),
+            admin:        gs.hasRole('admin')
+        };
+    }
+})();
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-11-25 10:05:37</sys_created_on>
+        <sys_id>573e4fdde2a54d9bbf889a8ed8f3d51a</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Bed Operations Board</sys_name>
+        <sys_package display_value="Sentinels Bed Operations Pilot" source="x_2307780_sentin_0">d8fe43811b30db50b87da8a5624bcb6c</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Sentinels Bed Operations Pilot">d8fe43811b30db50b87da8a5624bcb6c</sys_scope>
+        <sys_update_name>sp_widget_573e4fdde2a54d9bbf889a8ed8f3d51a</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-11-25 10:05:37</sys_updated_on>
+        <template><![CDATA[<div class="bed-ops-container">
+
+  <!-- ── Header ──────────────────────────────────────────────────────── -->
+  <div class="bed-ops-header">
+    <h2 class="bed-ops-title"><i class="fa fa-h-square"></i> Bed &amp; Wards</h2>
+    <button type="button" class="btn btn-default btn-refresh" ng-click="c.refresh()" ng-disabled="c.loading">
+      <i class="fa fa-refresh" ng-class="{'fa-spin': c.loading}"></i> Refresh
+    </button>
+  </div>
+
+  <!-- ── Action Cards ────────────────────────────────────────────────── -->
+  <div class="row action-cards-row">
+    <div class="col-sm-4">
+      <div class="action-card card-inventory"
+           ng-class="{'card-active': !c.statusFilter}"
+           ng-click="c.setFilter('')" role="button" tabindex="0"
+           aria-label="Ward Inventory: {{c.counts.total_inventory}} beds">
+        <div class="card-count">{{c.counts.total_inventory}}</div>
+        <div class="card-label">Ward Inventory</div>
+        <div class="card-detail">{{c.counts.occupied}} occupied &middot; {{c.counts.held}} held</div>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="action-card card-cleaning"
+           ng-class="{'card-active': c.statusFilter === 'cleaning'}"
+           ng-click="c.setFilter('cleaning')" role="button" tabindex="0"
+           aria-label="Cleaning Work: {{c.counts.awaiting_cleaning + c.counts.cleaning_in_progress}} beds">
+        <div class="card-count">{{c.counts.awaiting_cleaning + c.counts.cleaning_in_progress}}</div>
+        <div class="card-label">Cleaning Work</div>
+        <div class="card-detail">{{c.counts.awaiting_cleaning}} awaiting &middot; {{c.counts.cleaning_in_progress}} in progress</div>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="action-card card-checks"
+           ng-class="{'card-active': c.statusFilter === 'nurse_check'}"
+           ng-click="c.setFilter('nurse_check')" role="button" tabindex="0"
+           aria-label="Readiness Checks: {{c.counts.awaiting_nurse_check}} beds">
+        <div class="card-count">{{c.counts.awaiting_nurse_check}}</div>
+        <div class="card-label">Readiness Checks</div>
+        <div class="card-detail">Awaiting nurse inspection</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Summary Bar ─────────────────────────────────────────────────── -->
+  <div class="summary-bar">
+    <span class="summary-item"><strong>{{c.counts.total_inventory}}</strong> Total Inventory</span>
+    <span class="summary-divider" aria-hidden="true">|</span>
+    <span class="summary-item"><strong>{{c.counts.occupied}}</strong> Occupied</span>
+    <span class="summary-divider" aria-hidden="true">|</span>
+    <span class="summary-item"><strong>{{c.counts.held}}</strong> Held</span>
+    <span class="summary-divider" aria-hidden="true">|</span>
+    <span class="summary-item summary-available"><strong>{{c.counts.available_now}}</strong> Available Now</span>
+  </div>
+
+  <!-- ── Filter Bar ──────────────────────────────────────────────────── -->
+  <div class="filter-bar">
+    <div class="row">
+      <div class="col-sm-4 col-xs-12 filter-col">
+        <label for="bed-search" class="sr-only">Search beds</label>
+        <div class="input-group">
+          <span class="input-group-addon"><i class="fa fa-search"></i></span>
+          <input type="text" id="bed-search" class="form-control" placeholder="Search beds, wards, rooms..."
+                 ng-model="c.searchQuery" />
+        </div>
+      </div>
+      <div class="col-sm-3 col-xs-6 filter-col">
+        <label for="status-filter" class="sr-only">Status filter</label>
+        <select id="status-filter" class="form-control" ng-model="c.statusFilter">
+          <option value="">All Statuses</option>
+          <option value="available">Available</option>
+          <option value="occupied">Occupied</option>
+          <option value="held">Held</option>
+          <option value="cleaning">Cleaning</option>
+          <option value="nurse_check">Nurse Check</option>
+          <option value="blocked">Blocked</option>
+        </select>
+      </div>
+      <div class="col-sm-3 col-xs-6 filter-col">
+        <label for="ward-filter" class="sr-only">Ward filter</label>
+        <select id="ward-filter" class="form-control" ng-model="c.wardFilter">
+          <option value="">All Wards</option>
+          <option ng-repeat="w in c.getUniqueWards() track by $index" value="{{w}}">{{w}}</option>
+        </select>
+      </div>
+      <div class="col-sm-2 col-xs-12 filter-col">
+        <button type="button" class="btn btn-default btn-block btn-clear-filters"
+                ng-show="c.hasActiveFilters()" ng-click="c.clearFilters()">
+          <i class="fa fa-times"></i> Clear
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Bed Grid ────────────────────────────────────────────────────── -->
+  <div class="bed-grid">
+    <div ng-if="c.filteredBeds().length === 0" class="empty-state">
+      <i class="fa fa-bed fa-3x"></i>
+      <p>No beds match your filters.</p>
+    </div>
+
+    <div ng-repeat="group in c.groupedBeds() track by group.room" class="room-group">
+      <h4 class="room-label"><i class="fa fa-th-large"></i> {{group.room}}</h4>
+      <div class="row">
+        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12"
+             ng-repeat="bed in group.beds track by bed.sys_id">
+          <div class="bed-card" ng-class="c.getStatusInfo(bed).cls"
+               ng-click="c.openDrawer(bed)" role="button" tabindex="0"
+               aria-label="{{bed.bed_code}} - {{c.getStatusInfo(bed).label}}">
+            <div class="bed-card-header">
+              <span class="bed-code">{{bed.bed_code}}</span>
+              <span class="care-badge" ng-class="c.getCareLevelClass(bed)">{{bed.care_level_display}}</span>
+            </div>
+            <div class="bed-card-status">
+              <i class="fa status-icon" ng-class="c.getStatusInfo(bed).icon"></i>
+              <span class="status-text">{{c.getStatusInfo(bed).label}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Drawer Overlay ──────────────────────────────────────────────── -->
+  <div class="drawer-overlay" ng-show="c.showDrawer" ng-click="c.closeDrawer()"></div>
+
+  <!-- ── Detail Drawer ───────────────────────────────────────────────── -->
+  <div class="detail-drawer" ng-class="{'drawer-open': c.showDrawer}">
+    <div class="drawer-header">
+      <h3 class="drawer-title">{{c.selectedBed.bed_code}}</h3>
+      <button type="button" class="btn btn-link drawer-close" ng-click="c.closeDrawer()" aria-label="Close drawer">
+        <i class="fa fa-times fa-lg"></i>
+      </button>
+    </div>
+
+    <div class="drawer-body" ng-if="c.selectedBed">
+
+      <!-- Location -->
+      <div class="detail-section">
+        <h4 class="section-heading">Location</h4>
+        <dl class="detail-list">
+          <dt>Department</dt><dd>{{c.selectedBed.department_label}}</dd>
+          <dt>Ward</dt><dd>{{c.selectedBed.ward_label}}</dd>
+          <dt>Room</dt><dd>{{c.selectedBed.room_label}}</dd>
+          <dt>Care Level</dt>
+          <dd><span class="care-badge" ng-class="c.getCareLevelClass(c.selectedBed)">{{c.selectedBed.care_level_display}}</span></dd>
+        </dl>
+      </div>
+
+      <!-- Status -->
+      <div class="detail-section">
+        <h4 class="section-heading">Status</h4>
+        <div class="status-panel">
+          <div class="status-row">
+            <span class="status-key">Occupancy</span>
+            <span class="status-val">
+              <i class="fa" ng-class="c.getStatusInfo(c.selectedBed).icon"></i>
+              {{c.selectedBed.occupancy_display}}
+            </span>
+          </div>
+          <div class="status-row">
+            <span class="status-key">Readiness</span>
+            <span class="status-val">{{c.selectedBed.readiness_display}}</span>
+          </div>
+          <div class="status-row">
+            <span class="status-key">In Service</span>
+            <span class="status-val">
+              <i class="fa" ng-class="c.selectedBed.in_service ? 'fa-check-circle svc-yes' : 'fa-times-circle svc-no'"></i>
+              {{c.selectedBed.in_service ? 'Yes' : 'No'}}
+            </span>
+          </div>
+          <div class="status-row" ng-if="c.selectedBed.block_reason">
+            <span class="status-key">Block Reason</span>
+            <span class="status-val val-danger">{{c.selectedBed.block_reason}}</span>
+          </div>
+          <div class="status-row" ng-if="c.selectedBed.readiness_since">
+            <span class="status-key">Readiness Since</span>
+            <span class="status-val">{{c.selectedBed.readiness_since}}</span>
+          </div>
+          <div class="status-row">
+            <span class="status-key">Available Now</span>
+            <span class="status-val" ng-class="c.isAvailableNow(c.selectedBed) ? 'val-available' : 'val-unavailable'">
+              <i class="fa" ng-class="c.isAvailableNow(c.selectedBed) ? 'fa-check' : 'fa-minus'"></i>
+              {{c.isAvailableNow(c.selectedBed) ? 'Yes' : 'No'}}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Next Responsible -->
+      <div class="detail-section" ng-if="c.getNextResponsible(c.selectedBed)">
+        <h4 class="section-heading">Next Step</h4>
+        <div class="next-responsible-box">
+          <i class="fa fa-arrow-circle-right"></i>
+          {{c.getNextResponsible(c.selectedBed)}}
+        </div>
+      </div>
+
+      <!-- Messages -->
+      <div class="alert alert-success alert-sm" ng-if="c.successMessage">
+        <i class="fa fa-check-circle"></i> {{c.successMessage}}
+      </div>
+      <div class="alert alert-danger alert-sm" ng-if="c.errorMessage">
+        <i class="fa fa-exclamation-circle"></i> {{c.errorMessage}}
+      </div>
+
+      <!-- Actions -->
+      <div class="detail-section" ng-if="c.getAvailableActions(c.selectedBed).length > 0">
+        <h4 class="section-heading">Actions</h4>
+        <div ng-repeat="act in c.getAvailableActions(c.selectedBed) track by act.id" class="action-item">
+          <!-- Fault reason input -->
+          <div ng-if="act.id === 'report_fault'" class="action-input">
+            <label for="fault-reason">Fault reason <span class="required-star">*</span></label>
+            <input type="text" id="fault-reason" class="form-control" ng-model="c.faultReason"
+                   placeholder="Describe the fault..." />
+          </div>
+          <!-- Recleaning reason input -->
+          <div ng-if="act.id === 'return_for_recleaning'" class="action-input">
+            <label for="recleaning-reason">Reason (optional)</label>
+            <input type="text" id="recleaning-reason" class="form-control" ng-model="c.recleaningReason"
+                   placeholder="Reason for recleaning..." />
+          </div>
+          <button type="button" class="btn btn-block action-btn"
+                  ng-class="act.cls"
+                  ng-disabled="c.actionLoading || (act.id === 'report_fault' && !c.faultReason)"
+                  ng-click="c.performAction(act.id, {fault_reason: c.faultReason, recleaning_reason: c.recleaningReason})">
+            <span ng-if="!c.actionLoading"><i class="fa" ng-class="act.icon"></i> {{act.label}}</span>
+            <span ng-if="c.actionLoading"><i class="fa fa-spinner fa-spin"></i> Processing...</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Read-only status messages (e.g. for reception) -->
+      <div class="detail-section"
+           ng-if="c.getAvailableActions(c.selectedBed).length === 0 && c.selectedBed.occupancy === 'vacant' && c.selectedBed.in_service">
+        <h4 class="section-heading">Status Information</h4>
+        <div class="info-msg" ng-if="c.selectedBed.readiness === 'awaiting_cleaning'">
+          <i class="fa fa-info-circle"></i> This bed is waiting for housekeeping to begin the cleaning process.
+        </div>
+        <div class="info-msg" ng-if="c.selectedBed.readiness === 'cleaning_in_progress'">
+          <i class="fa fa-info-circle"></i> Housekeeping is currently cleaning this bed.
+        </div>
+        <div class="info-msg" ng-if="c.selectedBed.readiness === 'awaiting_nurse_check'">
+          <i class="fa fa-info-circle"></i> Housekeeping has finished. The ward nurse must inspect this bed.
+        </div>
+        <div class="info-msg" ng-if="c.selectedBed.readiness === 'blocked'">
+          <i class="fa fa-exclamation-circle"></i> This bed is blocked and requires maintenance or admin attention.
+        </div>
+        <div class="info-msg info-ready" ng-if="c.selectedBed.readiness === 'ready'">
+          <i class="fa fa-check-circle"></i> This bed is ready for admission.
+        </div>
+      </div>
+
+    </div><!-- /drawer-body -->
+  </div><!-- /detail-drawer -->
+
+</div><!-- /bed-ops-container -->
+]]></template>
+    </sp_widget>
+</record_update>
