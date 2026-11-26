@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_choice action="INSERT_OR_UPDATE" field="tier" table="x_2307780_sentin_0_room" version="3">
+        <sys_choice_set action="INSERT_OR_UPDATE">
+            <element>tier</element>
+            <name>x_2307780_sentin_0_room</name>
+            <sys_class_name>sys_choice_set</sys_class_name>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:18:19</sys_created_on>
+            <sys_id>e09a78fba3f24d3bb8b266c73dbb5aee</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>tier</sys_name>
+            <sys_package display_value="Sentinels Bed Operations Pilot" source="x_2307780_sentin_0">d8fe43811b30db50b87da8a5624bcb6c</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="Sentinels Bed Operations Pilot">d8fe43811b30db50b87da8a5624bcb6c</sys_scope>
+            <sys_update_name>sys_choice_x_2307780_sentin_0_room_tier</sys_update_name>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:18:19</sys_updated_on>
+        </sys_choice_set>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>tier</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Shared</label>
+            <language>en</language>
+            <name>x_2307780_sentin_0_room</name>
+            <sequence>1</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:18:19</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>055a7f6a39d84dff86b272067a317ba8</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:18:19</sys_updated_on>
+            <value>shared</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>tier</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Semi-Private</label>
+            <language>en</language>
+            <name>x_2307780_sentin_0_room</name>
+            <sequence>2</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:18:19</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>99d934d8dfee4d5bbcb37c05ef5ac1ef</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:18:19</sys_updated_on>
+            <value>semi_private</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>tier</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Private</label>
+            <language>en</language>
+            <name>x_2307780_sentin_0_room</name>
+            <sequence>3</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:18:19</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>f66c3309380747f485109d50f6f1c885</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:18:19</sys_updated_on>
+            <value>private</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>tier</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Deluxe</label>
+            <language>en</language>
+            <name>x_2307780_sentin_0_room</name>
+            <sequence>4</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:18:19</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>593b5e48f366424eb7f6a3bafcfd42f8</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:18:19</sys_updated_on>
+            <value>deluxe</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>tier</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Isolation</label>
+            <language>en</language>
+            <name>x_2307780_sentin_0_room</name>
+            <sequence>5</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:18:19</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>cc3fb6149937423eac7c9df273712658</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:18:19</sys_updated_on>
+            <value>isolation</value>
+        </sys_choice>
+    </sys_choice>
+</record_update>

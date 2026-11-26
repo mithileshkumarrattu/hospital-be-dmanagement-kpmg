@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl_role">
+    <sys_security_acl_role action="INSERT_OR_UPDATE">
+        <sys_class_name>sys_security_acl_role</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-11-26 06:18:26</sys_created_on>
+        <sys_id>dbd4fd9ab7ed43ceba896e1dc27a3d06</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>x_2307780_sentin_0_bed.x_2307780_sentin_0.ward_manager</sys_name>
+        <sys_package display_value="Sentinels Bed Operations Pilot" source="x_2307780_sentin_0">d8fe43811b30db50b87da8a5624bcb6c</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Sentinels Bed Operations Pilot">d8fe43811b30db50b87da8a5624bcb6c</sys_scope>
+        <sys_security_acl display_value="x_2307780_sentin_0_bed">1945f29b159e4c41b7f98b891b7611d3</sys_security_acl>
+        <sys_update_name>sys_security_acl_role_dbd4fd9ab7ed43ceba896e1dc27a3d06</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-11-26 06:18:26</sys_updated_on>
+        <sys_user_role display_value="">c9b5ed52e1bb4f05bca588f25897c3b7</sys_user_role>
+    </sys_security_acl_role>
+</record_update>
