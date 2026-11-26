@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function () {
+    var c = this;
+
+    c.activeTab = 'myWork';
+    c.submitting = false;
+    c.alertMessage = '';
+    c.alertType = '';
+    c.showFaultModal = false;
+    c.faultTask = null;
+    c.faultDescription = '';
+
+    c.setTab = function (tab) {
+        c.activeTab = tab;
+    };
+
+    c.getActiveList = function () {
+        if (c.activeTab === 'myWork') return c.data.myWork;
+        if (c.activeTab === 'available') return c.data.available;
+        if (c.activeTab === 'linen') return c.data.linen;
+        return [];
+    };
+
+    c.claimTask = function (task) {
+        c.submitting = true;
+        c.data.action = 'claim';
+        c.data.task_id = task.sys_id;
+        c.server.update().then(function () {
+            c.submitting = false;
+            handleResult();
+        });
+    };
+
+    c.startTask = function (task) {
+        c.submitting = true;
+        c.data.action = 'start';
+        c.data.task_id = task.sys_id;
+        c.server.update().then(function () {
+            c.submitting = false;
+            handleResult();
+        });
+    };
+
+    c.completeTask = function (task) {
+        c.submitting = true;
+        c.data.action = 'complete_cleaning';
+        c.data.task_id = task.sys_id;
+        c.server.update().then(function () {
+            c.submitting = false;
+            handleResult();
+        });
+    };
+
+    c.openFaultModal = function (task) {
+        c.faultTask = task;
+        c.faultDescription = '';
+        c.showFaultModal = true;
+    };
+
+    c.closeFaultModal = function () {
+        c.showFaultModal = false;
+        c.faultTask = null;
+    };
+
+    c.submitFault = function () {
+        if (!c.faultTask || !c.faultDescription) return;
+        c.submitting = true;
+        c.data.action = 'report_fault';
+        c.data.bed_id = c.faultTask.bed_id;
+        c.data.fault_description = c.faultDescription;
+        c.server.update().then(function () {
+            c.submitting = false;
+            c.showFaultModal = false;
+            handleResult();
+        });
+    };
+
+    c.refresh = function () {
+        c.server.refresh();
+    };
+
+    function handleResult() {
+        if (c.data.actionResult) {
+            c.alertMessage = c.data.actionResult.message;
+            c.alertType = c.data.actionResult.success ? 'success' : 'danger';
+            c.data.action = null;
+            c.data.actionResult = null;
+            c.server.refresh();
+        }
+    }
+};
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css>/* ═══════════════════════════════════════════════════════════════════════════
+   Housekeeping Dashboard — Sentinels brand (teal/indigo)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.hk-container { background: #F7F8FA; min-height: 100vh; padding: 24px; color: #2D3748; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
+
+/* ── Header ────────────────────────────────────────────────────────────────── */
+.hk-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+.hk-title { margin: 0; font-size: 26px; font-weight: 700; color: #172C32; }
+.hk-title .fa { color: #08656A; margin-right: 8px; }
+.hk-refresh-btn { border-radius: 6px; font-weight: 500; }
+
+/* ── Alert ─────────────────────────────────────────────────────────────────── */
+.hk-alert { border-radius: 6px; font-size: 14px; margin-bottom: 16px; padding: 10px 14px; }
+
+/* ── Action Cards ──────────────────────────────────────────────────────────── */
+.hk-action-row { margin-bottom: 20px; }
+.hk-action-card { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px; border-radius: 10px; color: #fff; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; margin-bottom: 12px; }
+.hk-action-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.18); }
+.hk-card-teal { background: linear-gradient(135deg, #08656A 0%, #0A8F96 100%); }
+.hk-card-indigo { background: linear-gradient(135deg, #3B3F8C 0%, #5558B5 100%); }
+.hk-card-green { background: linear-gradient(135deg, #059669 0%, #10B981 100%); }
+.hk-card-body { display: flex; align-items: center; gap: 12px; }
+.hk-card-icon { font-size: 20px; opacity: 0.9; }
+.hk-card-title { font-size: 15px; font-weight: 600; }
+.hk-card-badge { background: rgba(255,255,255,0.25); padding: 4px 12px; border-radius: 20px; font-size: 16px; font-weight: 700; }
+
+/* ── Tab Bar ───────────────────────────────────────────────────────────────── */
+.hk-tab-bar { margin-bottom: 20px; display: flex; gap: 8px; flex-wrap: wrap; }
+.hk-tab-btn { background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 6px; padding: 10px 18px; font-size: 14px; font-weight: 500; color: #4A5568; transition: all 0.15s ease; }
+.hk-tab-btn:hover { border-color: #08656A; color: #08656A; }
+.hk-tab-active { background: #08656A; color: #FFFFFF; border-color: #08656A; }
+.hk-tab-active:hover, .hk-tab-active:focus { background: #075E63; color: #FFFFFF; border-color: #075E63; }
+.hk-tab-btn .fa { margin-right: 6px; }
+.hk-badge { background: rgba(255,255,255,0.3); margin-left: 6px; }
+.hk-tab-active .hk-badge { background: rgba(255,255,255,0.3); }
+
+/* ── Work Cards ────────────────────────────────────────────────────────────── */
+.hk-panel { background: #FFFFFF; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); margin-bottom: 24px; overflow: hidden; }
+.hk-work-list { padding: 8px; }
+.hk-work-card { background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; padding: 16px; margin-bottom: 10px; transition: box-shadow 0.15s ease; }
+.hk-work-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.hk-work-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+.hk-bed-code { font-size: 16px; font-weight: 700; color: #172C32; }
+.hk-type-badge { padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
+.hk-type-cleaning { background: #DBEAFE; color: #1E40AF; }
+.hk-type-linen { background: #D1FAE5; color: #065F46; }
+.hk-type-default { background: #E2E8F0; color: #4A5568; }
+.hk-work-meta { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #53656A; flex-wrap: wrap; gap: 8px; }
+.hk-work-meta .fa { margin-right: 4px; }
+.hk-elapsed { font-weight: 600; color: #3B3F8C; }
+.hk-work-desc { font-size: 13px; color: #4A5568; margin-top: 6px; }
+.hk-work-card-actions { margin-top: 12px; display: flex; gap: 6px; flex-wrap: wrap; }
+.hk-act-btn { border-radius: 6px; font-weight: 500; font-size: 13px; min-height: 44px; min-width: 44px; }
+.hk-act-btn .fa { margin-right: 4px; }
+
+/* ── Empty State ───────────────────────────────────────────────────────────── */
+.hk-empty { padding: 48px 24px; text-align: center; color: #53656A; }
+.hk-empty .fa { color: #CBD5E1; margin-bottom: 12px; }
+.hk-empty p { font-size: 15px; margin-top: 8px; }
+
+/* ── Modal ─────────────────────────────────────────────────────────────────── */
+.hk-modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1050; display: flex; align-items: center; justify-content: center; }
+.hk-modal { background: #FFFFFF; border-radius: 10px; width: 90%; max-width: 500px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+.hk-modal-header { padding: 16px 20px; border-bottom: 1px solid #E2E8F0; display: flex; justify-content: space-between; align-items: center; }
+.hk-modal-header h4 { margin: 0; font-weight: 700; color: #172C32; }
+.hk-modal-body { padding: 20px; }
+.hk-modal-footer { padding: 12px 20px; border-top: 1px solid #E2E8F0; display: flex; justify-content: flex-end; gap: 8px; }
+
+/* ── Responsive ────────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .hk-container { padding: 12px; }
+  .hk-title { font-size: 20px; }
+  .hk-tab-bar { flex-direction: column; }
+  .hk-tab-btn { width: 100%; text-align: left; }
+  .hk-work-card-actions { flex-direction: column; }
+  .hk-act-btn { width: 100%; }
+}
+@media (max-width: 480px) {
+  .hk-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+}
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description>Housekeeping work queue: cleaning tasks, linen tasks, claim &amp; complete actions.</description>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>x_2307780_sentin_0_hk_dashboard</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {
+}]]></link>
+        <name>Housekeeping Dashboard</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function () {
+    /* ── Label Maps ────────────────────────────────────────────────────────── */
+    var STATE_LABELS = { '1': 'New', '2': 'Work in Progress', '3': 'Closed Complete', '7': 'Closed Incomplete' };
+    var STATE_CLASS  = { '1': 'label-info', '2': 'label-warning', '3': 'label-success', '7': 'label-default' };
+    var TYPE_LABELS  = { cleaning: 'Cleaning', linen: 'Linen', inspection: 'Inspection', repair: 'Repair' };
+    var TYPE_CLASS   = { cleaning: 'hk-type-cleaning', linen: 'hk-type-linen' };
+
+    /* ── Handler actions ───────────────────────────────────────────────────── */
+    if (input && input.action === 'claim') {
+        try {
+            var grClaim = new GlideRecord('x_2307780_sentin_0_bed_work');
+            if (grClaim.get(input.task_id)) {
+                grClaim.setValue('assigned_to', gs.getUserID());
+                grClaim.setValue('state', '2');
+                grClaim.setValue('accepted_at', new GlideDateTime().getValue());
+                grClaim.update();
+                data.actionResult = { success: true, message: 'Task claimed successfully.' };
+            } else {
+                data.actionResult = { success: false, message: 'Task not found.' };
+            }
+        } catch (e) {
+            data.actionResult = { success: false, message: 'Claim failed: ' + e.message };
+        }
+        return;
+    }
+
+    if (input && input.action === 'start') {
+        try {
+            var grStart = new GlideRecord('x_2307780_sentin_0_bed_work');
+            if (grStart.get(input.task_id)) {
+                grStart.setValue('state', '2');
+                grStart.setValue('started_at', new GlideDateTime().getValue());
+                grStart.update();
+                data.actionResult = { success: true, message: 'Task started.' };
+            } else {
+                data.actionResult = { success: false, message: 'Task not found.' };
+            }
+        } catch (e) {
+            data.actionResult = { success: false, message: 'Start failed: ' + e.message };
+        }
+        return;
+    }
+
+    if (input && input.action === 'complete_cleaning') {
+        try {
+            var handler = new x_2307780_sentin_0.BedOpsCommandHandler();
+            var result = handler.completeCleaning(input.task_id);
+            data.actionResult = { success: true, message: 'Cleaning completed successfully.' };
+        } catch (e) {
+            data.actionResult = { success: false, message: 'Complete failed: ' + e.message };
+        }
+        return;
+    }
+
+    if (input && input.action === 'report_fault') {
+        try {
+            var grFault = new GlideRecord('x_2307780_sentin_0_bed_work');
+            grFault.initialize();
+            grFault.setValue('bed', input.bed_id);
+            grFault.setValue('work_type', 'repair');
+            grFault.setValue('short_description', input.fault_description || 'Fault reported by housekeeping');
+            grFault.setValue('state', '1');
+            grFault.insert();
+            data.actionResult = { success: true, message: 'Fault reported.' };
+        } catch (e) {
+            data.actionResult = { success: false, message: 'Report fault failed: ' + e.message };
+        }
+        return;
+    }
+
+    /* ── Build user group list for "Available" matching ────────────────────── */
+    var userGroupIds = [];
+    var grMem = new GlideRecord('sys_user_grmember');
+    grMem.addQuery('user', gs.getUserID());
+    grMem.setLimit(50);
+    grMem.query();
+    while (grMem.next()) {
+        userGroupIds.push(grMem.getValue('group'));
+    }
+
+    /* ── Helper: enrich task with bed/room/ward info ──────────────────────── */
+    var nowDT = new GlideDateTime();
+    function buildTaskObj(gr) {
+        var bedCode = '', wardName = '', roomLabel = '', bedSysId = '';
+        var bedRef = gr.getValue('bed');
+        if (bedRef) {
+            bedSysId = bedRef;
+            var grBed = new GlideRecord('x_2307780_sentin_0_bed');
+            if (grBed.get(bedRef)) {
+                bedCode = grBed.getValue('bed_code') || '';
+                roomLabel = grBed.getValue('room_label') || '';
+                wardName = grBed.getValue('ward_label') || '';
+                if (!roomLabel) {
+                    var roomRef = grBed.getValue('room');
+                    if (roomRef) {
+                        var grRoom = new GlideRecord('x_2307780_sentin_0_room');
+                        if (grRoom.get(roomRef)) {
+                            roomLabel = grRoom.getValue('label_name') || '';
+                            var wardRef = grRoom.getValue('ward');
+                            if (wardRef) {
+                                var grWard = new GlideRecord('x_2307780_sentin_0_ward');
+                                if (grWard.get(wardRef)) {
+                                    wardName = grWard.getValue('name') || '';
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        var assignedAt = gr.getValue('accepted_at') || gr.getValue('sys_created_on') || '';
+        var elapsed = '';
+        if (assignedAt) {
+            var aDT = new GlideDateTime(assignedAt);
+            var dur = GlideDateTime.subtract(aDT, nowDT);
+            var mins = Math.floor(dur.getNumericValue() / 60000);
+            if (mins < 0) mins = 0;
+            if (mins < 60) {
+                elapsed = mins + 'm';
+            } else {
+                elapsed = Math.floor(mins / 60) + 'h ' + (mins % 60) + 'm';
+            }
+        }
+
+        var stateVal = gr.getValue('state') || '1';
+        var typeVal = gr.getValue('work_type') || 'cleaning';
+
+        return {
+            sys_id: gr.getUniqueValue(),
+            number: gr.getValue('number') || gr.getUniqueValue().substring(0, 8),
+            bed_code: bedCode,
+            bed_id: bedSysId,
+            ward_name: wardName,
+            room_label: roomLabel,
+            work_type: TYPE_LABELS[typeVal] || typeVal,
+            work_type_raw: typeVal,
+            type_class: TYPE_CLASS[typeVal] || 'hk-type-default',
+            state: STATE_LABELS[stateVal] || stateVal,
+            state_raw: stateVal,
+            state_class: STATE_CLASS[stateVal] || 'label-default',
+            assigned_to: gr.getDisplayValue('assigned_to'),
+            elapsed: elapsed,
+            priority: gr.getDisplayValue('priority') || 'Normal',
+            short_description: gr.getValue('short_description') || ''
+        };
+    }
+
+    /* ── Query Tasks ──────────────────────────────────────────────────────── */
+    data.myWork = [];
+    data.available = [];
+    data.linen = [];
+    var currentUserId = gs.getUserID();
+
+    var grTask = new GlideRecord('x_2307780_sentin_0_bed_work');
+    grTask.addQuery('work_type', 'IN', 'cleaning,linen');
+    grTask.addQuery('state', 'IN', '1,2');
+    grTask.orderBy('sys_created_on');
+    grTask.setLimit(200);
+    grTask.query();
+    while (grTask.next()) {
+        var task = buildTaskObj(grTask);
+        var assignedTo = grTask.getValue('assigned_to') || '';
+        var assignGroup = grTask.getValue('assignment_group') || '';
+        var typeRaw = grTask.getValue('work_type') || '';
+
+        if (assignedTo === currentUserId) {
+            data.myWork.push(task);
+        } else if (!assignedTo && userGroupIds.indexOf(assignGroup) > -1) {
+            if (typeRaw === 'linen') {
+                data.linen.push(task);
+            } else {
+                data.available.push(task);
+            }
+        } else if (!assignedTo && typeRaw === 'linen') {
+            data.linen.push(task);
+        }
+    }
+
+    /* ── Metrics ──────────────────────────────────────────────────────────── */
+    data.metrics = {
+        myWork: data.myWork.length,
+        available: data.available.length,
+        linen: data.linen.length
+    };
+})();
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-11-26 08:07:20</sys_created_on>
+        <sys_id>549f9099a73645519b9f127ff33b4db1</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Housekeeping Dashboard</sys_name>
+        <sys_package display_value="Sentinels Bed Operations Pilot" source="x_2307780_sentin_0">d8fe43811b30db50b87da8a5624bcb6c</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Sentinels Bed Operations Pilot">d8fe43811b30db50b87da8a5624bcb6c</sys_scope>
+        <sys_update_name>sp_widget_549f9099a73645519b9f127ff33b4db1</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-11-26 08:07:20</sys_updated_on>
+        <template><![CDATA[<div class="hk-container">
+  <!-- Header -->
+  <div class="hk-header">
+    <h2 class="hk-title"><i class="fa fa-broom"></i> Housekeeping Dashboard</h2>
+    <button type="button" class="btn btn-default hk-refresh-btn" ng-click="c.refresh()" ng-disabled="c.submitting">
+      <i class="fa fa-refresh"></i> Refresh
+    </button>
+  </div>
+
+  <!-- Alert -->
+  <div class="alert hk-alert" ng-class="'alert-' + c.alertType" ng-if="c.alertMessage">
+    <button type="button" class="close" ng-click="c.alertMessage = ''"><span>&times;</span></button>
+    <i class="fa" ng-class="{'fa-check-circle': c.alertType === 'success', 'fa-exclamation-circle': c.alertType === 'danger'}"></i>
+    {{c.alertMessage}}
+  </div>
+
+  <!-- Action Cards -->
+  <div class="row hk-action-row">
+    <div class="col-md-4 col-sm-6 col-xs-12">
+      <div class="hk-action-card hk-card-teal" ng-click="c.setTab('myWork')">
+        <div class="hk-card-body">
+          <i class="fa fa-user hk-card-icon"></i>
+          <span class="hk-card-title">My Work</span>
+        </div>
+        <span class="hk-card-badge">{{c.data.metrics.myWork}}</span>
+      </div>
+    </div>
+    <div class="col-md-4 col-sm-6 col-xs-12">
+      <div class="hk-action-card hk-card-indigo" ng-click="c.setTab('available')">
+        <div class="hk-card-body">
+          <i class="fa fa-hand-paper-o hk-card-icon"></i>
+          <span class="hk-card-title">Available to Claim</span>
+        </div>
+        <span class="hk-card-badge">{{c.data.metrics.available}}</span>
+      </div>
+    </div>
+    <div class="col-md-4 col-sm-6 col-xs-12">
+      <div class="hk-action-card hk-card-green" ng-click="c.setTab('linen')">
+        <div class="hk-card-body">
+          <i class="fa fa-bed hk-card-icon"></i>
+          <span class="hk-card-title">Routine Linen</span>
+        </div>
+        <span class="hk-card-badge">{{c.data.metrics.linen}}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab Bar -->
+  <div class="hk-tab-bar">
+    <button type="button" class="btn hk-tab-btn" ng-class="{'hk-tab-active': c.activeTab === 'myWork'}" ng-click="c.setTab('myWork')">
+      <i class="fa fa-user"></i> My Work <span class="badge hk-badge">{{c.data.metrics.myWork}}</span>
+    </button>
+    <button type="button" class="btn hk-tab-btn" ng-class="{'hk-tab-active': c.activeTab === 'available'}" ng-click="c.setTab('available')">
+      <i class="fa fa-hand-paper-o"></i> Available <span class="badge hk-badge">{{c.data.metrics.available}}</span>
+    </button>
+    <button type="button" class="btn hk-tab-btn" ng-class="{'hk-tab-active': c.activeTab === 'linen'}" ng-click="c.setTab('linen')">
+      <i class="fa fa-bed"></i> Linen <span class="badge hk-badge">{{c.data.metrics.linen}}</span>
+    </button>
+  </div>
+
+  <!-- Work Queue -->
+  <div class="hk-panel">
+    <div class="hk-work-list" ng-if="c.getActiveList().length">
+      <div class="hk-work-card" ng-repeat="task in c.getActiveList() track by task.sys_id">
+        <div class="hk-work-card-header">
+          <span class="hk-bed-code">{{task.bed_code}}</span>
+          <span class="hk-type-badge" ng-class="task.type_class">{{task.work_type}}</span>
+          <span class="label" ng-class="task.state_class">{{task.state}}</span>
+        </div>
+        <div class="hk-work-card-body">
+          <div class="hk-work-meta">
+            <span><i class="fa fa-map-marker"></i> {{task.ward_name}} &mdash; {{task.room_label}}</span>
+            <span class="hk-elapsed"><i class="fa fa-clock-o"></i> {{task.elapsed}}</span>
+          </div>
+          <div class="hk-work-desc" ng-if="task.short_description">{{task.short_description}}</div>
+        </div>
+        <div class="hk-work-card-actions">
+          <button type="button" class="btn btn-sm btn-primary hk-act-btn" ng-if="c.activeTab === 'available' || c.activeTab === 'linen'" ng-click="c.claimTask(task)" ng-disabled="c.submitting">
+            <i class="fa fa-hand-rock-o"></i> Claim
+          </button>
+          <button type="button" class="btn btn-sm btn-info hk-act-btn" ng-if="c.activeTab === 'myWork' && task.state_raw === '1'" ng-click="c.startTask(task)" ng-disabled="c.submitting">
+            <i class="fa fa-play"></i> Start
+          </button>
+          <button type="button" class="btn btn-sm btn-success hk-act-btn" ng-if="c.activeTab === 'myWork' && task.state_raw === '2'" ng-click="c.completeTask(task)" ng-disabled="c.submitting">
+            <i class="fa fa-check"></i> Complete
+          </button>
+          <button type="button" class="btn btn-sm btn-warning hk-act-btn" ng-if="c.activeTab === 'myWork'" ng-click="c.openFaultModal(task)" ng-disabled="c.submitting">
+            <i class="fa fa-exclamation-triangle"></i> Report Fault
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="hk-empty" ng-if="!c.getActiveList().length">
+      <i class="fa fa-check-circle fa-3x"></i>
+      <p>No tasks in this queue.</p>
+    </div>
+  </div>
+
+  <!-- Fault Report Modal -->
+  <div class="hk-modal-overlay" ng-if="c.showFaultModal" ng-click="c.closeFaultModal()">
+    <div class="hk-modal" ng-click="$event.stopPropagation()">
+      <div class="hk-modal-header">
+        <h4>Report Fault</h4>
+        <button type="button" class="close" ng-click="c.closeFaultModal()"><span>&times;</span></button>
+      </div>
+      <div class="hk-modal-body">
+        <p>Report a maintenance fault for bed <strong>{{c.faultTask.bed_code}}</strong></p>
+        <div class="form-group">
+          <label for="fault-desc">Fault Description <span class="text-danger">*</span></label>
+          <textarea id="fault-desc" class="form-control" rows="3" ng-model="c.faultDescription" placeholder="Describe the issue..."></textarea>
+        </div>
+      </div>
+      <div class="hk-modal-footer">
+        <button type="button" class="btn btn-default" ng-click="c.closeFaultModal()">Cancel</button>
+        <button type="button" class="btn btn-warning" ng-click="c.submitFault()" ng-disabled="!c.faultDescription || c.submitting">
+          <i class="fa fa-exclamation-triangle"></i> Submit Fault
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+]]></template>
+    </sp_widget>
+</record_update>

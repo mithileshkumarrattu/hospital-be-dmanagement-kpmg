@@ -1,0 +1,557 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function($scope, $timeout) {
+    var c = this;
+
+    c.searchQuery = '';
+    c.searchResults = c.data.searchResults || [];
+    c.selectedPatient = c.data.selectedPatient || null;
+    c.loading = false;
+    c.searchError = '';
+    c.showRegisterForm = false;
+    c.createLoading = false;
+    c.createError = '';
+    c.createSuccess = '';
+
+    c.newPatient = {
+        given_name: '',
+        family_name: '',
+        date_of_birth: '',
+        gender: '',
+        phone_primary: '',
+        email: ''
+    };
+
+    var searchTimer = null;
+
+    c.onSearchChange = function() {
+        if (searchTimer) $timeout.cancel(searchTimer);
+        if (c.searchQuery.length < 2) {
+            c.searchResults = [];
+            c.searchError = c.searchQuery.length > 0 ? 'Enter at least 2 characters' : '';
+            return;
+        }
+        searchTimer = $timeout(function() {
+            c.doSearch();
+        }, 400);
+    };
+
+    c.doSearch = function() {
+        if (c.searchQuery.length < 2) return;
+        c.loading = true;
+        c.searchError = '';
+        c.server.get({ action: 'search', query: c.searchQuery }).then(function(r) {
+            c.loading = false;
+            c.searchResults = r.data.searchResults || [];
+            c.searchError = r.data.searchError || '';
+        });
+    };
+
+    c.selectPatient = function(patient) {
+        c.selectedPatient = patient;
+        c.showRegisterForm = false;
+    };
+
+    c.clearSelection = function() {
+        c.selectedPatient = null;
+    };
+
+    c.toggleRegisterForm = function() {
+        c.showRegisterForm = !c.showRegisterForm;
+        c.createError = '';
+        c.createSuccess = '';
+        if (c.showRegisterForm) {
+            c.newPatient = {
+                given_name: '',
+                family_name: '',
+                date_of_birth: '',
+                gender: '',
+                phone_primary: '',
+                email: ''
+            };
+        }
+    };
+
+    c.registerPatient = function() {
+        if (!c.newPatient.given_name || !c.newPatient.family_name) {
+            c.createError = 'Given name and family name are required.';
+            return;
+        }
+        c.createLoading = true;
+        c.createError = '';
+        c.createSuccess = '';
+        c.server.get({
+            action: 'create_patient',
+            given_name: c.newPatient.given_name,
+            family_name: c.newPatient.family_name,
+            date_of_birth: c.newPatient.date_of_birth,
+            gender: c.newPatient.gender,
+            phone_primary: c.newPatient.phone_primary,
+            email: c.newPatient.email
+        }).then(function(r) {
+            c.createLoading = false;
+            if (r.data.createError) {
+                c.createError = r.data.createError;
+            } else {
+                c.createSuccess = r.data.createSuccess || 'Patient registered.';
+                c.selectedPatient = r.data.selectedPatient;
+                c.showRegisterForm = false;
+            }
+        });
+    };
+};
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css>/* ── Patient Finder Widget ──────────────────────────────────────────────────── */
+
+.patient-finder {
+  background: #FFFFFF;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+/* ── Selected Patient Banner ───────────────────────────────────────────────── */
+.pf-selected {
+  background: #E8F5F5;
+  border-radius: 8px;
+  padding: 16px 20px;
+  border: 1px solid #B2DFDB;
+}
+
+.pf-selected-inner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.pf-selected-icon {
+  font-size: 32px;
+  color: #08656A;
+}
+
+.pf-selected-info {
+  flex: 1;
+}
+
+.pf-selected-info strong {
+  display: block;
+  font-size: 16px;
+  color: #172C32;
+}
+
+.pf-selected-meta {
+  font-size: 13px;
+  color: #53656A;
+}
+
+.pf-change-btn {
+  border-radius: 6px;
+}
+
+/* ── Search Bar ────────────────────────────────────────────────────────────── */
+.pf-search-bar {
+  margin-bottom: 16px;
+}
+
+.pf-search-bar .form-control {
+  border-radius: 6px;
+  border-color: #D0D5D8;
+  height: 40px;
+  font-size: 14px;
+}
+
+.pf-search-bar .form-control:focus {
+  border-color: #08656A;
+  box-shadow: 0 0 0 2px rgba(8, 101, 106, 0.15);
+}
+
+.pf-search-bar .input-group-addon {
+  border-radius: 6px 0 0 6px;
+  border-color: #D0D5D8;
+  background: #F5F7F8;
+  color: #53656A;
+}
+
+.pf-hint {
+  color: #7A8A90;
+  display: block;
+  margin-top: 4px;
+}
+
+/* ── Loading ───────────────────────────────────────────────────────────────── */
+.pf-loading {
+  padding: 24px 0;
+  color: #53656A;
+}
+
+.pf-loading .fa {
+  color: #08656A;
+}
+
+/* ── Results Table ─────────────────────────────────────────────────────────── */
+.pf-results {
+  margin-bottom: 16px;
+}
+
+.pf-table {
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.pf-table thead th {
+  background: #F5F7F8;
+  color: #53656A;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #E8ECEE;
+  padding: 10px 12px;
+}
+
+.pf-table tbody td {
+  padding: 10px 12px;
+  font-size: 14px;
+  color: #172C32;
+  vertical-align: middle;
+}
+
+.pf-result-row {
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.pf-result-row:hover,
+.pf-result-row:focus {
+  background: #E8F5F5;
+  outline: none;
+}
+
+/* ── No Results ────────────────────────────────────────────────────────────── */
+.pf-no-results {
+  padding: 20px 0;
+  color: #53656A;
+  font-size: 14px;
+}
+
+/* ── Register Toggle ───────────────────────────────────────────────────────── */
+.pf-register-toggle {
+  margin-bottom: 16px;
+}
+
+.pf-register-toggle .btn {
+  border-radius: 6px;
+}
+
+/* ── Registration Form ─────────────────────────────────────────────────────── */
+.pf-register-form {
+  background: #F8FAFB;
+  border-radius: 8px;
+  padding: 20px;
+  border: 1px solid #E8ECEE;
+}
+
+.pf-form-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #172C32;
+  margin: 0 0 16px 0;
+}
+
+.pf-form-title .fa {
+  color: #08656A;
+  margin-right: 6px;
+}
+
+.pf-register-form .form-control {
+  border-radius: 6px;
+  border-color: #D0D5D8;
+  font-size: 14px;
+}
+
+.pf-register-form .form-control:focus {
+  border-color: #08656A;
+  box-shadow: 0 0 0 2px rgba(8, 101, 106, 0.15);
+}
+
+.pf-register-form label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #172C32;
+}
+
+.pf-submit-btn {
+  border-radius: 6px;
+  font-weight: 600;
+  padding: 10px 24px;
+  background: #08656A;
+  border-color: #08656A;
+}
+
+.pf-submit-btn:hover,
+.pf-submit-btn:focus {
+  background: #064f53;
+  border-color: #064f53;
+}
+
+/* ── Alerts ────────────────────────────────────────────────────────────────── */
+.pf-alert {
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.pf-alert .fa {
+  margin-right: 6px;
+}
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description>Shared widget for searching and registering patients.</description>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>x_2307780_sentin_0_patient_finder</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {
+}]]></link>
+        <name>Patient Finder</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+    var handler = new x_2307780_sentin_0.BedOpsCommandHandler();
+
+    if (input && input.action) {
+        var action = input.action;
+
+        if (action === 'search') {
+            var query = input.query || '';
+            if (query.length < 2) {
+                data.searchResults = [];
+                data.searchError = 'Please enter at least 2 characters.';
+                return;
+            }
+            var result = handler.findPatients(query, 20);
+            if (result.success) {
+                data.searchResults = result.patients;
+                data.searchError = '';
+            } else {
+                data.searchResults = [];
+                data.searchError = result.message || 'Search failed.';
+            }
+            return;
+        }
+
+        if (action === 'create_patient') {
+            var patientData = {
+                given_name: input.given_name || '',
+                family_name: input.family_name || '',
+                date_of_birth: input.date_of_birth || '',
+                gender: input.gender || '',
+                phone_primary: input.phone_primary || '',
+                email: input.email || ''
+            };
+
+            if (!patientData.given_name || !patientData.family_name) {
+                data.createError = 'Given name and family name are required.';
+                return;
+            }
+
+            var result = handler.createPatient(patientData);
+            if (result.success) {
+                data.createdPatient = result.patient;
+                data.selectedPatient = result.patient;
+                data.createSuccess = 'Patient registered: ' + (result.patient.display_name || result.patient.patient_number);
+                data.createError = '';
+            } else {
+                data.createError = result.message || 'Failed to register patient.';
+            }
+            return;
+        }
+    }
+
+    data.searchResults = [];
+    data.selectedPatient = null;
+})();
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-11-26 08:07:21</sys_created_on>
+        <sys_id>881195731ae64d43b29c66ff207f5274</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Patient Finder</sys_name>
+        <sys_package display_value="Sentinels Bed Operations Pilot" source="x_2307780_sentin_0">d8fe43811b30db50b87da8a5624bcb6c</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Sentinels Bed Operations Pilot">d8fe43811b30db50b87da8a5624bcb6c</sys_scope>
+        <sys_update_name>sp_widget_881195731ae64d43b29c66ff207f5274</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-11-26 08:07:21</sys_updated_on>
+        <template><![CDATA[<div class="patient-finder">
+
+  <!-- Selected Patient Banner -->
+  <div class="pf-selected" ng-if="c.selectedPatient">
+    <div class="pf-selected-inner">
+      <i class="fa fa-user-circle-o pf-selected-icon"></i>
+      <div class="pf-selected-info">
+        <strong>{{c.selectedPatient.display_name}}</strong>
+        <span class="pf-selected-meta">
+          {{c.selectedPatient.patient_number}}
+          <span ng-if="c.selectedPatient.dob"> &middot; DOB: {{c.selectedPatient.dob}}</span>
+          <span ng-if="c.selectedPatient.gender"> &middot; {{c.selectedPatient.gender}}</span>
+        </span>
+      </div>
+      <button type="button" class="btn btn-sm btn-default pf-change-btn" ng-click="c.clearSelection()">
+        <i class="fa fa-exchange"></i> Change
+      </button>
+    </div>
+  </div>
+
+  <!-- Search + Register -->
+  <div ng-if="!c.selectedPatient">
+    <!-- Search Bar -->
+    <div class="pf-search-bar">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+        <input type="text" class="form-control" placeholder="Search by name, patient number, or phone..."
+               ng-model="c.searchQuery" ng-change="c.onSearchChange()"
+               aria-label="Search patients" />
+        <span class="input-group-btn">
+          <button type="button" class="btn btn-default" ng-click="c.doSearch()" ng-disabled="c.searchQuery.length < 2">
+            <i class="fa fa-search"></i>
+          </button>
+        </span>
+      </div>
+      <small class="pf-hint" ng-if="c.searchQuery.length > 0 && c.searchQuery.length < 2">
+        Enter at least 2 characters to search
+      </small>
+    </div>
+
+    <!-- Loading -->
+    <div class="pf-loading text-center" ng-if="c.loading">
+      <i class="fa fa-spinner fa-spin fa-2x"></i>
+      <p>Searching patients...</p>
+    </div>
+
+    <!-- Search Error -->
+    <div class="alert alert-warning pf-alert" ng-if="c.searchError && !c.loading">
+      <i class="fa fa-exclamation-triangle"></i> {{c.searchError}}
+    </div>
+
+    <!-- Results Table -->
+    <div class="pf-results" ng-if="c.searchResults.length > 0 && !c.loading">
+      <table class="table table-hover pf-table">
+        <thead>
+          <tr>
+            <th>Patient #</th>
+            <th>Name</th>
+            <th>DOB</th>
+            <th>Gender</th>
+            <th>Phone</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="p in c.searchResults track by p.sys_id" class="pf-result-row"
+              ng-click="c.selectPatient(p)" role="button" tabindex="0"
+              aria-label="Select {{p.display_name}}">
+            <td>{{p.patient_number}}</td>
+            <td><strong>{{p.display_name}}</strong></td>
+            <td>{{p.dob}}</td>
+            <td>{{p.gender}}</td>
+            <td>{{p.phone}}</td>
+            <td class="text-right"><i class="fa fa-chevron-right text-muted"></i></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- No Results -->
+    <div class="pf-no-results text-center" ng-if="c.searchResults.length === 0 && c.searchQuery.length >= 2 && !c.loading && !c.searchError">
+      <i class="fa fa-info-circle"></i> No patients found. Try a different search or register a new patient.
+    </div>
+
+    <!-- Register Button -->
+    <div class="pf-register-toggle">
+      <button type="button" class="btn btn-default" ng-click="c.toggleRegisterForm()">
+        <i class="fa" ng-class="c.showRegisterForm ? 'fa-times' : 'fa-user-plus'"></i>
+        {{c.showRegisterForm ? 'Cancel Registration' : 'Register New Patient'}}
+      </button>
+    </div>
+
+    <!-- Success message after create -->
+    <div class="alert alert-success pf-alert" ng-if="c.createSuccess && !c.showRegisterForm">
+      <i class="fa fa-check-circle"></i> {{c.createSuccess}}
+    </div>
+
+    <!-- Registration Form -->
+    <div class="pf-register-form" ng-if="c.showRegisterForm">
+      <h4 class="pf-form-title"><i class="fa fa-user-plus"></i> Register New Patient</h4>
+
+      <div class="alert alert-danger pf-alert" ng-if="c.createError">
+        <i class="fa fa-exclamation-circle"></i> {{c.createError}}
+      </div>
+
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label for="pf-given">Given Name <span class="text-danger">*</span></label>
+            <input type="text" id="pf-given" class="form-control" ng-model="c.newPatient.given_name" required />
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label for="pf-family">Family Name <span class="text-danger">*</span></label>
+            <input type="text" id="pf-family" class="form-control" ng-model="c.newPatient.family_name" required />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="pf-dob">Date of Birth</label>
+            <input type="text" id="pf-dob" class="form-control" ng-model="c.newPatient.date_of_birth"
+                   placeholder="YYYY-MM-DD" />
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="pf-gender">Gender</label>
+            <select id="pf-gender" class="form-control" ng-model="c.newPatient.gender">
+              <option value="">-- Select --</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="pf-phone">Phone</label>
+            <input type="text" id="pf-phone" class="form-control" ng-model="c.newPatient.phone_primary" />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label for="pf-email">Email</label>
+            <input type="email" id="pf-email" class="form-control" ng-model="c.newPatient.email" />
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-primary pf-submit-btn" ng-click="c.registerPatient()"
+              ng-disabled="c.createLoading || !c.newPatient.given_name || !c.newPatient.family_name">
+        <span ng-if="!c.createLoading"><i class="fa fa-check"></i> Register Patient</span>
+        <span ng-if="c.createLoading"><i class="fa fa-spinner fa-spin"></i> Registering...</span>
+      </button>
+    </div>
+  </div>
+
+</div>
+]]></template>
+    </sp_widget>
+</record_update>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl_role">
+    <sys_security_acl_role action="INSERT_OR_UPDATE">
+        <sys_class_name>sys_security_acl_role</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-11-26 06:18:22</sys_created_on>
+        <sys_id>011171a7c5c0464fbfa9687a68d6a62a</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>x_2307780_sentin_0_policy.x_2307780_sentin_0.maintenance</sys_name>
+        <sys_package display_value="Sentinels Bed Operations Pilot" source="x_2307780_sentin_0">d8fe43811b30db50b87da8a5624bcb6c</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Sentinels Bed Operations Pilot">d8fe43811b30db50b87da8a5624bcb6c</sys_scope>
+        <sys_security_acl display_value="x_2307780_sentin_0_policy">2540fb53a4fb48e9b0f2902264520b14</sys_security_acl>
+        <sys_update_name>sys_security_acl_role_011171a7c5c0464fbfa9687a68d6a62a</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-11-26 06:18:22</sys_updated_on>
+        <sys_user_role display_value="x_2307780_sentin_0.maintenance" name="x_2307780_sentin_0.maintenance">34a0450169964bb096ed26a8a73063ca</sys_user_role>
+    </sys_security_acl_role>
+</record_update>

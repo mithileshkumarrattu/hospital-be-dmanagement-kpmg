@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element audit="true" db_object_id="41de3e826fe04c089bc8ca006f3de2e3" label="Bed" name="x_2307780_sentin_0_bed" type="collection">
+        <element default="true" label="In Service" mandatory="true" name="in_service" type="boolean"/>
+        <element label="Grid Column" name="grid_column" type="integer"/>
+        <element label="Care Level" mandatory="true" name="care_level" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="ICU" sequence="3" value="icu"/>
+                <element inactive_on_update="false" label="General" sequence="1" value="general"/>
+                <element inactive_on_update="false" label="HDU" sequence="2" value="hdu"/>
+            </choice>
+        </element>
+        <element label="Bed Label" max_length="100" name="label_name" type="string"/>
+        <element default="vacant" label="Occupancy" mandatory="true" name="occupancy" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Occupied" sequence="3" value="occupied"/>
+                <element inactive_on_update="false" label="Vacant" sequence="1" value="vacant"/>
+                <element inactive_on_update="false" label="Held" sequence="2" value="held"/>
+            </choice>
+        </element>
+        <element label="Room Label" mandatory="true" max_length="100" name="room_label" type="string"/>
+        <element default="not_assessed" label="Readiness" mandatory="true" name="readiness" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Ready" sequence="1" value="ready"/>
+                <element inactive_on_update="false" label="Awaiting Nurse Check" sequence="4" value="awaiting_nurse_check"/>
+                <element inactive_on_update="false" label="Blocked" sequence="5" value="blocked"/>
+                <element inactive_on_update="false" label="Awaiting Cleaning" sequence="2" value="awaiting_cleaning"/>
+                <element inactive_on_update="false" label="Cleaning In Progress" sequence="3" value="cleaning_in_progress"/>
+                <element inactive_on_update="false" label="Not Assessed" sequence="6" value="not_assessed"/>
+            </choice>
+        </element>
+        <element label="Block Reason" max_length="500" name="block_reason" type="string"/>
+        <element label="Expected Ready Time" name="expected_ready_time" type="glide_date_time"/>
+        <element display="true" label="Bed Code" mandatory="true" max_length="20" name="bed_code" type="string"/>
+        <element label="Grid Row" name="grid_row" type="integer"/>
+        <element label="Readiness Since" name="readiness_since" type="glide_date_time"/>
+        <element label="Ward Label" mandatory="true" max_length="100" name="ward_label" type="string"/>
+        <element label="Display Order" name="display_order" type="integer"/>
+        <element label="Department Label" mandatory="true" max_length="100" name="department_label" type="string"/>
+        <element label="Oxygen Available" name="oxygen_available" type="boolean"/>
+        <element label="Ventilator Capable" name="ventilator_capable" type="boolean"/>
+        <element label="Isolation Capable" name="isolation_capable" type="boolean"/>
+        <element label="Room" mandatory="true" name="room" reference="x_2307780_sentin_0_room" reference_cascade_rule="none" type="reference"/>
+        <index name="index" unique="true">
+            <element name="bed_code"/>
+        </index>
+        <index name="index2">
+            <element name="room"/>
+        </index>
+    </element>
+</database>

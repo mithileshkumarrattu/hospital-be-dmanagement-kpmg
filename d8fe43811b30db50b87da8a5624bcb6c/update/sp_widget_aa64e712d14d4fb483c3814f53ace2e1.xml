@@ -1,0 +1,679 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function () {
+    var c = this;
+
+    /* ── State ──────────────────────────────────────────────────────────────── */
+    c.activeTab = 'waiting'; // 'waiting' | 'held' | 'families'
+    c.actionMessage = null;
+    c.actionSuccess = false;
+    c.processing = false;
+
+    /* ── Action card clicks ─────────────────────────────────────────────────── */
+    c.goToAdmission = function () {
+        window.location.href = '?id=x_2307780_sentin_0_admission_page';
+    };
+
+    c.showWaiting = function () {
+        c.activeTab = 'waiting';
+    };
+
+    c.showFamilies = function () {
+        c.activeTab = 'families';
+    };
+
+    c.showHeld = function () {
+        c.activeTab = 'held';
+    };
+
+    /* ── Offer Bed — navigate to admission wizard for that admission ────────── */
+    c.offerBed = function (admission) {
+        window.location.href = '?id=x_2307780_sentin_0_admission_page&admission_id=' + admission.sys_id;
+    };
+
+    /* ── Confirm Arrival ───────────────────────────────────────────────────── */
+    c.confirmArrival = function (alloc) {
+        if (c.processing) return;
+        c.processing = true;
+        c.actionMessage = null;
+        c.data.action = 'confirm_arrival';
+        c.data.allocation_id = alloc.alloc_id;
+        c.server.update().then(function () {
+            c.processing = false;
+            if (c.data.actionResult) {
+                c.actionMessage = c.data.actionResult.message;
+                c.actionSuccess = c.data.actionResult.success;
+                if (c.data.actionResult.success) {
+                    c.data.action = null;
+                    c.server.refresh();
+                }
+            }
+        });
+    };
+
+    /* ── Cancel Hold ───────────────────────────────────────────────────────── */
+    c.cancelHold = function (alloc) {
+        if (c.processing) return;
+        c.processing = true;
+        c.actionMessage = null;
+        c.data.action = 'cancel_hold';
+        c.data.allocation_id = alloc.alloc_id;
+        c.server.update().then(function () {
+            c.processing = false;
+            if (c.data.actionResult) {
+                c.actionMessage = c.data.actionResult.message;
+                c.actionSuccess = c.data.actionResult.success;
+                if (c.data.actionResult.success) {
+                    c.data.action = null;
+                    c.server.refresh();
+                }
+            }
+        });
+    };
+
+    /* ── Refresh ───────────────────────────────────────────────────────────── */
+    c.refresh = function () {
+        c.actionMessage = null;
+        c.server.refresh();
+    };
+
+    /* ── Dismiss alert ─────────────────────────────────────────────────────── */
+    c.dismissAlert = function () {
+        c.actionMessage = null;
+    };
+};
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css>/* ═══════════════════════════════════════════════════════════════════════════
+   Reception Dashboard — Professional hospital reception
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.rd-container { background: #F7F8FA; min-height: 100vh; padding: 24px; color: #2D3748; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
+
+/* ── Header ────────────────────────────────────────────────────────────────── */
+.rd-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+.rd-title { margin: 0; font-size: 26px; font-weight: 700; color: #172C32; }
+.rd-title .fa { color: #08656A; margin-right: 8px; }
+.rd-refresh-btn { border-radius: 6px; font-weight: 500; }
+
+/* ── Alert ─────────────────────────────────────────────────────────────────── */
+.rd-alert { border-radius: 6px; font-size: 14px; margin-bottom: 16px; padding: 10px 14px; }
+.rd-alert .fa { margin-right: 6px; }
+
+/* ── Action Cards ──────────────────────────────────────────────────────────── */
+.rd-action-row { margin-bottom: 20px; }
+.rd-action-card { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px; border-radius: 10px; color: #fff; text-decoration: none; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; margin-bottom: 12px; }
+.rd-action-card:hover, .rd-action-card:focus { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.18); text-decoration: none; color: #fff; outline: none; }
+.rd-card-teal { background: linear-gradient(135deg, #08656A 0%, #0A8F96 100%); }
+.rd-card-indigo { background: linear-gradient(135deg, #3B3F8C 0%, #5558B5 100%); }
+.rd-card-slate { background: linear-gradient(135deg, #1A4A5A 0%, #2C6B7E 100%); }
+.rd-card-body { display: flex; align-items: center; gap: 12px; }
+.rd-card-icon { font-size: 20px; opacity: 0.9; }
+.rd-card-title { font-size: 15px; font-weight: 600; }
+.rd-card-arrow { font-size: 14px; opacity: 0.7; }
+.rd-card-badge { background: rgba(255,255,255,0.25); padding: 4px 12px; border-radius: 20px; font-size: 16px; font-weight: 700; }
+
+/* ── KPI Cards ─────────────────────────────────────────────────────────────── */
+.rd-kpi-row { margin-bottom: 20px; }
+.rd-kpi-card { background: #FFFFFF; border-radius: 8px; padding: 16px 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); text-align: center; margin-bottom: 12px; border-top: 3px solid #E8ECEE; }
+.rd-kpi-count { display: block; font-size: 28px; font-weight: 700; color: #172C32; line-height: 1.2; }
+.rd-kpi-label { display: block; font-size: 12px; font-weight: 500; color: #53656A; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+.rd-kpi-waiting { border-top-color: #3B3F8C; } .rd-kpi-waiting .rd-kpi-count { color: #3B3F8C; }
+.rd-kpi-held { border-top-color: #3B82F6; } .rd-kpi-held .rd-kpi-count { color: #3B82F6; }
+.rd-kpi-available { border-top-color: #059669; } .rd-kpi-available .rd-kpi-count { color: #059669; }
+.rd-kpi-families { border-top-color: #D97706; } .rd-kpi-families .rd-kpi-count { color: #D97706; }
+
+/* ── Department Availability Bar ───────────────────────────────────────────── */
+.rd-dept-bar { margin-bottom: 24px; }
+.rd-section-title { font-size: 16px; font-weight: 700; color: #172C32; margin: 0 0 12px 0; }
+.rd-section-title .fa { color: #08656A; margin-right: 6px; }
+.rd-dept-card { background: #FFFFFF; border-radius: 8px; padding: 14px 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); text-align: center; margin-bottom: 12px; border-left: 3px solid #059669; }
+.rd-dept-card.rd-dept-none { border-left-color: #E53E3E; }
+.rd-dept-count { display: block; font-size: 24px; font-weight: 700; color: #059669; line-height: 1.2; }
+.rd-dept-card.rd-dept-none .rd-dept-count { color: #E53E3E; }
+.rd-dept-name { display: block; font-size: 12px; font-weight: 500; color: #53656A; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.3px; }
+
+/* ── Tab Bar ───────────────────────────────────────────────────────────────── */
+.rd-tab-bar { margin-bottom: 20px; display: flex; gap: 8px; flex-wrap: wrap; }
+.rd-tab-btn { background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 6px; padding: 10px 18px; font-size: 14px; font-weight: 500; color: #4A5568; transition: all 0.15s ease; }
+.rd-tab-btn:hover { border-color: #08656A; color: #08656A; }
+.rd-tab-active { background: #08656A; color: #FFFFFF; border-color: #08656A; }
+.rd-tab-active:hover, .rd-tab-active:focus { background: #075E63; color: #FFFFFF; border-color: #075E63; }
+.rd-tab-btn .fa { margin-right: 6px; }
+.rd-badge { background: rgba(255,255,255,0.3); margin-left: 6px; }
+.rd-tab-active .rd-badge { background: rgba(255,255,255,0.3); }
+
+/* ── Panel ─────────────────────────────────────────────────────────────────── */
+.rd-panel { background: #FFFFFF; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); margin-bottom: 24px; overflow: hidden; }
+.rd-panel-header { padding: 16px 20px; border-bottom: 1px solid #E2E8F0; }
+.rd-panel-title { margin: 0; font-size: 16px; font-weight: 700; color: #172C32; }
+.rd-panel-title .fa { color: #08656A; margin-right: 8px; }
+
+/* ── Table ─────────────────────────────────────────────────────────────────── */
+.rd-table { margin-bottom: 0; }
+.rd-table &gt; thead &gt; tr &gt; th { background: #F8FAFB; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #53656A; padding: 12px 16px; border-bottom: 2px solid #E2E8F0; white-space: nowrap; }
+.rd-table &gt; tbody &gt; tr &gt; td { padding: 14px 16px; vertical-align: middle; border-top: 1px solid #F0F2F4; font-size: 14px; color: #2D3748; }
+.rd-table &gt; tbody &gt; tr:hover { background: #F8FAFB; }
+.rd-cell-patient { font-weight: 600; }
+.rd-action-cell { white-space: nowrap; }
+.rd-act-btn { border-radius: 6px; font-weight: 500; font-size: 13px; margin: 2px; }
+.rd-act-btn .fa { margin-right: 4px; }
+
+/* ── Time &amp; Status ─────────────────────────────────────────────────────────── */
+.rd-time-long { color: #E53E3E; font-weight: 600; }
+.rd-expired { color: #E53E3E; font-weight: 700; }
+
+/* ── Empty State ───────────────────────────────────────────────────────────── */
+.rd-empty { padding: 48px 24px; text-align: center; color: #53656A; }
+.rd-empty .fa { color: #CBD5E1; margin-bottom: 12px; }
+.rd-empty p { font-size: 15px; margin-top: 8px; }
+
+/* ── Responsive ────────────────────────────────────────────────────────────── */
+@media (max-width: 991px) {
+  .rd-kpi-card { padding: 12px 14px; }
+  .rd-kpi-count { font-size: 24px; }
+}
+@media (max-width: 767px) {
+  .rd-container { padding: 12px; }
+  .rd-title { font-size: 20px; }
+  .rd-action-card { margin-bottom: 8px; }
+  .rd-tab-bar { flex-direction: column; }
+  .rd-tab-btn { width: 100%; text-align: left; }
+}
+@media (max-width: 480px) {
+  .rd-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .rd-refresh-btn { align-self: flex-end; }
+}
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description>Reception desk dashboard: waiting queue, held beds, department availability, and families to contact.</description>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>x_2307780_sentin_0_reception_dashboard</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {
+}]]></link>
+        <name>Reception Dashboard</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function () {
+    /* ── Label Maps ────────────────────────────────────────────────────────── */
+    var STATE_LABELS = {
+        waiting: 'Waiting',
+        held: 'Held',
+        admitted: 'Admitted',
+        in_stay: 'In Stay',
+        discharge_authorized: 'Discharge Authorized',
+        discharged: 'Discharged',
+        cancelled: 'Cancelled'
+    };
+    var PRIORITY_LABELS = {
+        '1': 'Emergency',
+        emergency: 'Emergency',
+        '2': 'Urgent',
+        urgent: 'Urgent',
+        '3': 'Standard',
+        standard: 'Standard',
+        '4': 'Low',
+        low: 'Low',
+        planned: 'Planned'
+    };
+    var PRIORITY_CLASS = {
+        '1': 'label-danger',
+        emergency: 'label-danger',
+        '2': 'label-warning',
+        urgent: 'label-warning',
+        '3': 'label-info',
+        standard: 'label-info',
+        '4': 'label-success',
+        low: 'label-success',
+        planned: 'label-default'
+    };
+    var ALLOC_STATUS_LABELS = {
+        held: 'Held',
+        occupied: 'Occupied',
+        completed: 'Completed',
+        cancelled: 'Cancelled'
+    };
+
+    /* ── Handler actions ───────────────────────────────────────────────────── */
+    if (input && input.action === 'confirm_arrival') {
+        try {
+            var handler = new x_2307780_sentin_0.BedOpsCommandHandler();
+            var result = handler.confirmArrival(input.allocation_id);
+            data.actionResult = { success: true, message: 'Arrival confirmed successfully.' };
+        } catch (e) {
+            data.actionResult = { success: false, message: 'Failed to confirm arrival: ' + e.message };
+        }
+        return;
+    }
+    if (input && input.action === 'cancel_hold') {
+        try {
+            var handler2 = new x_2307780_sentin_0.BedOpsCommandHandler();
+            var result2 = handler2.cancelHold(input.allocation_id);
+            data.actionResult = { success: true, message: 'Hold cancelled successfully.' };
+        } catch (e2) {
+            data.actionResult = { success: false, message: 'Failed to cancel hold: ' + e2.message };
+        }
+        return;
+    }
+
+    /* ── 1. Waiting Admissions ─────────────────────────────────────────────── */
+    data.waiting = [];
+    var nowDT = new GlideDateTime();
+    var grW = new GlideRecord('x_2307780_sentin_0_adm');
+    grW.addQuery('admission_state', 'waiting');
+    grW.orderBy('authorized_priority');
+    grW.orderBy('queue_entered_at');
+    grW.setLimit(100);
+    grW.query();
+    while (grW.next()) {
+        var queueTime = '';
+        var queueMs = 0;
+        if (grW.getValue('queue_entered_at')) {
+            var qDT = new GlideDateTime(grW.getValue('queue_entered_at'));
+            var dur = GlideDateTime.subtract(qDT, nowDT);
+            queueMs = dur.getNumericValue();
+            var mins = Math.floor(queueMs / 60000);
+            if (mins < 60) {
+                queueTime = mins + 'm';
+            } else {
+                var hrs = Math.floor(mins / 60);
+                var remMins = mins % 60;
+                queueTime = hrs + 'h ' + remMins + 'm';
+            }
+        }
+        var pVal = grW.getValue('authorized_priority') || '';
+        data.waiting.push({
+            sys_id: grW.getUniqueValue(),
+            number: grW.getValue('number') || grW.getUniqueValue().substring(0, 8),
+            patient_name: grW.getDisplayValue('patient'),
+            priority: PRIORITY_LABELS[pVal] || pVal || 'Standard',
+            priority_val: pVal,
+            priority_class: PRIORITY_CLASS[pVal] || 'label-default',
+            department: grW.getDisplayValue('department'),
+            queue_time: queueTime,
+            queue_ms: queueMs,
+            state: STATE_LABELS[grW.getValue('admission_state')] || grW.getValue('admission_state'),
+            admission_type: grW.getDisplayValue('admission_type') || ''
+        });
+    }
+
+    /* ── 2. Held Admissions (via bed_alloc) ────────────────────────────────── */
+    data.held = [];
+    var grH = new GlideRecord('x_2307780_sentin_0_bed_alloc');
+    grH.addQuery('status', 'held');
+    grH.orderBy('expires_at');
+    grH.setLimit(100);
+    grH.query();
+    while (grH.next()) {
+        var expiresAt = grH.getValue('expires_at') || '';
+        var expiresLabel = '';
+        if (expiresAt) {
+            var expDT = new GlideDateTime(expiresAt);
+            var remainDur = GlideDateTime.subtract(nowDT, expDT);
+            var remainMs = remainDur.getNumericValue();
+            if (remainMs <= 0) {
+                expiresLabel = 'Expired';
+            } else {
+                var remainMins = Math.floor(remainMs / 60000);
+                if (remainMins < 60) {
+                    expiresLabel = remainMins + 'm remaining';
+                } else {
+                    expiresLabel = Math.floor(remainMins / 60) + 'h ' + (remainMins % 60) + 'm remaining';
+                }
+            }
+        }
+        var admRef = grH.getValue('admission');
+        var patientName = '';
+        if (admRef) {
+            var grAdm = new GlideRecord('x_2307780_sentin_0_adm');
+            if (grAdm.get(admRef)) {
+                patientName = grAdm.getDisplayValue('patient');
+            }
+        }
+        data.held.push({
+            alloc_id: grH.getUniqueValue(),
+            bed_code: grH.getDisplayValue('bed'),
+            patient_name: patientName,
+            expires_at: expiresLabel,
+            expires_raw: expiresAt,
+            is_expired: expiresAt ? (new GlideDateTime(expiresAt).compareTo(nowDT) <= 0) : false
+        });
+    }
+
+    /* ── 3. Department Availability ────────────────────────────────────────── */
+    data.departments = [];
+    var deptMap = {};
+    var grDept = new GlideRecord('x_2307780_sentin_0_dept');
+    grDept.addQuery('active', true);
+    grDept.orderBy('display_order');
+    grDept.setLimit(50);
+    grDept.query();
+    while (grDept.next()) {
+        deptMap[grDept.getUniqueValue()] = {
+            sys_id: grDept.getUniqueValue(),
+            name: grDept.getValue('name'),
+            available: 0
+        };
+    }
+    // Count available beds per department using the department_label denormalized field
+    var grBed = new GlideRecord('x_2307780_sentin_0_bed');
+    grBed.addQuery('occupancy', 'vacant');
+    grBed.addQuery('readiness', 'ready');
+    grBed.addQuery('in_service', true);
+    grBed.setLimit(500);
+    grBed.query();
+    while (grBed.next()) {
+        // Walk up: bed -> room -> ward -> department
+        var roomRef = grBed.getValue('room');
+        if (roomRef) {
+            var grRoom = new GlideRecord('x_2307780_sentin_0_room');
+            if (grRoom.get(roomRef)) {
+                var wardRef = grRoom.getValue('ward');
+                if (wardRef) {
+                    var grWard = new GlideRecord('x_2307780_sentin_0_ward');
+                    if (grWard.get(wardRef)) {
+                        var deptId = grWard.getValue('department');
+                        if (deptId && deptMap[deptId]) {
+                            deptMap[deptId].available++;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    for (var dk in deptMap) {
+        data.departments.push(deptMap[dk]);
+    }
+
+    /* ── 4. Families to Contact ────────────────────────────────────────────── */
+    data.families = [];
+    var grC = new GlideRecord('x_2307780_sentin_0_adm_cntct');
+    grC.addQuery('is_primary_contact', true);
+    grC.addQuery('active', true);
+    // Join to admission that is in waiting or held state
+    grC.addQuery('admission.admission_state', 'IN', 'waiting,held');
+    grC.setLimit(50);
+    grC.query();
+    while (grC.next()) {
+        data.families.push({
+            sys_id: grC.getUniqueValue(),
+            contact_name: grC.getValue('contact_name'),
+            phone: grC.getValue('phone'),
+            relationship: grC.getDisplayValue('relationship'),
+            patient_name: grC.getDisplayValue('admission.patient'),
+            admission_state: STATE_LABELS[grC.getValue('admission.admission_state')] || grC.getValue('admission.admission_state')
+        });
+    }
+
+    /* ── 5. Metrics ────────────────────────────────────────────────────────── */
+    var totalAvailable = 0;
+    for (var di = 0; di < data.departments.length; di++) {
+        totalAvailable += data.departments[di].available;
+    }
+    data.metrics = {
+        waiting: data.waiting.length,
+        held: data.held.length,
+        families_to_contact: data.families.length,
+        available_beds: totalAvailable
+    };
+})();
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-11-26 08:07:21</sys_created_on>
+        <sys_id>aa64e712d14d4fb483c3814f53ace2e1</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Reception Dashboard</sys_name>
+        <sys_package display_value="Sentinels Bed Operations Pilot" source="x_2307780_sentin_0">d8fe43811b30db50b87da8a5624bcb6c</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Sentinels Bed Operations Pilot">d8fe43811b30db50b87da8a5624bcb6c</sys_scope>
+        <sys_update_name>sp_widget_aa64e712d14d4fb483c3814f53ace2e1</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-11-26 08:07:21</sys_updated_on>
+        <template><![CDATA[<div class="rd-container">
+
+  <!-- Header -->
+  <div class="rd-header">
+    <h2 class="rd-title"><i class="fa fa-desktop"></i> Reception Dashboard</h2>
+    <button type="button" class="btn btn-default rd-refresh-btn" ng-click="c.refresh()" title="Refresh">
+      <i class="fa fa-refresh"></i> Refresh
+    </button>
+  </div>
+
+  <!-- Alert -->
+  <div class="alert rd-alert" ng-if="c.actionMessage"
+       ng-class="c.actionSuccess ? 'alert-success' : 'alert-danger'">
+    <button type="button" class="close" ng-click="c.dismissAlert()">&times;</button>
+    <i class="fa" ng-class="c.actionSuccess ? 'fa-check-circle' : 'fa-exclamation-circle'"></i>
+    {{c.actionMessage}}
+  </div>
+
+  <!-- Action Cards -->
+  <div class="row rd-action-row">
+    <div class="col-md-4 col-sm-6 col-xs-12">
+      <a class="rd-action-card rd-card-teal" ng-click="c.goToAdmission()" role="button" tabindex="0">
+        <span class="rd-card-body">
+          <i class="fa fa-folder-open rd-card-icon"></i>
+          <span class="rd-card-title">Admit Patient</span>
+        </span>
+        <i class="fa fa-chevron-right rd-card-arrow"></i>
+      </a>
+    </div>
+    <div class="col-md-4 col-sm-6 col-xs-12">
+      <a class="rd-action-card rd-card-indigo" ng-click="c.showWaiting()" role="button" tabindex="0">
+        <span class="rd-card-body">
+          <i class="fa fa-clock-o rd-card-icon"></i>
+          <span class="rd-card-title">Waiting Queue</span>
+        </span>
+        <span class="rd-card-badge">{{c.data.metrics.waiting}}</span>
+      </a>
+    </div>
+    <div class="col-md-4 col-sm-12 col-xs-12">
+      <a class="rd-action-card rd-card-slate" ng-click="c.showFamilies()" role="button" tabindex="0">
+        <span class="rd-card-body">
+          <i class="fa fa-phone rd-card-icon"></i>
+          <span class="rd-card-title">Families to Contact</span>
+        </span>
+        <span class="rd-card-badge">{{c.data.metrics.families_to_contact}}</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- KPI Metrics Row -->
+  <div class="row rd-kpi-row">
+    <div class="col-md-3 col-sm-6 col-xs-6">
+      <div class="rd-kpi-card rd-kpi-waiting">
+        <span class="rd-kpi-count">{{c.data.metrics.waiting}}</span>
+        <span class="rd-kpi-label">Waiting</span>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6 col-xs-6">
+      <div class="rd-kpi-card rd-kpi-held">
+        <span class="rd-kpi-count">{{c.data.metrics.held}}</span>
+        <span class="rd-kpi-label">Beds Held</span>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6 col-xs-6">
+      <div class="rd-kpi-card rd-kpi-available">
+        <span class="rd-kpi-count">{{c.data.metrics.available_beds}}</span>
+        <span class="rd-kpi-label">Available Beds</span>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6 col-xs-6">
+      <div class="rd-kpi-card rd-kpi-families">
+        <span class="rd-kpi-count">{{c.data.metrics.families_to_contact}}</span>
+        <span class="rd-kpi-label">Families to Contact</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Department Availability Bar -->
+  <div class="rd-dept-bar" ng-if="c.data.departments.length">
+    <h4 class="rd-section-title"><i class="fa fa-hospital-o"></i> Department Availability</h4>
+    <div class="row">
+      <div class="col-md-2 col-sm-3 col-xs-4" ng-repeat="dept in c.data.departments track by dept.sys_id">
+        <div class="rd-dept-card" ng-class="{'rd-dept-none': dept.available === 0}">
+          <span class="rd-dept-count">{{dept.available}}</span>
+          <span class="rd-dept-name">{{dept.name}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab Buttons -->
+  <div class="rd-tab-bar">
+    <button type="button" class="btn rd-tab-btn" ng-class="{'rd-tab-active': c.activeTab === 'waiting'}"
+            ng-click="c.showWaiting()">
+      <i class="fa fa-clock-o"></i> Waiting Queue
+      <span class="badge rd-badge" ng-if="c.data.metrics.waiting">{{c.data.metrics.waiting}}</span>
+    </button>
+    <button type="button" class="btn rd-tab-btn" ng-class="{'rd-tab-active': c.activeTab === 'held'}"
+            ng-click="c.showHeld()">
+      <i class="fa fa-lock"></i> Held Beds
+      <span class="badge rd-badge" ng-if="c.data.metrics.held">{{c.data.metrics.held}}</span>
+    </button>
+    <button type="button" class="btn rd-tab-btn" ng-class="{'rd-tab-active': c.activeTab === 'families'}"
+            ng-click="c.showFamilies()">
+      <i class="fa fa-phone"></i> Families
+      <span class="badge rd-badge" ng-if="c.data.metrics.families_to_contact">{{c.data.metrics.families_to_contact}}</span>
+    </button>
+  </div>
+
+  <!-- ═══ Waiting Queue Table ═══ -->
+  <div class="rd-panel" ng-if="c.activeTab === 'waiting'">
+    <div class="rd-panel-header">
+      <h4 class="rd-panel-title"><i class="fa fa-clock-o"></i> Waiting Queue</h4>
+    </div>
+    <div class="table-responsive" ng-if="c.data.waiting.length">
+      <table class="table rd-table">
+        <thead>
+          <tr>
+            <th>Priority</th>
+            <th>Patient</th>
+            <th>Department</th>
+            <th>Queue Time</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="adm in c.data.waiting track by adm.sys_id">
+            <td><span class="label" ng-class="adm.priority_class">{{adm.priority}}</span></td>
+            <td class="rd-cell-patient">{{adm.patient_name}}</td>
+            <td>{{adm.department}}</td>
+            <td>
+              <span ng-class="{'rd-time-long': adm.queue_ms > 3600000}">{{adm.queue_time}}</span>
+            </td>
+            <td>{{adm.admission_type}}</td>
+            <td><span class="label label-info">{{adm.state}}</span></td>
+            <td class="text-center">
+              <button type="button" class="btn btn-sm btn-primary rd-act-btn"
+                      ng-click="c.offerBed(adm)"
+                      ng-if="c.data.metrics.available_beds > 0"
+                      ng-disabled="c.processing">
+                <i class="fa fa-bed"></i> Offer Bed
+              </button>
+              <span class="text-muted" ng-if="c.data.metrics.available_beds === 0">
+                <i class="fa fa-ban"></i> No beds
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="rd-empty" ng-if="!c.data.waiting.length">
+      <i class="fa fa-check-circle fa-3x"></i>
+      <p>No patients waiting.</p>
+    </div>
+  </div>
+
+  <!-- ═══ Held Admissions Table ═══ -->
+  <div class="rd-panel" ng-if="c.activeTab === 'held'">
+    <div class="rd-panel-header">
+      <h4 class="rd-panel-title"><i class="fa fa-lock"></i> Held Beds</h4>
+    </div>
+    <div class="table-responsive" ng-if="c.data.held.length">
+      <table class="table rd-table">
+        <thead>
+          <tr>
+            <th>Bed</th>
+            <th>Patient</th>
+            <th>Hold Expires</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="alloc in c.data.held track by alloc.alloc_id">
+            <td><strong>{{alloc.bed_code}}</strong></td>
+            <td class="rd-cell-patient">{{alloc.patient_name}}</td>
+            <td>
+              <span ng-class="{'rd-expired': alloc.is_expired}">{{alloc.expires_at}}</span>
+            </td>
+            <td class="text-center rd-action-cell">
+              <button type="button" class="btn btn-sm btn-success rd-act-btn"
+                      ng-click="c.confirmArrival(alloc)" ng-disabled="c.processing">
+                <i class="fa fa-check"></i> Confirm Arrival
+              </button>
+              <button type="button" class="btn btn-sm btn-danger rd-act-btn"
+                      ng-click="c.cancelHold(alloc)" ng-disabled="c.processing">
+                <i class="fa fa-times"></i> Cancel Hold
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="rd-empty" ng-if="!c.data.held.length">
+      <i class="fa fa-unlock fa-3x"></i>
+      <p>No beds currently held.</p>
+    </div>
+  </div>
+
+  <!-- ═══ Families to Contact Table ═══ -->
+  <div class="rd-panel" ng-if="c.activeTab === 'families'">
+    <div class="rd-panel-header">
+      <h4 class="rd-panel-title"><i class="fa fa-phone"></i> Families to Contact</h4>
+    </div>
+    <div class="table-responsive" ng-if="c.data.families.length">
+      <table class="table rd-table">
+        <thead>
+          <tr>
+            <th>Contact Name</th>
+            <th>Relationship</th>
+            <th>Phone</th>
+            <th>Patient</th>
+            <th>Admission Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="fam in c.data.families track by fam.sys_id">
+            <td><strong>{{fam.contact_name}}</strong></td>
+            <td>{{fam.relationship}}</td>
+            <td>
+              <a ng-href="tel:{{fam.phone}}" ng-if="fam.phone">{{fam.phone}}</a>
+              <span class="text-muted" ng-if="!fam.phone">—</span>
+            </td>
+            <td class="rd-cell-patient">{{fam.patient_name}}</td>
+            <td><span class="label label-default">{{fam.admission_state}}</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="rd-empty" ng-if="!c.data.families.length">
+      <i class="fa fa-check-circle fa-3x"></i>
+      <p>No families to contact.</p>
+    </div>
+  </div>
+
+</div>
+]]></template>
+    </sp_widget>
+</record_update>

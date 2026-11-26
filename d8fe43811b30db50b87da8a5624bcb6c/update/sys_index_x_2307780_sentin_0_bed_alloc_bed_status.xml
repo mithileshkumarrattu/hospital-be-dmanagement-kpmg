@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_index">
+    <sys_index action="INSERT_OR_UPDATE">
+        <access_method/>
+        <col_name_string>bed,status</col_name_string>
+        <index_col_name>c0276cc16666452ba5657724be19b4e8,ddd59202bb674768ba0f1fe99af4aff4<sys_dictionary element="bed" name="x_2307780_sentin_0_bed_alloc">c0276cc16666452ba5657724be19b4e8</sys_dictionary>
+            <sys_dictionary element="status" name="x_2307780_sentin_0_bed_alloc">ddd59202bb674768ba0f1fe99af4aff4</sys_dictionary>
+        </index_col_name>
+        <logical_table_name>x_2307780_sentin_0_bed_alloc</logical_table_name>
+        <sys_class_name>sys_index</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-11-26 06:28:09</sys_created_on>
+        <sys_id>2face441c72d41c7b3067136155763a0</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>x_2307780_sentin_0_bed_alloc</sys_name>
+        <sys_package display_value="Sentinels Bed Operations Pilot" source="x_2307780_sentin_0">d8fe43811b30db50b87da8a5624bcb6c</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Sentinels Bed Operations Pilot">d8fe43811b30db50b87da8a5624bcb6c</sys_scope>
+        <sys_update_name>sys_index_x_2307780_sentin_0_bed_alloc_bed_status</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-11-26 06:28:09</sys_updated_on>
+        <table/>
+        <unique_index>false</unique_index>
+    </sys_index>
+</record_update>

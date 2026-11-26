@@ -1,0 +1,977 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function () {
+    var c = this;
+
+    c.activeTab = 'departments';
+    c.submitting = false;
+    c.alertMessage = '';
+    c.alertType = '';
+    c.showForm = {};
+    c.form = {};
+
+    /* ── Tab Switching ─────────────────────────────────────────────────── */
+    c.setTab = function (tab) {
+        c.activeTab = tab;
+        c.showForm = {};
+        c.form = {};
+        c.alertMessage = '';
+    };
+
+    /* ── Inline Form Toggle ────────────────────────────────────────────── */
+    c.toggleForm = function (formName) {
+        if (c.showForm[formName]) {
+            c.showForm[formName] = false;
+            c.form = {};
+        } else {
+            c.showForm = {};
+            c.showForm[formName] = true;
+            c.form = {};
+        }
+    };
+
+    /* ── Generic Server Action ─────────────────────────────────────────── */
+    c.doAction = function (actionName, params) {
+        c.submitting = true;
+        c.data.action = actionName;
+        for (var key in params) {
+            if (params.hasOwnProperty(key)) {
+                c.data[key] = params[key];
+            }
+        }
+        c.server.update().then(function () {
+            c.submitting = false;
+            if (c.data.actionResult) {
+                c.alertMessage = c.data.actionResult.message;
+                c.alertType = c.data.actionResult.success ? 'success' : 'danger';
+                c.data.action = null;
+                c.data.actionResult = null;
+            }
+            c.showForm = {};
+            c.form = {};
+            c.server.refresh();
+        });
+    };
+
+    /* ── Department Actions ────────────────────────────────────────────── */
+    c.createDept = function () {
+        c.doAction('create_dept', { code: c.form.code, name: c.form.name, display_order: c.form.display_order || '' });
+    };
+
+    c.updateDept = function (dept) {
+        c.doAction('update_dept', { sys_id: dept.sys_id, code: dept.code, name: dept.name, display_order: dept.display_order, active: dept.active });
+    };
+
+    /* ── Ward Actions ─────────────────────────────────────────────────── */
+    c.createWard = function () {
+        c.doAction('create_ward', {
+            code: c.form.code, name: c.form.name, department: c.form.department,
+            care_level: c.form.care_level, nursing_group: c.form.nursing_group || '',
+            housekeeping_group: c.form.housekeeping_group || '',
+            maintenance_group: c.form.maintenance_group || '',
+            floor_wing: c.form.floor_wing || ''
+        });
+    };
+
+    c.closeWard = function (ward) {
+        c.doAction('close_ward', { sys_id: ward.sys_id, reason: c.form.reason || '' });
+    };
+
+    c.openWard = function (ward) {
+        c.doAction('open_ward', { sys_id: ward.sys_id });
+    };
+
+    /* ── Room Actions ─────────────────────────────────────────────────── */
+    c.createRoom = function () {
+        c.doAction('create_room', {
+            code: c.form.code, label_name: c.form.label_name, ward: c.form.ward,
+            tier: c.form.tier, isolation_capable: c.form.isolation_capable || false,
+            oxygen_available: c.form.oxygen_available || false,
+            bed_capacity: c.form.bed_capacity || ''
+        });
+    };
+
+    /* ── Bed Actions ──────────────────────────────────────────────────── */
+    c.createBed = function () {
+        c.doAction('create_bed', {
+            bed_code: c.form.bed_code, room: c.form.room,
+            care_level: c.form.care_level, label_name: c.form.label_name || ''
+        });
+    };
+
+    c.toggleBedService = function (bed) {
+        c.doAction('toggle_bed_service', { sys_id: bed.sys_id });
+    };
+
+    c.retireBed = function (bed) {
+        var reason = c.form.retire_reason || 'Retired by admin';
+        c.doAction('retire_bed', { sys_id: bed.sys_id, reason: reason });
+    };
+
+    /* ── Grant Actions ────────────────────────────────────────────────── */
+    c.grantAccess = function () {
+        c.doAction('grant_access', {
+            admission: c.form.admission, portal_user: c.form.portal_user,
+            grant_type: c.form.grant_type,
+            can_view_location: c.form.can_view_location || false,
+            can_view_discharge_est: c.form.can_view_discharge_est || false,
+            can_request_linen: c.form.can_request_linen || false
+        });
+    };
+
+    c.revokeGrant = function (grant) {
+        c.doAction('revoke_grant', { sys_id: grant.sys_id, reason: c.form.revoke_reason || '' });
+    };
+
+    /* ── Helpers ───────────────────────────────────────────────────────── */
+    c.getStatusClass = function (status) {
+        if (status === 'open') return 'adm-badge-success';
+        if (status === 'closed') return 'adm-badge-danger';
+        return 'adm-badge-default';
+    };
+
+    c.getGrantStatusClass = function (status) {
+        if (status === 'active') return 'adm-badge-success';
+        if (status === 'revoked') return 'adm-badge-danger';
+        if (status === 'expired') return 'adm-badge-warning';
+        return 'adm-badge-default';
+    };
+
+    c.refresh = function () {
+        c.server.refresh();
+    };
+};
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css>/* ═══════════════════════════════════════════════════════════════════════════
+   Admin Dashboard — Data-dense, compact admin interface, Sentinels brand
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.adm-container { background: #F7F8FA; min-height: 100vh; padding: 20px; color: #2D3748; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
+
+/* ── Header ────────────────────────────────────────────────────────────────── */
+.adm-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.adm-title { margin: 0; font-size: 24px; font-weight: 700; color: #172C32; }
+.adm-title .fa { color: #08656A; margin-right: 8px; }
+.adm-refresh-btn { border-radius: 6px; font-weight: 500; }
+
+/* ── Alert ─────────────────────────────────────────────────────────────────── */
+.adm-alert { border-radius: 6px; font-size: 14px; margin-bottom: 12px; }
+
+/* ── Tabs ──────────────────────────────────────────────────────────────────── */
+.adm-tabs { border-bottom: 2px solid #E2E8F0; margin-bottom: 0; }
+.adm-tabs &gt; li &gt; a { font-size: 13px; font-weight: 600; color: #53656A; padding: 10px 16px; border-radius: 4px 4px 0 0; }
+.adm-tabs &gt; li &gt; a:hover { color: #08656A; background: #F0FAF9; }
+.adm-tabs &gt; li.active &gt; a, .adm-tabs &gt; li.active &gt; a:hover, .adm-tabs &gt; li.active &gt; a:focus { color: #08656A; border-color: #E2E8F0 #E2E8F0 transparent; background: #FFFFFF; font-weight: 700; }
+.adm-tabs &gt; li &gt; a .fa { margin-right: 4px; }
+
+/* ── Tab Content ───────────────────────────────────────────────────────────── */
+.adm-tab-content { background: #FFFFFF; border: 1px solid #E2E8F0; border-top: none; border-radius: 0 0 8px 8px; padding: 16px; }
+
+/* ── Toolbar ───────────────────────────────────────────────────────────────── */
+.adm-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.adm-count { font-size: 13px; color: #718096; font-weight: 500; }
+.adm-add-btn { border-radius: 6px; font-weight: 600; }
+
+/* ── Inline Form ───────────────────────────────────────────────────────────── */
+.adm-inline-form { background: #F8FAFB; border: 1px solid #E2E8F0; border-radius: 6px; padding: 12px; margin-bottom: 12px; }
+.adm-inline-form .form-control { font-size: 13px; }
+.adm-inline-form .btn { margin-left: 4px; }
+
+/* ── Tables ────────────────────────────────────────────────────────────────── */
+.adm-table-wrap { overflow-x: auto; }
+.adm-table { margin-bottom: 0; }
+.adm-table &gt; thead &gt; tr &gt; th { background: #F8FAFB; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #53656A; padding: 8px 10px; border-bottom: 2px solid #E2E8F0; white-space: nowrap; }
+.adm-table &gt; tbody &gt; tr &gt; td { padding: 8px 10px; vertical-align: middle; border-top: 1px solid #F0F2F4; font-size: 13px; color: #2D3748; }
+.adm-table &gt; tbody &gt; tr:hover { background: #FAFBFC; }
+.adm-cell-small { font-size: 12px; color: #718096; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.adm-actions { white-space: nowrap; }
+.adm-actions .btn { margin-right: 4px; border-radius: 4px; font-weight: 500; }
+.adm-row-muted { opacity: 0.55; }
+
+/* ── Badges ────────────────────────────────────────────────────────────────── */
+.adm-badge { display: inline-block; padding: 2px 10px; border-radius: 10px; font-size: 12px; font-weight: 600; }
+.adm-badge-success { background: #D1FAE5; color: #065F46; }
+.adm-badge-danger { background: #FEE2E2; color: #991B1B; }
+.adm-badge-warning { background: #FEF3C7; color: #92400E; }
+.adm-badge-default { background: #E2E8F0; color: #4A5568; }
+
+/* ── Empty State ───────────────────────────────────────────────────────────── */
+.adm-empty { padding: 32px 16px; text-align: center; color: #718096; font-size: 14px; }
+.adm-empty .fa { color: #CBD5E1; margin-right: 6px; }
+
+/* ── Responsive ────────────────────────────────────────────────────────────── */
+@media (max-width: 991px) {
+  .adm-tabs &gt; li &gt; a { font-size: 12px; padding: 8px 10px; }
+}
+@media (max-width: 767px) {
+  .adm-container { padding: 10px; }
+  .adm-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .adm-tabs { overflow-x: auto; white-space: nowrap; display: flex; flex-wrap: nowrap; }
+  .adm-tabs &gt; li { float: none; display: inline-block; }
+  .adm-inline-form .row &gt; [class*='col-'] { margin-bottom: 6px; }
+}
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description>Hospital administration: departments, wards, rooms, beds, policies, and access grants CRUD.</description>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>x_2307780_sentin_0_admin_dashboard</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {
+}]]></link>
+        <name>Admin Dashboard</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function () {
+    /* ═══════════════════════════════════════════════════════════════════════
+       Helper: duplicate code check
+       ═══════════════════════════════════════════════════════════════════════ */
+    function isDuplicateCode(table, codeField, codeValue, excludeId) {
+        var gr = new GlideRecord(table);
+        gr.addQuery(codeField, codeValue);
+        if (excludeId) gr.addQuery('sys_id', '!=', excludeId);
+        gr.setLimit(1);
+        gr.query();
+        return gr.hasNext();
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       CRUD Actions
+       ═══════════════════════════════════════════════════════════════════════ */
+    if (input && input.action) {
+        var action = input.action;
+
+        /* ── Departments ─────────────────────────────────────────────────── */
+        if (action === 'create_dept') {
+            if (!input.code || !input.name) { data.actionResult = { success: false, message: 'Code and Name are required.' }; return; }
+            if (isDuplicateCode('x_2307780_sentin_0_dept', 'code', input.code)) { data.actionResult = { success: false, message: 'Duplicate department code.' }; return; }
+            var grD = new GlideRecord('x_2307780_sentin_0_dept');
+            grD.initialize();
+            grD.setValue('code', input.code);
+            grD.setValue('name', input.name);
+            if (input.department_head) grD.setValue('department_head', input.department_head);
+            if (input.display_order) grD.setValue('display_order', input.display_order);
+            grD.setValue('active', true);
+            grD.insert();
+            data.actionResult = { success: true, message: 'Department created.' };
+            return;
+        }
+
+        if (action === 'update_dept') {
+            var grUD = new GlideRecord('x_2307780_sentin_0_dept');
+            if (!grUD.get(input.sys_id)) { data.actionResult = { success: false, message: 'Department not found.' }; return; }
+            if (input.code) {
+                if (isDuplicateCode('x_2307780_sentin_0_dept', 'code', input.code, input.sys_id)) { data.actionResult = { success: false, message: 'Duplicate department code.' }; return; }
+                grUD.setValue('code', input.code);
+            }
+            if (input.name) grUD.setValue('name', input.name);
+            if (input.department_head !== undefined) grUD.setValue('department_head', input.department_head);
+            if (input.display_order !== undefined) grUD.setValue('display_order', input.display_order);
+            if (input.active !== undefined) grUD.setValue('active', input.active);
+            grUD.update();
+            data.actionResult = { success: true, message: 'Department updated.' };
+            return;
+        }
+
+        /* ── Wards ───────────────────────────────────────────────────────── */
+        if (action === 'create_ward') {
+            if (!input.code || !input.name || !input.department || !input.care_level) { data.actionResult = { success: false, message: 'Code, Name, Department, and Care Level are required.' }; return; }
+            if (isDuplicateCode('x_2307780_sentin_0_ward', 'code', input.code)) { data.actionResult = { success: false, message: 'Duplicate ward code.' }; return; }
+            var grW = new GlideRecord('x_2307780_sentin_0_ward');
+            grW.initialize();
+            grW.setValue('code', input.code);
+            grW.setValue('name', input.name);
+            grW.setValue('department', input.department);
+            grW.setValue('care_level', input.care_level);
+            grW.setValue('placement_status', 'open');
+            if (input.nursing_group) grW.setValue('nursing_group', input.nursing_group);
+            if (input.housekeeping_group) grW.setValue('housekeeping_group', input.housekeeping_group);
+            if (input.maintenance_group) grW.setValue('maintenance_group', input.maintenance_group);
+            if (input.floor_wing) grW.setValue('floor_wing', input.floor_wing);
+            grW.setValue('active', true);
+            grW.insert();
+            data.actionResult = { success: true, message: 'Ward created.' };
+            return;
+        }
+
+        if (action === 'update_ward') {
+            var grUW = new GlideRecord('x_2307780_sentin_0_ward');
+            if (!grUW.get(input.sys_id)) { data.actionResult = { success: false, message: 'Ward not found.' }; return; }
+            if (input.code) {
+                if (isDuplicateCode('x_2307780_sentin_0_ward', 'code', input.code, input.sys_id)) { data.actionResult = { success: false, message: 'Duplicate ward code.' }; return; }
+                grUW.setValue('code', input.code);
+            }
+            if (input.name) grUW.setValue('name', input.name);
+            if (input.department) grUW.setValue('department', input.department);
+            if (input.care_level) grUW.setValue('care_level', input.care_level);
+            if (input.nursing_group !== undefined) grUW.setValue('nursing_group', input.nursing_group);
+            if (input.housekeeping_group !== undefined) grUW.setValue('housekeeping_group', input.housekeeping_group);
+            if (input.maintenance_group !== undefined) grUW.setValue('maintenance_group', input.maintenance_group);
+            if (input.floor_wing !== undefined) grUW.setValue('floor_wing', input.floor_wing);
+            grUW.update();
+            data.actionResult = { success: true, message: 'Ward updated.' };
+            return;
+        }
+
+        if (action === 'close_ward') {
+            var grCW = new GlideRecord('x_2307780_sentin_0_ward');
+            if (!grCW.get(input.sys_id)) { data.actionResult = { success: false, message: 'Ward not found.' }; return; }
+            grCW.setValue('placement_status', 'closed');
+            grCW.setValue('closure_reason', input.reason || 'Closed by admin');
+            grCW.setValue('closure_time', new GlideDateTime().getValue());
+            grCW.update();
+            data.actionResult = { success: true, message: 'Ward closed.' };
+            return;
+        }
+
+        if (action === 'open_ward') {
+            var grOW = new GlideRecord('x_2307780_sentin_0_ward');
+            if (!grOW.get(input.sys_id)) { data.actionResult = { success: false, message: 'Ward not found.' }; return; }
+            /* Validate groups assigned */
+            if (!grOW.getValue('nursing_group') && !grOW.getValue('housekeeping_group')) {
+                data.actionResult = { success: false, message: 'Ward must have at least a nursing or housekeeping group assigned before opening.' };
+                return;
+            }
+            grOW.setValue('placement_status', 'open');
+            grOW.setValue('closure_reason', '');
+            grOW.setValue('closure_time', '');
+            grOW.update();
+            data.actionResult = { success: true, message: 'Ward opened.' };
+            return;
+        }
+
+        /* ── Rooms ───────────────────────────────────────────────────────── */
+        if (action === 'create_room') {
+            if (!input.code || !input.label_name || !input.ward || !input.tier) { data.actionResult = { success: false, message: 'Code, Label, Ward, and Tier are required.' }; return; }
+            if (isDuplicateCode('x_2307780_sentin_0_room', 'code', input.code)) { data.actionResult = { success: false, message: 'Duplicate room code.' }; return; }
+            var grR = new GlideRecord('x_2307780_sentin_0_room');
+            grR.initialize();
+            grR.setValue('code', input.code);
+            grR.setValue('label_name', input.label_name);
+            grR.setValue('ward', input.ward);
+            grR.setValue('tier', input.tier);
+            if (input.isolation_capable) grR.setValue('isolation_capable', true);
+            if (input.oxygen_available) grR.setValue('oxygen_available', true);
+            if (input.bed_capacity) grR.setValue('bed_capacity', input.bed_capacity);
+            grR.setValue('active', true);
+            grR.insert();
+            data.actionResult = { success: true, message: 'Room created.' };
+            return;
+        }
+
+        if (action === 'update_room') {
+            var grUR = new GlideRecord('x_2307780_sentin_0_room');
+            if (!grUR.get(input.sys_id)) { data.actionResult = { success: false, message: 'Room not found.' }; return; }
+            if (input.code) {
+                if (isDuplicateCode('x_2307780_sentin_0_room', 'code', input.code, input.sys_id)) { data.actionResult = { success: false, message: 'Duplicate room code.' }; return; }
+                grUR.setValue('code', input.code);
+            }
+            if (input.label_name) grUR.setValue('label_name', input.label_name);
+            if (input.ward) grUR.setValue('ward', input.ward);
+            if (input.tier) grUR.setValue('tier', input.tier);
+            if (input.isolation_capable !== undefined) grUR.setValue('isolation_capable', input.isolation_capable);
+            if (input.oxygen_available !== undefined) grUR.setValue('oxygen_available', input.oxygen_available);
+            if (input.bed_capacity !== undefined) grUR.setValue('bed_capacity', input.bed_capacity);
+            if (input.active !== undefined) grUR.setValue('active', input.active);
+            grUR.update();
+            data.actionResult = { success: true, message: 'Room updated.' };
+            return;
+        }
+
+        /* ── Beds ────────────────────────────────────────────────────────── */
+        if (action === 'create_bed') {
+            if (!input.bed_code || !input.room || !input.care_level) { data.actionResult = { success: false, message: 'Bed Code, Room, and Care Level are required.' }; return; }
+            if (isDuplicateCode('x_2307780_sentin_0_bed', 'bed_code', input.bed_code)) { data.actionResult = { success: false, message: 'Duplicate bed code.' }; return; }
+            /* Derive labels from room/ward */
+            var grBRoom = new GlideRecord('x_2307780_sentin_0_room');
+            var roomLabel = '', wardLabel = '', deptLabel = '';
+            if (grBRoom.get(input.room)) {
+                roomLabel = grBRoom.getValue('label_name') || '';
+                var wardRef = grBRoom.getValue('ward');
+                if (wardRef) {
+                    var grBWard = new GlideRecord('x_2307780_sentin_0_ward');
+                    if (grBWard.get(wardRef)) {
+                        wardLabel = grBWard.getValue('name') || '';
+                        var deptRef = grBWard.getValue('department');
+                        if (deptRef) {
+                            var grBDept = new GlideRecord('x_2307780_sentin_0_dept');
+                            if (grBDept.get(deptRef)) deptLabel = grBDept.getValue('name') || '';
+                        }
+                    }
+                }
+            }
+            var grB = new GlideRecord('x_2307780_sentin_0_bed');
+            grB.initialize();
+            grB.setValue('bed_code', input.bed_code);
+            grB.setValue('room', input.room);
+            grB.setValue('care_level', input.care_level);
+            grB.setValue('room_label', roomLabel);
+            grB.setValue('ward_label', wardLabel);
+            grB.setValue('department_label', deptLabel);
+            grB.setValue('occupancy', 'vacant');
+            grB.setValue('readiness', 'ready');
+            grB.setValue('in_service', true);
+            if (input.label_name) grB.setValue('label_name', input.label_name);
+            grB.insert();
+            data.actionResult = { success: true, message: 'Bed created.' };
+            return;
+        }
+
+        if (action === 'update_bed') {
+            var grUB = new GlideRecord('x_2307780_sentin_0_bed');
+            if (!grUB.get(input.sys_id)) { data.actionResult = { success: false, message: 'Bed not found.' }; return; }
+            if (input.bed_code) {
+                if (isDuplicateCode('x_2307780_sentin_0_bed', 'bed_code', input.bed_code, input.sys_id)) { data.actionResult = { success: false, message: 'Duplicate bed code.' }; return; }
+                grUB.setValue('bed_code', input.bed_code);
+            }
+            if (input.care_level) grUB.setValue('care_level', input.care_level);
+            if (input.label_name !== undefined) grUB.setValue('label_name', input.label_name);
+            grUB.update();
+            data.actionResult = { success: true, message: 'Bed updated.' };
+            return;
+        }
+
+        if (action === 'toggle_bed_service') {
+            var grTB = new GlideRecord('x_2307780_sentin_0_bed');
+            if (!grTB.get(input.sys_id)) { data.actionResult = { success: false, message: 'Bed not found.' }; return; }
+            var current = grTB.getValue('in_service') === '1' || grTB.getValue('in_service') === 'true';
+            grTB.setValue('in_service', !current);
+            grTB.update();
+            data.actionResult = { success: true, message: current ? 'Bed taken out of service.' : 'Bed put back in service.' };
+            return;
+        }
+
+        if (action === 'retire_bed') {
+            var grRB = new GlideRecord('x_2307780_sentin_0_bed');
+            if (!grRB.get(input.sys_id)) { data.actionResult = { success: false, message: 'Bed not found.' }; return; }
+            grRB.setValue('in_service', false);
+            if (input.reason) grRB.setValue('block_reason', input.reason);
+            grRB.update();
+            data.actionResult = { success: true, message: 'Bed retired.' };
+            return;
+        }
+
+        /* ── Access Grants ───────────────────────────────────────────────── */
+        if (action === 'revoke_grant') {
+            var grRG = new GlideRecord('x_2307780_sentin_0_acc_grant');
+            if (!grRG.get(input.sys_id)) { data.actionResult = { success: false, message: 'Grant not found.' }; return; }
+            grRG.setValue('access_status', 'revoked');
+            grRG.setValue('revoked_at', new GlideDateTime().getValue());
+            grRG.setValue('revoked_by', gs.getUserID());
+            if (input.reason) grRG.setValue('revocation_reason', input.reason);
+            grRG.update();
+            data.actionResult = { success: true, message: 'Access grant revoked.' };
+            return;
+        }
+
+        if (action === 'grant_access') {
+            if (!input.admission || !input.portal_user || !input.grant_type) { data.actionResult = { success: false, message: 'Admission, Portal User, and Grant Type are required.' }; return; }
+            var grGA = new GlideRecord('x_2307780_sentin_0_acc_grant');
+            grGA.initialize();
+            grGA.setValue('admission', input.admission);
+            grGA.setValue('portal_user', input.portal_user);
+            grGA.setValue('grant_type', input.grant_type);
+            grGA.setValue('access_status', 'active');
+            grGA.setValue('authorized_by', gs.getUserID());
+            grGA.setValue('valid_from', new GlideDateTime().getValue());
+            if (input.can_view_location) grGA.setValue('can_view_location', true);
+            if (input.can_view_discharge_est) grGA.setValue('can_view_discharge_est', true);
+            if (input.can_request_linen) grGA.setValue('can_request_linen', true);
+            grGA.insert();
+            data.actionResult = { success: true, message: 'Access granted.' };
+            return;
+        }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       Load Data
+       ═══════════════════════════════════════════════════════════════════════ */
+
+    /* ── Departments ─────────────────────────────────────────────────────── */
+    data.departments = [];
+    var deptIds = {};
+    var grDept = new GlideRecord('x_2307780_sentin_0_dept');
+    grDept.orderBy('display_order');
+    grDept.setLimit(100);
+    grDept.query();
+    while (grDept.next()) {
+        var d = {
+            sys_id: grDept.getUniqueValue(),
+            code: grDept.getValue('code') || '',
+            name: grDept.getValue('name') || '',
+            department_head: grDept.getDisplayValue('department_head') || '',
+            display_order: grDept.getValue('display_order') || '',
+            active: grDept.getValue('active') === '1' || grDept.getValue('active') === 'true',
+            ward_count: 0,
+            bed_count: 0
+        };
+        deptIds[d.sys_id] = data.departments.length;
+        data.departments.push(d);
+    }
+
+    /* ── Wards ───────────────────────────────────────────────────────────── */
+    data.wards = [];
+    var wardIds = {};
+    var grWard = new GlideRecord('x_2307780_sentin_0_ward');
+    grWard.orderBy('code');
+    grWard.setLimit(500);
+    grWard.query();
+    while (grWard.next()) {
+        var deptId = grWard.getValue('department') || '';
+        var w = {
+            sys_id: grWard.getUniqueValue(),
+            code: grWard.getValue('code') || '',
+            name: grWard.getValue('name') || '',
+            department: deptId,
+            department_name: grWard.getDisplayValue('department') || '',
+            care_level: grWard.getDisplayValue('care_level') || '',
+            care_level_raw: grWard.getValue('care_level') || '',
+            placement_status: grWard.getValue('placement_status') || '',
+            placement_status_display: grWard.getDisplayValue('placement_status') || '',
+            nursing_group: grWard.getDisplayValue('nursing_group') || '',
+            housekeeping_group: grWard.getDisplayValue('housekeeping_group') || '',
+            maintenance_group: grWard.getDisplayValue('maintenance_group') || '',
+            floor_wing: grWard.getValue('floor_wing') || '',
+            active: grWard.getValue('active') === '1' || grWard.getValue('active') === 'true',
+            bed_count: 0
+        };
+        wardIds[w.sys_id] = data.wards.length;
+        data.wards.push(w);
+        /* Increment dept ward count */
+        if (deptId && deptIds[deptId] !== undefined) {
+            data.departments[deptIds[deptId]].ward_count++;
+        }
+    }
+
+    /* ── Rooms ───────────────────────────────────────────────────────────── */
+    data.rooms = [];
+    var roomWardMap = {};
+    var grRoom = new GlideRecord('x_2307780_sentin_0_room');
+    grRoom.orderBy('code');
+    grRoom.setLimit(1000);
+    grRoom.query();
+    while (grRoom.next()) {
+        var wardId = grRoom.getValue('ward') || '';
+        roomWardMap[grRoom.getUniqueValue()] = wardId;
+        data.rooms.push({
+            sys_id: grRoom.getUniqueValue(),
+            code: grRoom.getValue('code') || '',
+            label_name: grRoom.getValue('label_name') || '',
+            ward: wardId,
+            ward_name: grRoom.getDisplayValue('ward') || '',
+            tier: grRoom.getDisplayValue('tier') || '',
+            tier_raw: grRoom.getValue('tier') || '',
+            isolation_capable: grRoom.getValue('isolation_capable') === '1' || grRoom.getValue('isolation_capable') === 'true',
+            oxygen_available: grRoom.getValue('oxygen_available') === '1' || grRoom.getValue('oxygen_available') === 'true',
+            bed_capacity: grRoom.getValue('bed_capacity') || '',
+            active: grRoom.getValue('active') === '1' || grRoom.getValue('active') === 'true'
+        });
+    }
+
+    /* ── Beds ────────────────────────────────────────────────────────────── */
+    data.beds = [];
+    var grBed = new GlideRecord('x_2307780_sentin_0_bed');
+    grBed.orderBy('bed_code');
+    grBed.setLimit(2000);
+    grBed.query();
+    while (grBed.next()) {
+        var bedRoom = grBed.getValue('room') || '';
+        var bedWard = roomWardMap[bedRoom] || '';
+        data.beds.push({
+            sys_id: grBed.getUniqueValue(),
+            bed_code: grBed.getValue('bed_code') || '',
+            room: bedRoom,
+            room_label: grBed.getValue('room_label') || '',
+            ward_label: grBed.getValue('ward_label') || '',
+            care_level: grBed.getDisplayValue('care_level') || '',
+            care_level_raw: grBed.getValue('care_level') || '',
+            occupancy: grBed.getDisplayValue('occupancy') || '',
+            occupancy_raw: grBed.getValue('occupancy') || '',
+            readiness: grBed.getDisplayValue('readiness') || '',
+            readiness_raw: grBed.getValue('readiness') || '',
+            in_service: grBed.getValue('in_service') === '1' || grBed.getValue('in_service') === 'true'
+        });
+        /* Increment ward & dept bed counts */
+        if (bedWard && wardIds[bedWard] !== undefined) {
+            data.wards[wardIds[bedWard]].bed_count++;
+            var wDept = data.wards[wardIds[bedWard]].department;
+            if (wDept && deptIds[wDept] !== undefined) {
+                data.departments[deptIds[wDept]].bed_count++;
+            }
+        }
+    }
+
+    /* ── Policies ────────────────────────────────────────────────────────── */
+    data.policies = [];
+    var grPol = new GlideRecord('x_2307780_sentin_0_policy');
+    grPol.orderBy('name');
+    grPol.setLimit(100);
+    grPol.query();
+    while (grPol.next()) {
+        data.policies.push({
+            sys_id: grPol.getUniqueValue(),
+            code: grPol.getValue('code') || '',
+            name: grPol.getValue('name') || '',
+            version: grPol.getValue('version') || '',
+            cleaning_target_min: grPol.getValue('cleaning_target_min') || '',
+            check_target_min: grPol.getValue('check_target_min') || '',
+            escalation_threshold_min: grPol.getValue('escalation_threshold_min') || '',
+            effective_from: grPol.getValue('effective_from') || '',
+            effective_to: grPol.getValue('effective_to') || '',
+            active: grPol.getValue('active') === '1' || grPol.getValue('active') === 'true'
+        });
+    }
+
+    /* ── Access Grants ───────────────────────────────────────────────────── */
+    data.grants = [];
+    var grGrant = new GlideRecord('x_2307780_sentin_0_acc_grant');
+    grGrant.orderByDesc('valid_from');
+    grGrant.setLimit(200);
+    grGrant.query();
+    while (grGrant.next()) {
+        data.grants.push({
+            sys_id: grGrant.getUniqueValue(),
+            admission: grGrant.getDisplayValue('admission') || '',
+            admission_id: grGrant.getValue('admission') || '',
+            portal_user: grGrant.getDisplayValue('portal_user') || '',
+            grant_type: grGrant.getDisplayValue('grant_type') || '',
+            access_status: grGrant.getValue('access_status') || '',
+            access_status_display: grGrant.getDisplayValue('access_status') || '',
+            can_view_location: grGrant.getValue('can_view_location') === '1' || grGrant.getValue('can_view_location') === 'true',
+            can_view_discharge_est: grGrant.getValue('can_view_discharge_est') === '1' || grGrant.getValue('can_view_discharge_est') === 'true',
+            can_request_linen: grGrant.getValue('can_request_linen') === '1' || grGrant.getValue('can_request_linen') === 'true',
+            valid_from: grGrant.getValue('valid_from') || '',
+            authorized_by: grGrant.getDisplayValue('authorized_by') || ''
+        });
+    }
+})();
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-11-26 08:07:21</sys_created_on>
+        <sys_id>a02ecf408e63473ea57293cb9c461cc2</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Admin Dashboard</sys_name>
+        <sys_package display_value="Sentinels Bed Operations Pilot" source="x_2307780_sentin_0">d8fe43811b30db50b87da8a5624bcb6c</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Sentinels Bed Operations Pilot">d8fe43811b30db50b87da8a5624bcb6c</sys_scope>
+        <sys_update_name>sp_widget_a02ecf408e63473ea57293cb9c461cc2</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-11-26 08:07:21</sys_updated_on>
+        <template><![CDATA[<div class="adm-container">
+  <!-- Header -->
+  <div class="adm-header">
+    <h2 class="adm-title"><i class="fa fa-cogs"></i> Hospital Administration</h2>
+    <button type="button" class="btn btn-default adm-refresh-btn" ng-click="c.refresh()" ng-disabled="c.submitting">
+      <i class="fa fa-refresh"></i> Refresh
+    </button>
+  </div>
+
+  <!-- Alert -->
+  <div class="alert adm-alert" ng-class="'alert-' + c.alertType" ng-if="c.alertMessage">
+    <button type="button" class="close" ng-click="c.alertMessage = ''"><span>&times;</span></button>
+    {{c.alertMessage}}
+  </div>
+
+  <!-- Tab Navigation -->
+  <ul class="nav nav-tabs adm-tabs">
+    <li ng-class="{'active': c.activeTab === 'departments'}"><a href ng-click="c.setTab('departments')"><i class="fa fa-building"></i> Departments</a></li>
+    <li ng-class="{'active': c.activeTab === 'wards'}"><a href ng-click="c.setTab('wards')"><i class="fa fa-th-large"></i> Wards</a></li>
+    <li ng-class="{'active': c.activeTab === 'rooms'}"><a href ng-click="c.setTab('rooms')"><i class="fa fa-th"></i> Rooms</a></li>
+    <li ng-class="{'active': c.activeTab === 'beds'}"><a href ng-click="c.setTab('beds')"><i class="fa fa-bed"></i> Beds</a></li>
+    <li ng-class="{'active': c.activeTab === 'policies'}"><a href ng-click="c.setTab('policies')"><i class="fa fa-file-text"></i> Policies</a></li>
+    <li ng-class="{'active': c.activeTab === 'grants'}"><a href ng-click="c.setTab('grants')"><i class="fa fa-key"></i> Access Grants</a></li>
+  </ul>
+
+  <!-- ═══ DEPARTMENTS TAB ═══ -->
+  <div class="adm-tab-content" ng-if="c.activeTab === 'departments'">
+    <div class="adm-toolbar">
+      <span class="adm-count">{{c.data.departments.length}} departments</span>
+      <button type="button" class="btn btn-sm btn-primary adm-add-btn" ng-click="c.toggleForm('addDept')">
+        <i class="fa fa-plus"></i> Add New
+      </button>
+    </div>
+    <!-- Add form -->
+    <div class="adm-inline-form" ng-if="c.showForm.addDept">
+      <div class="row">
+        <div class="col-sm-3"><input type="text" class="form-control input-sm" placeholder="Code *" ng-model="c.form.code"></div>
+        <div class="col-sm-4"><input type="text" class="form-control input-sm" placeholder="Name *" ng-model="c.form.name"></div>
+        <div class="col-sm-2"><input type="number" class="form-control input-sm" placeholder="Order" ng-model="c.form.display_order"></div>
+        <div class="col-sm-3">
+          <button type="button" class="btn btn-sm btn-success" ng-click="c.createDept()" ng-disabled="c.submitting"><i class="fa fa-check"></i> Save</button>
+          <button type="button" class="btn btn-sm btn-default" ng-click="c.toggleForm('addDept')">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <table class="table table-condensed adm-table">
+      <thead>
+        <tr><th>Code</th><th>Name</th><th>Head</th><th>Wards</th><th>Beds</th><th>Order</th><th>Active</th></tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="dept in c.data.departments track by dept.sys_id">
+          <td><strong>{{dept.code}}</strong></td>
+          <td>{{dept.name}}</td>
+          <td>{{dept.department_head}}</td>
+          <td>{{dept.ward_count}}</td>
+          <td>{{dept.bed_count}}</td>
+          <td>{{dept.display_order}}</td>
+          <td><span class="adm-badge" ng-class="dept.active ? 'adm-badge-success' : 'adm-badge-danger'">{{dept.active ? 'Yes' : 'No'}}</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="adm-empty" ng-if="!c.data.departments.length"><i class="fa fa-building"></i> No departments configured.</div>
+  </div>
+
+  <!-- ═══ WARDS TAB ═══ -->
+  <div class="adm-tab-content" ng-if="c.activeTab === 'wards'">
+    <div class="adm-toolbar">
+      <span class="adm-count">{{c.data.wards.length}} wards</span>
+      <button type="button" class="btn btn-sm btn-primary adm-add-btn" ng-click="c.toggleForm('addWard')">
+        <i class="fa fa-plus"></i> Add New
+      </button>
+    </div>
+    <!-- Add form -->
+    <div class="adm-inline-form" ng-if="c.showForm.addWard">
+      <div class="row">
+        <div class="col-sm-2"><input type="text" class="form-control input-sm" placeholder="Code *" ng-model="c.form.code"></div>
+        <div class="col-sm-3"><input type="text" class="form-control input-sm" placeholder="Name *" ng-model="c.form.name"></div>
+        <div class="col-sm-3">
+          <select class="form-control input-sm" ng-model="c.form.department">
+            <option value="">Department *</option>
+            <option ng-repeat="d in c.data.departments track by d.sys_id" value="{{d.sys_id}}">{{d.name}}</option>
+          </select>
+        </div>
+        <div class="col-sm-2"><input type="text" class="form-control input-sm" placeholder="Care Level *" ng-model="c.form.care_level"></div>
+        <div class="col-sm-2"><input type="text" class="form-control input-sm" placeholder="Floor/Wing" ng-model="c.form.floor_wing"></div>
+      </div>
+      <div class="row" style="margin-top:6px">
+        <div class="col-sm-9"><small class="text-muted">Groups (sys_ids): Nursing, HK, Maintenance can be set after creation via platform.</small></div>
+        <div class="col-sm-3">
+          <button type="button" class="btn btn-sm btn-success" ng-click="c.createWard()" ng-disabled="c.submitting"><i class="fa fa-check"></i> Save</button>
+          <button type="button" class="btn btn-sm btn-default" ng-click="c.toggleForm('addWard')">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <div class="adm-table-wrap">
+      <table class="table table-condensed adm-table">
+        <thead>
+          <tr><th>Code</th><th>Name</th><th>Department</th><th>Care Level</th><th>Status</th><th>Beds</th><th>Nursing Grp</th><th>HK Grp</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="ward in c.data.wards track by ward.sys_id">
+            <td><strong>{{ward.code}}</strong></td>
+            <td>{{ward.name}}</td>
+            <td>{{ward.department_name}}</td>
+            <td>{{ward.care_level}}</td>
+            <td><span class="adm-badge" ng-class="c.getStatusClass(ward.placement_status)">{{ward.placement_status_display}}</span></td>
+            <td>{{ward.bed_count}}</td>
+            <td class="adm-cell-small">{{ward.nursing_group}}</td>
+            <td class="adm-cell-small">{{ward.housekeeping_group}}</td>
+            <td class="adm-actions">
+              <button type="button" class="btn btn-xs btn-warning" ng-if="ward.placement_status === 'open'" ng-click="c.closeWard(ward)" ng-disabled="c.submitting"><i class="fa fa-lock"></i> Close</button>
+              <button type="button" class="btn btn-xs btn-success" ng-if="ward.placement_status === 'closed'" ng-click="c.openWard(ward)" ng-disabled="c.submitting"><i class="fa fa-unlock"></i> Open</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="adm-empty" ng-if="!c.data.wards.length"><i class="fa fa-th-large"></i> No wards configured.</div>
+  </div>
+
+  <!-- ═══ ROOMS TAB ═══ -->
+  <div class="adm-tab-content" ng-if="c.activeTab === 'rooms'">
+    <div class="adm-toolbar">
+      <span class="adm-count">{{c.data.rooms.length}} rooms</span>
+      <button type="button" class="btn btn-sm btn-primary adm-add-btn" ng-click="c.toggleForm('addRoom')">
+        <i class="fa fa-plus"></i> Add New
+      </button>
+    </div>
+    <!-- Add form -->
+    <div class="adm-inline-form" ng-if="c.showForm.addRoom">
+      <div class="row">
+        <div class="col-sm-2"><input type="text" class="form-control input-sm" placeholder="Code *" ng-model="c.form.code"></div>
+        <div class="col-sm-3"><input type="text" class="form-control input-sm" placeholder="Room Label *" ng-model="c.form.label_name"></div>
+        <div class="col-sm-3">
+          <select class="form-control input-sm" ng-model="c.form.ward">
+            <option value="">Ward *</option>
+            <option ng-repeat="w in c.data.wards track by w.sys_id" value="{{w.sys_id}}">{{w.name}}</option>
+          </select>
+        </div>
+        <div class="col-sm-2"><input type="text" class="form-control input-sm" placeholder="Tier *" ng-model="c.form.tier"></div>
+        <div class="col-sm-2"><input type="number" class="form-control input-sm" placeholder="Capacity" ng-model="c.form.bed_capacity"></div>
+      </div>
+      <div class="row" style="margin-top:6px">
+        <div class="col-sm-3"><label class="checkbox-inline"><input type="checkbox" ng-model="c.form.isolation_capable"> Isolation</label></div>
+        <div class="col-sm-3"><label class="checkbox-inline"><input type="checkbox" ng-model="c.form.oxygen_available"> Oxygen</label></div>
+        <div class="col-sm-6 text-right">
+          <button type="button" class="btn btn-sm btn-success" ng-click="c.createRoom()" ng-disabled="c.submitting"><i class="fa fa-check"></i> Save</button>
+          <button type="button" class="btn btn-sm btn-default" ng-click="c.toggleForm('addRoom')">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <div class="adm-table-wrap">
+      <table class="table table-condensed adm-table">
+        <thead>
+          <tr><th>Code</th><th>Label</th><th>Ward</th><th>Tier</th><th>Isolation</th><th>Oxygen</th><th>Capacity</th><th>Active</th></tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="room in c.data.rooms track by room.sys_id">
+            <td><strong>{{room.code}}</strong></td>
+            <td>{{room.label_name}}</td>
+            <td>{{room.ward_name}}</td>
+            <td>{{room.tier}}</td>
+            <td><i class="fa" ng-class="room.isolation_capable ? 'fa-check text-success' : 'fa-minus text-muted'"></i></td>
+            <td><i class="fa" ng-class="room.oxygen_available ? 'fa-check text-success' : 'fa-minus text-muted'"></i></td>
+            <td>{{room.bed_capacity}}</td>
+            <td><span class="adm-badge" ng-class="room.active ? 'adm-badge-success' : 'adm-badge-danger'">{{room.active ? 'Yes' : 'No'}}</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="adm-empty" ng-if="!c.data.rooms.length"><i class="fa fa-th"></i> No rooms configured.</div>
+  </div>
+
+  <!-- ═══ BEDS TAB ═══ -->
+  <div class="adm-tab-content" ng-if="c.activeTab === 'beds'">
+    <div class="adm-toolbar">
+      <span class="adm-count">{{c.data.beds.length}} beds</span>
+      <button type="button" class="btn btn-sm btn-primary adm-add-btn" ng-click="c.toggleForm('addBed')">
+        <i class="fa fa-plus"></i> Add New
+      </button>
+    </div>
+    <!-- Add form -->
+    <div class="adm-inline-form" ng-if="c.showForm.addBed">
+      <div class="row">
+        <div class="col-sm-2"><input type="text" class="form-control input-sm" placeholder="Bed Code *" ng-model="c.form.bed_code"></div>
+        <div class="col-sm-3">
+          <select class="form-control input-sm" ng-model="c.form.room">
+            <option value="">Room *</option>
+            <option ng-repeat="r in c.data.rooms track by r.sys_id" value="{{r.sys_id}}">{{r.code}} - {{r.label_name}}</option>
+          </select>
+        </div>
+        <div class="col-sm-2"><input type="text" class="form-control input-sm" placeholder="Care Level *" ng-model="c.form.care_level"></div>
+        <div class="col-sm-2"><input type="text" class="form-control input-sm" placeholder="Label" ng-model="c.form.label_name"></div>
+        <div class="col-sm-3">
+          <button type="button" class="btn btn-sm btn-success" ng-click="c.createBed()" ng-disabled="c.submitting"><i class="fa fa-check"></i> Save</button>
+          <button type="button" class="btn btn-sm btn-default" ng-click="c.toggleForm('addBed')">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <div class="adm-table-wrap">
+      <table class="table table-condensed adm-table">
+        <thead>
+          <tr><th>Code</th><th>Room</th><th>Ward</th><th>Care Level</th><th>Occupancy</th><th>Readiness</th><th>In Service</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="bed in c.data.beds track by bed.sys_id" ng-class="{'adm-row-muted': !bed.in_service}">
+            <td><strong>{{bed.bed_code}}</strong></td>
+            <td>{{bed.room_label}}</td>
+            <td>{{bed.ward_label}}</td>
+            <td>{{bed.care_level}}</td>
+            <td>{{bed.occupancy}}</td>
+            <td>{{bed.readiness}}</td>
+            <td><span class="adm-badge" ng-class="bed.in_service ? 'adm-badge-success' : 'adm-badge-danger'">{{bed.in_service ? 'Yes' : 'No'}}</span></td>
+            <td class="adm-actions">
+              <button type="button" class="btn btn-xs" ng-class="bed.in_service ? 'btn-warning' : 'btn-success'" ng-click="c.toggleBedService(bed)" ng-disabled="c.submitting">
+                <i class="fa" ng-class="bed.in_service ? 'fa-power-off' : 'fa-plug'"></i> {{bed.in_service ? 'Out' : 'In'}}
+              </button>
+              <button type="button" class="btn btn-xs btn-danger" ng-click="c.retireBed(bed)" ng-disabled="c.submitting || !bed.in_service">
+                <i class="fa fa-ban"></i> Retire
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="adm-empty" ng-if="!c.data.beds.length"><i class="fa fa-bed"></i> No beds configured.</div>
+  </div>
+
+  <!-- ═══ POLICIES TAB ═══ -->
+  <div class="adm-tab-content" ng-if="c.activeTab === 'policies'">
+    <div class="adm-toolbar">
+      <span class="adm-count">{{c.data.policies.length}} policies</span>
+    </div>
+    <table class="table table-condensed adm-table">
+      <thead>
+        <tr><th>Code</th><th>Name</th><th>Version</th><th>Cleaning (min)</th><th>Check (min)</th><th>Escalation (min)</th><th>From</th><th>To</th><th>Active</th></tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="pol in c.data.policies track by pol.sys_id">
+          <td><strong>{{pol.code}}</strong></td>
+          <td>{{pol.name}}</td>
+          <td>{{pol.version}}</td>
+          <td>{{pol.cleaning_target_min}}</td>
+          <td>{{pol.check_target_min}}</td>
+          <td>{{pol.escalation_threshold_min}}</td>
+          <td>{{pol.effective_from}}</td>
+          <td>{{pol.effective_to}}</td>
+          <td><span class="adm-badge" ng-class="pol.active ? 'adm-badge-success' : 'adm-badge-danger'">{{pol.active ? 'Yes' : 'No'}}</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="adm-empty" ng-if="!c.data.policies.length"><i class="fa fa-file-text"></i> No policies configured.</div>
+  </div>
+
+  <!-- ═══ ACCESS GRANTS TAB ═══ -->
+  <div class="adm-tab-content" ng-if="c.activeTab === 'grants'">
+    <div class="adm-toolbar">
+      <span class="adm-count">{{c.data.grants.length}} grants</span>
+      <button type="button" class="btn btn-sm btn-primary adm-add-btn" ng-click="c.toggleForm('addGrant')">
+        <i class="fa fa-plus"></i> Grant Access
+      </button>
+    </div>
+    <!-- Add form -->
+    <div class="adm-inline-form" ng-if="c.showForm.addGrant">
+      <div class="row">
+        <div class="col-sm-3"><input type="text" class="form-control input-sm" placeholder="Admission sys_id *" ng-model="c.form.admission"></div>
+        <div class="col-sm-3"><input type="text" class="form-control input-sm" placeholder="Portal User sys_id *" ng-model="c.form.portal_user"></div>
+        <div class="col-sm-2"><input type="text" class="form-control input-sm" placeholder="Grant Type *" ng-model="c.form.grant_type"></div>
+        <div class="col-sm-4">
+          <label class="checkbox-inline"><input type="checkbox" ng-model="c.form.can_view_location"> Location</label>
+          <label class="checkbox-inline"><input type="checkbox" ng-model="c.form.can_view_discharge_est"> Discharge</label>
+          <label class="checkbox-inline"><input type="checkbox" ng-model="c.form.can_request_linen"> Linen</label>
+        </div>
+      </div>
+      <div class="row" style="margin-top:6px">
+        <div class="col-sm-12 text-right">
+          <button type="button" class="btn btn-sm btn-success" ng-click="c.grantAccess()" ng-disabled="c.submitting"><i class="fa fa-check"></i> Grant</button>
+          <button type="button" class="btn btn-sm btn-default" ng-click="c.toggleForm('addGrant')">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <div class="adm-table-wrap">
+      <table class="table table-condensed adm-table">
+        <thead>
+          <tr><th>Admission</th><th>Portal User</th><th>Type</th><th>Status</th><th>Location</th><th>Discharge</th><th>Linen</th><th>Granted</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="grant in c.data.grants track by grant.sys_id">
+            <td>{{grant.admission}}</td>
+            <td>{{grant.portal_user}}</td>
+            <td>{{grant.grant_type}}</td>
+            <td><span class="adm-badge" ng-class="c.getGrantStatusClass(grant.access_status)">{{grant.access_status_display}}</span></td>
+            <td><i class="fa" ng-class="grant.can_view_location ? 'fa-check text-success' : 'fa-minus text-muted'"></i></td>
+            <td><i class="fa" ng-class="grant.can_view_discharge_est ? 'fa-check text-success' : 'fa-minus text-muted'"></i></td>
+            <td><i class="fa" ng-class="grant.can_request_linen ? 'fa-check text-success' : 'fa-minus text-muted'"></i></td>
+            <td class="adm-cell-small">{{grant.valid_from}}</td>
+            <td class="adm-actions">
+              <button type="button" class="btn btn-xs btn-danger" ng-if="grant.access_status === 'active'" ng-click="c.revokeGrant(grant)" ng-disabled="c.submitting">
+                <i class="fa fa-times"></i> Revoke
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="adm-empty" ng-if="!c.data.grants.length"><i class="fa fa-key"></i> No access grants found.</div>
+  </div>
+</div>
+]]></template>
+    </sp_widget>
+</record_update>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_portal">
+    <sp_portal action="INSERT_OR_UPDATE">
+        <alternate_portal/>
+        <communication_channels/>
+        <css_variables/>
+        <dark_theme/>
+        <default>false</default>
+        <embeddable_macroponents/>
+        <enable_ais>false</enable_ais>
+        <enable_certificate_based_authentication>false</enable_certificate_based_authentication>
+        <enable_early_redirection>false</enable_early_redirection>
+        <enable_embeddables>false</enable_embeddables>
+        <enable_favorites>false</enable_favorites>
+        <enable_identifier_first_login>false</enable_identifier_first_login>
+        <enable_local_login>false</enable_local_login>
+        <enable_portal_authentication>false</enable_portal_authentication>
+        <hide_portal_name>false</hide_portal_name>
+        <homepage display_value="x_2307780_sentin_0_nursing_home">d73558c5e9744f86a03615f5fe62f193</homepage>
+        <icon/>
+        <inactive>false</inactive>
+        <kb_knowledge_base/>
+        <kb_knowledge_page/>
+        <login_page display_value="login">6995a144cb11120000f8d856634c9c25</login_page>
+        <logo/>
+        <logo_alt_text/>
+        <notfound_page display_value="404">3c2c9063cb11020000f8d856634c9c1f</notfound_page>
+        <portal_identity_providers/>
+        <quick_start_config/>
+        <rtl_enabled>false</rtl_enabled>
+        <sc_catalog/>
+        <sc_catalog_page/>
+        <sc_category_page/>
+        <search_application/>
+        <search_results_configuration/>
+        <sp_chat_queue/>
+        <sp_rectangle_menu display_value="Nursing Menu">36d42c28a7ef437282e9dfe4e49514e2</sp_rectangle_menu>
+        <sys_class_name>sp_portal</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-11-25 10:05:37</sys_created_on>
+        <sys_id>f839d25d8ee848829a707e8dc689f840</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>Sentinels Bed Operations</sys_name>
+        <sys_package display_value="Sentinels Bed Operations Pilot" source="x_2307780_sentin_0">d8fe43811b30db50b87da8a5624bcb6c</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Sentinels Bed Operations Pilot">d8fe43811b30db50b87da8a5624bcb6c</sys_scope>
+        <sys_update_name>sp_portal_f839d25d8ee848829a707e8dc689f840</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-11-26 07:15:36</sys_updated_on>
+        <theme display_value="Sentinels Hospital Theme">0ee4b289978e49039083e8b4f901f2e4</theme>
+        <title>Sentinels Nursing</title>
+        <ts_index_group/>
+        <url_suffix>bedops</url_suffix>
+    </sp_portal>
+    <sys_translated_text action="delete_multiple" query="documentkey=f839d25d8ee848829a707e8dc689f840"/>
+</record_update>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element audit="true" db_object_id="3a6257c7a2e148cfbe214c1d0c199ecc" label="Access Grant" name="x_2307780_sentin_0_acc_grant" type="collection">
+        <element label="Can View Transfer Status" name="can_view_transfer" type="boolean"/>
+        <element label="Can View Discharge Estimate" name="can_view_discharge_est" type="boolean"/>
+        <element default="true" label="Can View Service Schedule" name="can_view_service" type="boolean"/>
+        <element label="Valid Until" name="valid_until" type="glide_date_time"/>
+        <element label="Authorized By" name="authorized_by" reference="sys_user" type="reference"/>
+        <element display="true" label="Grant Type" mandatory="true" name="grant_type" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Patient Self" sequence="1" value="patient_self"/>
+                <element inactive_on_update="false" label="Designated Attendant" sequence="2" value="designated_attendant"/>
+                <element inactive_on_update="false" label="Authorized Visitor" sequence="3" value="authorized_visitor"/>
+            </choice>
+        </element>
+        <element default="true" label="Can View Location" name="can_view_location" type="boolean"/>
+        <element label="Admission" mandatory="true" name="admission" reference="x_2307780_sentin_0_adm" reference_cascade_rule="none" type="reference"/>
+        <element label="Can Request Linen Service" name="can_request_linen" type="boolean"/>
+        <element label="Related Contact" name="contact" reference="x_2307780_sentin_0_adm_cntct" reference_cascade_rule="none" type="reference"/>
+        <element label="Valid From" name="valid_from" type="glide_date_time"/>
+        <element label="Portal User" name="portal_user" reference="sys_user" type="reference"/>
+        <element label="Revoked By" name="revoked_by" reference="sys_user" type="reference"/>
+        <element label="Revoked At" name="revoked_at" type="glide_date_time"/>
+        <element label="Revocation Reason" max_length="255" name="revocation_reason" type="string"/>
+        <element default="active" label="Access Status" mandatory="true" name="access_status" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Active" sequence="1" value="active"/>
+                <element inactive_on_update="false" label="Expired" sequence="4" value="expired"/>
+                <element inactive_on_update="false" label="Revoked" sequence="3" value="revoked"/>
+                <element inactive_on_update="false" label="Suspended" sequence="2" value="suspended"/>
+            </choice>
+        </element>
+        <index name="index">
+            <element name="admission"/>
+        </index>
+        <index name="index2">
+            <element name="authorized_by"/>
+        </index>
+        <index name="index3">
+            <element name="contact"/>
+        </index>
+        <index name="index4">
+            <element name="portal_user"/>
+        </index>
+        <index name="index5">
+            <element name="revoked_by"/>
+        </index>
+    </element>
+</database>
