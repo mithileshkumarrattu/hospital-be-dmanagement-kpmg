@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_ui_section caption="Timing" section_id="b17df7d6909e43a29df7ea6c76c556cd" sys_domain="global" table="x_2307780_sentin_0_adm" version="3" view="">
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.begin_split</element>
+            <position>0</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:28</sys_created_on>
+            <sys_id>2f63443cfc7f467e8b87ef4e23f464c5</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Timing" display_value="Timing" name="x_2307780_sentin_0_adm" sys_domain="global" view="Default view">b17df7d6909e43a29df7ea6c76c556cd</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:28</sys_updated_on>
+            <sys_user/>
+            <type>.begin_split</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>planned_arrival</element>
+            <position>1</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:28</sys_created_on>
+            <sys_id>9526b16c221049559f4b2624eb95846e</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Timing" display_value="Timing" name="x_2307780_sentin_0_adm" sys_domain="global" view="Default view">b17df7d6909e43a29df7ea6c76c556cd</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:28</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>earliest_hold_time</element>
+            <position>2</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:28</sys_created_on>
+            <sys_id>04b5bc40c2c54d1c9c2ce2a3f9ec183d</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Timing" display_value="Timing" name="x_2307780_sentin_0_adm" sys_domain="global" view="Default view">b17df7d6909e43a29df7ea6c76c556cd</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:28</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.split</element>
+            <position>3</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:28</sys_created_on>
+            <sys_id>d8563fcf96e1448ca40e192a9fa8550d</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Timing" display_value="Timing" name="x_2307780_sentin_0_adm" sys_domain="global" view="Default view">b17df7d6909e43a29df7ea6c76c556cd</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:28</sys_updated_on>
+            <sys_user/>
+            <type>.split</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>queue_entered_at</element>
+            <position>4</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:28</sys_created_on>
+            <sys_id>acb78a2a8cb64d3ca3bb78f831c002cc</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Timing" display_value="Timing" name="x_2307780_sentin_0_adm" sys_domain="global" view="Default view">b17df7d6909e43a29df7ea6c76c556cd</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:28</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>arrived_at</element>
+            <position>5</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:28</sys_created_on>
+            <sys_id>06d144675db74f39a2efc89baa00df92</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Timing" display_value="Timing" name="x_2307780_sentin_0_adm" sys_domain="global" view="Default view">b17df7d6909e43a29df7ea6c76c556cd</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:28</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.end_split</element>
+            <position>6</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:28</sys_created_on>
+            <sys_id>3361094a8ff44abd8cfc82de8353b5aa</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Timing" display_value="Timing" name="x_2307780_sentin_0_adm" sys_domain="global" view="Default view">b17df7d6909e43a29df7ea6c76c556cd</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:28</sys_updated_on>
+            <sys_user/>
+            <type>.end_split</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.begin_split</element>
+            <position>7</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:28</sys_created_on>
+            <sys_id>937e071453464325b53d2c5064477899</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Timing" display_value="Timing" name="x_2307780_sentin_0_adm" sys_domain="global" view="Default view">b17df7d6909e43a29df7ea6c76c556cd</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:28</sys_updated_on>
+            <sys_user/>
+            <type>.begin_split</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>departed_at</element>
+            <position>8</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:28</sys_created_on>
+            <sys_id>53273f88316a457db3c9459fdca43dc3</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Timing" display_value="Timing" name="x_2307780_sentin_0_adm" sys_domain="global" view="Default view">b17df7d6909e43a29df7ea6c76c556cd</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:28</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>admission_state</element>
+            <position>9</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:28</sys_created_on>
+            <sys_id>9a0debb1e1b14257afdced49dc8ae745</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Timing" display_value="Timing" name="x_2307780_sentin_0_adm" sys_domain="global" view="Default view">b17df7d6909e43a29df7ea6c76c556cd</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:28</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.split</element>
+            <position>10</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:28</sys_created_on>
+            <sys_id>ad3b6e9cada240fe9a4bcde27cbc5e36</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Timing" display_value="Timing" name="x_2307780_sentin_0_adm" sys_domain="global" view="Default view">b17df7d6909e43a29df7ea6c76c556cd</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:28</sys_updated_on>
+            <sys_user/>
+            <type>.split</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>disposition</element>
+            <position>11</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:28</sys_created_on>
+            <sys_id>67fc7be0c9e2446590ed77ebf652628a</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Timing" display_value="Timing" name="x_2307780_sentin_0_adm" sys_domain="global" view="Default view">b17df7d6909e43a29df7ea6c76c556cd</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:28</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>clearance_blocker</element>
+            <position>12</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:28</sys_created_on>
+            <sys_id>438eadff36f04f5d8a63efc95eb56883</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Timing" display_value="Timing" name="x_2307780_sentin_0_adm" sys_domain="global" view="Default view">b17df7d6909e43a29df7ea6c76c556cd</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:28</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.end_split</element>
+            <position>13</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:28</sys_created_on>
+            <sys_id>a439a8a33f6c4a0b8879f36de3d910a2</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Timing" display_value="Timing" name="x_2307780_sentin_0_adm" sys_domain="global" view="Default view">b17df7d6909e43a29df7ea6c76c556cd</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:28</sys_updated_on>
+            <sys_user/>
+            <type>.end_split</type>
+        </sys_ui_element>
+        <sys_ui_section action="INSERT_OR_UPDATE">
+            <caption>Timing</caption>
+            <header>false</header>
+            <name>x_2307780_sentin_0_adm</name>
+            <roles/>
+            <sys_class_name>sys_ui_section</sys_class_name>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:28</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>b17df7d6909e43a29df7ea6c76c556cd</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>x_2307780_sentin_0_adm</sys_name>
+            <sys_overrides/>
+            <sys_package display_value="Sentinels Bed Operations Pilot" source="x_2307780_sentin_0">d8fe43811b30db50b87da8a5624bcb6c</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="Sentinels Bed Operations Pilot">d8fe43811b30db50b87da8a5624bcb6c</sys_scope>
+            <sys_update_name>sys_ui_section_b17df7d6909e43a29df7ea6c76c556cd</sys_update_name>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:28</sys_updated_on>
+            <sys_user/>
+            <title>false</title>
+            <view display_value="Default view" name="NULL">Default view</view>
+            <view_name/>
+        </sys_ui_section>
+    </sys_ui_section>
+</record_update>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_ui_section caption="Details" section_id="17aa51bd53b44940be4c9ab465c50e94" sys_domain="global" table="x_2307780_sentin_0_bed_alloc" version="3" view="">
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>release_reason</element>
+            <position>0</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:24</sys_created_on>
+            <sys_id>db6e97074e364fed8b2170a6d282dda9</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Details" display_value="Details" name="x_2307780_sentin_0_bed_alloc" sys_domain="global" view="Default view">17aa51bd53b44940be4c9ab465c50e94</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:24</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.begin_split</element>
+            <position>1</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:24</sys_created_on>
+            <sys_id>d9fcfb2c7c484964b7457b2d99f6706f</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Details" display_value="Details" name="x_2307780_sentin_0_bed_alloc" sys_domain="global" view="Default view">17aa51bd53b44940be4c9ab465c50e94</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:24</sys_updated_on>
+            <sys_user/>
+            <type>.begin_split</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>claim_key</element>
+            <position>2</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:24</sys_created_on>
+            <sys_id>dcc04ded9c344689b7199aa6d911f2ee</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Details" display_value="Details" name="x_2307780_sentin_0_bed_alloc" sys_domain="global" view="Default view">17aa51bd53b44940be4c9ab465c50e94</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:24</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.split</element>
+            <position>3</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:24</sys_created_on>
+            <sys_id>b8595eee507b4716a90b4a85009b726c</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Details" display_value="Details" name="x_2307780_sentin_0_bed_alloc" sys_domain="global" view="Default view">17aa51bd53b44940be4c9ab465c50e94</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:24</sys_updated_on>
+            <sys_user/>
+            <type>.split</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>operation_id</element>
+            <position>4</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:24</sys_created_on>
+            <sys_id>643a438150884c5b87bbfd1580bfe9d0</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Details" display_value="Details" name="x_2307780_sentin_0_bed_alloc" sys_domain="global" view="Default view">17aa51bd53b44940be4c9ab465c50e94</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:24</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.end_split</element>
+            <position>5</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:24</sys_created_on>
+            <sys_id>a908534b5b114ee79b646dcc4888c9ed</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Details" display_value="Details" name="x_2307780_sentin_0_bed_alloc" sys_domain="global" view="Default view">17aa51bd53b44940be4c9ab465c50e94</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:24</sys_updated_on>
+            <sys_user/>
+            <type>.end_split</type>
+        </sys_ui_element>
+        <sys_ui_section action="INSERT_OR_UPDATE">
+            <caption>Details</caption>
+            <header>false</header>
+            <name>x_2307780_sentin_0_bed_alloc</name>
+            <roles/>
+            <sys_class_name>sys_ui_section</sys_class_name>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:24</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>17aa51bd53b44940be4c9ab465c50e94</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>x_2307780_sentin_0_bed_alloc</sys_name>
+            <sys_overrides/>
+            <sys_package display_value="Sentinels Bed Operations Pilot" source="x_2307780_sentin_0">d8fe43811b30db50b87da8a5624bcb6c</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="Sentinels Bed Operations Pilot">d8fe43811b30db50b87da8a5624bcb6c</sys_scope>
+            <sys_update_name>sys_ui_section_17aa51bd53b44940be4c9ab465c50e94</sys_update_name>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:24</sys_updated_on>
+            <sys_user/>
+            <title>false</title>
+            <view display_value="Default view" name="NULL">Default view</view>
+            <view_name/>
+        </sys_ui_section>
+    </sys_ui_section>
+</record_update>

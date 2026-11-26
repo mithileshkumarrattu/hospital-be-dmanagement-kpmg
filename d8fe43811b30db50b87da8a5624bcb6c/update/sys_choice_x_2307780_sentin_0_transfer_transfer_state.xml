@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_choice action="INSERT_OR_UPDATE" field="transfer_state" table="x_2307780_sentin_0_transfer" version="3">
+        <sys_choice_set action="INSERT_OR_UPDATE">
+            <element>transfer_state</element>
+            <name>x_2307780_sentin_0_transfer</name>
+            <sys_class_name>sys_choice_set</sys_class_name>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:08</sys_created_on>
+            <sys_id>faff0da25b5c4e0f88b7dafd3267fb55</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>transfer_state</sys_name>
+            <sys_package display_value="Sentinels Bed Operations Pilot" source="x_2307780_sentin_0">d8fe43811b30db50b87da8a5624bcb6c</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="Sentinels Bed Operations Pilot">d8fe43811b30db50b87da8a5624bcb6c</sys_scope>
+            <sys_update_name>sys_choice_x_2307780_sentin_0_transfer_transfer_state</sys_update_name>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:08</sys_updated_on>
+        </sys_choice_set>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>transfer_state</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Requested</label>
+            <language>en</language>
+            <name>x_2307780_sentin_0_transfer</name>
+            <sequence>1</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:08</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>bdbecd9d56944abe89d4fe329a23a3a8</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:08</sys_updated_on>
+            <value>requested</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>transfer_state</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Approved</label>
+            <language>en</language>
+            <name>x_2307780_sentin_0_transfer</name>
+            <sequence>2</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:08</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>ac1fffd0249048aeb2167fdbc67dde6a</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:08</sys_updated_on>
+            <value>approved</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>transfer_state</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Destination Held</label>
+            <language>en</language>
+            <name>x_2307780_sentin_0_transfer</name>
+            <sequence>3</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:08</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>1252147bd1d84192812d1b9a5736576e</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:08</sys_updated_on>
+            <value>dest_held</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>transfer_state</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>In Transit</label>
+            <language>en</language>
+            <name>x_2307780_sentin_0_transfer</name>
+            <sequence>4</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:08</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>aeed80ff6b004b3d9751504d79c76dda</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:08</sys_updated_on>
+            <value>in_transit</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>transfer_state</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Completed</label>
+            <language>en</language>
+            <name>x_2307780_sentin_0_transfer</name>
+            <sequence>5</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:08</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>54725bb7baeb4255a69fed1fdeba64aa</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:08</sys_updated_on>
+            <value>completed</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>transfer_state</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Cancelled</label>
+            <language>en</language>
+            <name>x_2307780_sentin_0_transfer</name>
+            <sequence>6</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:08</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>feb0bd854d434811b8ba66c724942309</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:08</sys_updated_on>
+            <value>cancelled</value>
+        </sys_choice>
+    </sys_choice>
+</record_update>

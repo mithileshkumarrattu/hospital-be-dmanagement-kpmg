@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_choice action="INSERT_OR_UPDATE" field="admission_state" table="x_2307780_sentin_0_adm" version="3">
+        <sys_choice_set action="INSERT_OR_UPDATE">
+            <element>admission_state</element>
+            <name>x_2307780_sentin_0_adm</name>
+            <sys_class_name>sys_choice_set</sys_class_name>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:27:59</sys_created_on>
+            <sys_id>23ce8e94820a4bf5953f13502ade422d</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>admission_state</sys_name>
+            <sys_package display_value="Sentinels Bed Operations Pilot" source="x_2307780_sentin_0">d8fe43811b30db50b87da8a5624bcb6c</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="Sentinels Bed Operations Pilot">d8fe43811b30db50b87da8a5624bcb6c</sys_scope>
+            <sys_update_name>sys_choice_x_2307780_sentin_0_adm_admission_state</sys_update_name>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:27:59</sys_updated_on>
+        </sys_choice_set>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>admission_state</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Pending</label>
+            <language>en</language>
+            <name>x_2307780_sentin_0_adm</name>
+            <sequence>1</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:27:59</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>5997d3f9e07b43758ae56ad9ee476bf3</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:27:59</sys_updated_on>
+            <value>pending</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>admission_state</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Waiting</label>
+            <language>en</language>
+            <name>x_2307780_sentin_0_adm</name>
+            <sequence>2</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:27:59</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>37b5f34b2ec74d5f98a49c77c75dd57b</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:27:59</sys_updated_on>
+            <value>waiting</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>admission_state</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Bed Held</label>
+            <language>en</language>
+            <name>x_2307780_sentin_0_adm</name>
+            <sequence>3</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:27:59</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>24a486501af04f0a87626085effeca2b</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:27:59</sys_updated_on>
+            <value>held</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>admission_state</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Admitted</label>
+            <language>en</language>
+            <name>x_2307780_sentin_0_adm</name>
+            <sequence>4</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:27:59</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>cf34a3689746486fb082f548f61d3af8</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:27:59</sys_updated_on>
+            <value>admitted</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>admission_state</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>In Stay</label>
+            <language>en</language>
+            <name>x_2307780_sentin_0_adm</name>
+            <sequence>5</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:27:59</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>56aabba64e2f4fed8a102259d292841d</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:27:59</sys_updated_on>
+            <value>in_stay</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>admission_state</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Discharge Authorized</label>
+            <language>en</language>
+            <name>x_2307780_sentin_0_adm</name>
+            <sequence>6</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:27:59</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>d8124de6e40e463d97ff25b218cd13c5</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:27:59</sys_updated_on>
+            <value>discharge_authorized</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>admission_state</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Departed</label>
+            <language>en</language>
+            <name>x_2307780_sentin_0_adm</name>
+            <sequence>7</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:27:59</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>3c5a4b218d3346f7b921a34833cc2917</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:27:59</sys_updated_on>
+            <value>departed</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>admission_state</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Cancelled</label>
+            <language>en</language>
+            <name>x_2307780_sentin_0_adm</name>
+            <sequence>8</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:27:59</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>d96426fcefe64dfaa6573110138cfefb</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:27:59</sys_updated_on>
+            <value>cancelled</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>admission_state</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Rejected</label>
+            <language>en</language>
+            <name>x_2307780_sentin_0_adm</name>
+            <sequence>9</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:27:59</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>cd5d82b9e46e41b190819935532c913b</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:27:59</sys_updated_on>
+            <value>rejected</value>
+        </sys_choice>
+    </sys_choice>
+</record_update>

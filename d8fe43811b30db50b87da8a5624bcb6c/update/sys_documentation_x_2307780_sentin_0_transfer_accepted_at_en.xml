@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_documentation element="accepted_at" label="Accepted At" language="en" table="x_2307780_sentin_0_transfer">
+        <sys_documentation action="INSERT_OR_UPDATE">
+            <element>accepted_at</element>
+            <help/>
+            <hint/>
+            <label>Accepted At</label>
+            <language>en</language>
+            <name>x_2307780_sentin_0_transfer</name>
+            <plural>Accepted Ats</plural>
+            <sys_class_name>sys_documentation</sys_class_name>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:27:15</sys_created_on>
+            <sys_id>41cfa0dbda3b474e95f2584b25b4918e</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>Accepted At</sys_name>
+            <sys_package display_value="Sentinels Bed Operations Pilot" source="x_2307780_sentin_0">d8fe43811b30db50b87da8a5624bcb6c</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="Sentinels Bed Operations Pilot">d8fe43811b30db50b87da8a5624bcb6c</sys_scope>
+            <sys_update_name>sys_documentation_x_2307780_sentin_0_transfer_accepted_at_en</sys_update_name>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:27:15</sys_updated_on>
+            <url/>
+            <url_target/>
+        </sys_documentation>
+    </sys_documentation>
+</record_update>

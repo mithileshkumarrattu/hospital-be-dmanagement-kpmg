@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_ui_form_sections form_id="5102e66a74d043219d9d7e365bc566e3" sys_domain="global" table="x_2307780_sentin_0_transfer" version="3">
+        <sys_ui_form_section action="INSERT_OR_UPDATE">
+            <position>0</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:21</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>ad89710b15a147918379b2a20695def6</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_overrides/>
+            <sys_ui_form display_value="x_2307780_sentin_0_transfer" name="x_2307780_sentin_0_transfer" sys_domain="global" view="Default view">5102e66a74d043219d9d7e365bc566e3</sys_ui_form>
+            <sys_ui_section display_value="">28cff08b277546bf923b3d1c6972ad1c</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:21</sys_updated_on>
+        </sys_ui_form_section>
+        <sys_ui_form_section action="INSERT_OR_UPDATE">
+            <position>1</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:21</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>58d61ca49fd1477b8eca77e2b85d018b</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_overrides/>
+            <sys_ui_form display_value="x_2307780_sentin_0_transfer" name="x_2307780_sentin_0_transfer" sys_domain="global" view="Default view">5102e66a74d043219d9d7e365bc566e3</sys_ui_form>
+            <sys_ui_section display_value="">a9d89d2de57e4be683bb92043f9416a4</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:21</sys_updated_on>
+        </sys_ui_form_section>
+        <sys_ui_form_section action="INSERT_OR_UPDATE">
+            <position>2</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:21</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>4e4939a27c1e447e99df822a9f617320</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_overrides/>
+            <sys_ui_form display_value="x_2307780_sentin_0_transfer" name="x_2307780_sentin_0_transfer" sys_domain="global" view="Default view">5102e66a74d043219d9d7e365bc566e3</sys_ui_form>
+            <sys_ui_section display_value="">9100751e18874b598aa1bff1c7461e78</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:21</sys_updated_on>
+        </sys_ui_form_section>
+        <sys_ui_form_section action="INSERT_OR_UPDATE">
+            <position>3</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:21</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>a118a066ac9f4996a4288824487ebcf5</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_overrides/>
+            <sys_ui_form display_value="x_2307780_sentin_0_transfer" name="x_2307780_sentin_0_transfer" sys_domain="global" view="Default view">5102e66a74d043219d9d7e365bc566e3</sys_ui_form>
+            <sys_ui_section display_value="">ddc000cd88dc48fbaa09a1019086d9fc</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:21</sys_updated_on>
+        </sys_ui_form_section>
+        <sys_ui_form action="INSERT_OR_UPDATE">
+            <name>x_2307780_sentin_0_transfer</name>
+            <roles/>
+            <sys_class_name>sys_ui_form</sys_class_name>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:21</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>5102e66a74d043219d9d7e365bc566e3</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>x_2307780_sentin_0_transfer</sys_name>
+            <sys_overrides/>
+            <sys_package display_value="Sentinels Bed Operations Pilot" source="x_2307780_sentin_0">d8fe43811b30db50b87da8a5624bcb6c</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="Sentinels Bed Operations Pilot">d8fe43811b30db50b87da8a5624bcb6c</sys_scope>
+            <sys_update_name>sys_ui_form_sections_5102e66a74d043219d9d7e365bc566e3</sys_update_name>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:21</sys_updated_on>
+            <sys_user/>
+            <view display_value="Default view" name="NULL">Default view</view>
+            <view_name/>
+        </sys_ui_form>
+    </sys_ui_form_sections>
+</record_update>

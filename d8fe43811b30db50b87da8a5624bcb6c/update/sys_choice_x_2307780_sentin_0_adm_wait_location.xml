@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_choice action="INSERT_OR_UPDATE" field="wait_location" table="x_2307780_sentin_0_adm" version="3">
+        <sys_choice_set action="INSERT_OR_UPDATE">
+            <element>wait_location</element>
+            <name>x_2307780_sentin_0_adm</name>
+            <sys_class_name>sys_choice_set</sys_class_name>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:03</sys_created_on>
+            <sys_id>db98130cb26449a898deb6d4faded3eb</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>wait_location</sys_name>
+            <sys_package display_value="Sentinels Bed Operations Pilot" source="x_2307780_sentin_0">d8fe43811b30db50b87da8a5624bcb6c</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="Sentinels Bed Operations Pilot">d8fe43811b30db50b87da8a5624bcb6c</sys_scope>
+            <sys_update_name>sys_choice_x_2307780_sentin_0_adm_wait_location</sys_update_name>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:03</sys_updated_on>
+        </sys_choice_set>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>wait_location</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>At Reception</label>
+            <language>en</language>
+            <name>x_2307780_sentin_0_adm</name>
+            <sequence>1</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:03</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>af444598baac49659ded049b13c5059f</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:03</sys_updated_on>
+            <value>at_reception</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>wait_location</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>At Home</label>
+            <language>en</language>
+            <name>x_2307780_sentin_0_adm</name>
+            <sequence>2</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:03</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>9acee4223b154c14a01dfde33cde38f7</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:03</sys_updated_on>
+            <value>at_home</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>wait_location</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Emergency Department</label>
+            <language>en</language>
+            <name>x_2307780_sentin_0_adm</name>
+            <sequence>3</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:03</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>c3f9b9946cef4081a492563803f5cb4c</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:03</sys_updated_on>
+            <value>emergency_dept</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>wait_location</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Other Facility</label>
+            <language>en</language>
+            <name>x_2307780_sentin_0_adm</name>
+            <sequence>4</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:03</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>ddbbd106a7a247349cb0b76a89e275c1</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:03</sys_updated_on>
+            <value>other_facility</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>wait_location</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>En Route</label>
+            <language>en</language>
+            <name>x_2307780_sentin_0_adm</name>
+            <sequence>5</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:03</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>c060b922b3f24087877e84f92d1b882b</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:03</sys_updated_on>
+            <value>en_route</value>
+        </sys_choice>
+    </sys_choice>
+</record_update>

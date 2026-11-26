@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_choice action="INSERT_OR_UPDATE" field="departure_type" table="x_2307780_sentin_0_bed_alloc" version="3">
+        <sys_choice_set action="INSERT_OR_UPDATE">
+            <element>departure_type</element>
+            <name>x_2307780_sentin_0_bed_alloc</name>
+            <sys_class_name>sys_choice_set</sys_class_name>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:04</sys_created_on>
+            <sys_id>28b818be447c4cc4bdacb219e8f82f9a</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>departure_type</sys_name>
+            <sys_package display_value="Sentinels Bed Operations Pilot" source="x_2307780_sentin_0">d8fe43811b30db50b87da8a5624bcb6c</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="Sentinels Bed Operations Pilot">d8fe43811b30db50b87da8a5624bcb6c</sys_scope>
+            <sys_update_name>sys_choice_x_2307780_sentin_0_bed_alloc_departure_type</sys_update_name>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:04</sys_updated_on>
+        </sys_choice_set>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>departure_type</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Discharge</label>
+            <language>en</language>
+            <name>x_2307780_sentin_0_bed_alloc</name>
+            <sequence>1</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:04</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>39097d3ff2ec471898b4b7e1dcdae906</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:04</sys_updated_on>
+            <value>discharge</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>departure_type</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Transfer Out</label>
+            <language>en</language>
+            <name>x_2307780_sentin_0_bed_alloc</name>
+            <sequence>2</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:04</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>c3d0241b16b6460abd319c7d31ccb402</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:04</sys_updated_on>
+            <value>transfer_out</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>departure_type</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Temporary Absence</label>
+            <language>en</language>
+            <name>x_2307780_sentin_0_bed_alloc</name>
+            <sequence>3</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:28:04</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>1c50e38d12d545279094df0bc02e0a31</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:28:04</sys_updated_on>
+            <value>temporary_absence</value>
+        </sys_choice>
+    </sys_choice>
+</record_update>

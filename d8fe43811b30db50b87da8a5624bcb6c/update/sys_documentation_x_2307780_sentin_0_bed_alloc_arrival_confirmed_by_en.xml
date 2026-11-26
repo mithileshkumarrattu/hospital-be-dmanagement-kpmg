@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_documentation element="arrival_confirmed_by" label="Arrival Confirmed By" language="en" table="x_2307780_sentin_0_bed_alloc">
+        <sys_documentation action="INSERT_OR_UPDATE">
+            <element>arrival_confirmed_by</element>
+            <help/>
+            <hint/>
+            <label>Arrival Confirmed By</label>
+            <language>en</language>
+            <name>x_2307780_sentin_0_bed_alloc</name>
+            <plural>Arrival Confirmed Bys</plural>
+            <sys_class_name>sys_documentation</sys_class_name>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-11-26 06:27:09</sys_created_on>
+            <sys_id>4a76942510924823a3fc6d7bd465bbdc</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>Arrival Confirmed By</sys_name>
+            <sys_package display_value="Sentinels Bed Operations Pilot" source="x_2307780_sentin_0">d8fe43811b30db50b87da8a5624bcb6c</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="Sentinels Bed Operations Pilot">d8fe43811b30db50b87da8a5624bcb6c</sys_scope>
+            <sys_update_name>sys_documentation_x_2307780_sentin_0_bed_alloc_arrival_confirmed_by_en</sys_update_name>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-11-26 06:27:09</sys_updated_on>
+            <url/>
+            <url_target/>
+        </sys_documentation>
+    </sys_documentation>
+</record_update>
