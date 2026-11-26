@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element audit="true" db_object_id="0426a5ed7908404c9ac7b837d378a39d" label="Patient" name="x_2307780_sentin_0_patient" type="collection">
+        <element label="Preferred Contact Method" name="preferred_contact" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="WhatsApp" sequence="4" value="whatsapp"/>
+                <element inactive_on_update="false" label="SMS" sequence="3" value="sms"/>
+                <element inactive_on_update="false" label="Phone" sequence="1" value="phone"/>
+                <element inactive_on_update="false" label="Email" sequence="2" value="email"/>
+            </choice>
+        </element>
+        <element label="Given Name" max_length="100" name="given_name" type="string"/>
+        <element label="Patient Number" mandatory="true" max_length="40" name="patient_number" read_only="true" read_only_option="instance_configured" type="string"/>
+        <element label="National ID" max_length="30" name="national_id" type="string"/>
+        <element default="true" label="Active" name="active" type="boolean"/>
+        <element label="Address" max_length="500" name="address" type="string"/>
+        <element label="Date of Birth" name="birth_date" type="glide_date"/>
+        <element label="Family Name" max_length="100" name="family_name" type="string"/>
+        <element label="Mobile Phone" max_length="20" name="mobile_phone" type="string"/>
+        <element label="Insurance ID" max_length="40" name="insurance_id" type="string"/>
+        <element display="true" label="Display Name" mandatory="true" max_length="200" name="display_name" type="string"/>
+        <element label="Gender" name="gender" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Male" sequence="1" value="male"/>
+                <element inactive_on_update="false" label="Unknown" sequence="4" value="unknown"/>
+                <element inactive_on_update="false" label="Other" sequence="3" value="other"/>
+                <element inactive_on_update="false" label="Female" sequence="2" value="female"/>
+            </choice>
+        </element>
+        <element label="Primary Email" name="primary_email" type="email"/>
+        <element default="English" label="Preferred Language" max_length="50" name="preferred_language" type="string"/>
+        <element label="Blood Group" name="blood_group" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="A-" sequence="2" value="a_neg"/>
+                <element inactive_on_update="false" label="AB-" sequence="6" value="ab_neg"/>
+                <element inactive_on_update="false" label="A+" sequence="1" value="a_pos"/>
+                <element inactive_on_update="false" label="B+" sequence="3" value="b_pos"/>
+                <element inactive_on_update="false" label="O-" sequence="8" value="o_neg"/>
+                <element inactive_on_update="false" label="O+" sequence="7" value="o_pos"/>
+                <element inactive_on_update="false" label="Unknown" sequence="9" value="unknown"/>
+                <element inactive_on_update="false" label="AB+" sequence="5" value="ab_pos"/>
+                <element inactive_on_update="false" label="B-" sequence="4" value="b_neg"/>
+            </choice>
+        </element>
+        <index name="index" unique="true">
+            <element name="patient_number"/>
+        </index>
+    </element>
+</database>

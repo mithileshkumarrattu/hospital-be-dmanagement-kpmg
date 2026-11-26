@@ -16,7 +16,7 @@
         <label>Admission</label>
         <live_feed_enabled>false</live_feed_enabled>
         <name>x_2307780_sentin_0_adm</name>
-        <number_ref display_value="">db4c6c28a6724a6dad6c0e5a91e8f22b</number_ref>
+        <number_ref display_value="ADM">db4c6c28a6724a6dad6c0e5a91e8f22b</number_ref>
         <provider_class/>
         <read_access>true</read_access>
         <scriptable_table>false</scriptable_table>

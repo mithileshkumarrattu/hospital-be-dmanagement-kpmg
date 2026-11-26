@@ -1,0 +1,1270 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function($scope, $timeout) {
+    var c = this;
+
+    // Wizard state
+    c.currentStep = 1;
+    c.steps = [
+        { num: 1, label: 'Identify Patient', icon: 'fa-user' },
+        { num: 2, label: 'Capture Visit', icon: 'fa-clipboard' },
+        { num: 3, label: 'Choose Placement', icon: 'fa-bed' },
+        { num: 4, label: 'Review & Submit', icon: 'fa-check-circle' }
+    ];
+
+    // Ref data
+    c.departments = c.data.departments || [];
+    c.admissionTypes = c.data.admissionTypes || [];
+    c.priorities = c.data.priorities || [];
+    c.careLevels = c.data.careLevels || [];
+    c.waitLocations = c.data.waitLocations || [];
+
+    // Step 1: Patient
+    c.searchQuery = '';
+    c.searchResults = [];
+    c.selectedPatient = null;
+    c.searchLoading = false;
+    c.showRegister = false;
+    c.newPatient = {};
+    c.createLoading = false;
+    c.createError = '';
+
+    // Step 2: Visit
+    c.visit = {
+        department_id: '',
+        department_name: '',
+        admission_type: '',
+        admission_type_label: '',
+        priority: '',
+        priority_label: '',
+        care_level: '',
+        care_level_label: '',
+        waiting_location: '',
+        waiting_location_label: '',
+        requirements: ''
+    };
+
+    // Step 3: Placement
+    c.wards = [];
+    c.rooms = [];
+    c.beds = [];
+    c.selectedWard = null;
+    c.selectedRoom = null;
+    c.selectedBed = null;
+    c.placementLoading = false;
+
+    // Step 4: Submission
+    c.submitting = false;
+    c.submitError = '';
+    c.submitSuccess = false;
+    c.admissionResult = null;
+
+    var searchTimer = null;
+
+    // ── Step 1: Patient Search ──
+    c.onPatientSearch = function() {
+        if (searchTimer) $timeout.cancel(searchTimer);
+        if (c.searchQuery.length < 2) {
+            c.searchResults = [];
+            return;
+        }
+        searchTimer = $timeout(function() {
+            c.searchLoading = true;
+            c.server.get({ action: 'search_patient', query: c.searchQuery }).then(function(r) {
+                c.searchLoading = false;
+                c.searchResults = r.data.searchResults || [];
+            });
+        }, 400);
+    };
+
+    c.selectPatient = function(p) {
+        c.selectedPatient = p;
+        c.showRegister = false;
+    };
+
+    c.clearPatient = function() {
+        c.selectedPatient = null;
+    };
+
+    c.toggleRegister = function() {
+        c.showRegister = !c.showRegister;
+        c.createError = '';
+        c.newPatient = { given_name: '', family_name: '', date_of_birth: '', gender: '', phone_primary: '', email: '' };
+    };
+
+    c.registerPatient = function() {
+        if (!c.newPatient.given_name || !c.newPatient.family_name) {
+            c.createError = 'Given name and family name are required.';
+            return;
+        }
+        c.createLoading = true;
+        c.createError = '';
+        c.server.get({
+            action: 'create_patient',
+            given_name: c.newPatient.given_name,
+            family_name: c.newPatient.family_name,
+            date_of_birth: c.newPatient.date_of_birth,
+            gender: c.newPatient.gender,
+            phone_primary: c.newPatient.phone_primary,
+            email: c.newPatient.email
+        }).then(function(r) {
+            c.createLoading = false;
+            if (r.data.createError) {
+                c.createError = r.data.createError;
+            } else if (r.data.createdPatient) {
+                c.selectedPatient = r.data.createdPatient;
+                c.showRegister = false;
+            }
+        });
+    };
+
+    // ── Step 2: Visit Details ──
+    c.onDepartmentChange = function() {
+        var dept = c.departments.filter(function(d) { return d.sys_id === c.visit.department_id; })[0];
+        c.visit.department_name = dept ? dept.name : '';
+        // Reset downstream
+        c.wards = [];
+        c.rooms = [];
+        c.beds = [];
+        c.selectedWard = null;
+        c.selectedRoom = null;
+        c.selectedBed = null;
+        // Pre-load wards
+        if (c.visit.department_id) {
+            c.placementLoading = true;
+            c.server.get({ action: 'load_wards', department_id: c.visit.department_id }).then(function(r) {
+                c.wards = r.data.filteredWards || [];
+                c.placementLoading = false;
+            });
+        }
+    };
+
+    c.getLabelForValue = function(list, value) {
+        for (var i = 0; i < list.length; i++) {
+            if (list[i].value === value) return list[i].label;
+        }
+        return value;
+    };
+
+    // ── Step 3: Placement ──
+    c.selectWard = function(ward) {
+        c.selectedWard = ward;
+        c.selectedRoom = null;
+        c.selectedBed = null;
+        c.rooms = [];
+        c.beds = [];
+        c.placementLoading = true;
+        c.server.get({ action: 'load_rooms', ward_id: ward.sys_id }).then(function(r) {
+            c.rooms = r.data.filteredRooms || [];
+            c.placementLoading = false;
+        });
+    };
+
+    c.selectRoom = function(room) {
+        c.selectedRoom = room;
+        c.selectedBed = null;
+        c.beds = [];
+        c.placementLoading = true;
+        c.server.get({ action: 'load_beds', room_id: room.sys_id }).then(function(r) {
+            c.beds = r.data.filteredBeds || [];
+            c.placementLoading = false;
+        });
+    };
+
+    c.selectBed = function(bed) {
+        c.selectedBed = bed;
+    };
+
+    c.clearWard = function() {
+        c.selectedWard = null;
+        c.selectedRoom = null;
+        c.selectedBed = null;
+        c.rooms = [];
+        c.beds = [];
+    };
+
+    c.clearRoom = function() {
+        c.selectedRoom = null;
+        c.selectedBed = null;
+        c.beds = [];
+    };
+
+    // ── Navigation ──
+    c.canProceed = function() {
+        switch (c.currentStep) {
+            case 1: return !!c.selectedPatient;
+            case 2: return !!c.visit.department_id && !!c.visit.admission_type;
+            case 3: return true; // Bed selection is optional (admission can be waiting)
+            case 4: return true;
+            default: return false;
+        }
+    };
+
+    c.nextStep = function() {
+        if (c.currentStep < 4 && c.canProceed()) {
+            c.currentStep++;
+        }
+    };
+
+    c.prevStep = function() {
+        if (c.currentStep > 1) {
+            c.currentStep--;
+        }
+    };
+
+    c.goToStep = function(step) {
+        if (step < c.currentStep) {
+            c.currentStep = step;
+        }
+    };
+
+    // ── Step 4: Submit ──
+    c.submitAdmission = function() {
+        c.submitting = true;
+        c.submitError = '';
+        c.server.get({
+            action: 'submit_admission',
+            patient_id: c.selectedPatient.sys_id,
+            department_id: c.visit.department_id,
+            admission_type: c.visit.admission_type,
+            authorized_priority: c.visit.priority,
+            authorized_care_level: c.visit.care_level,
+            waiting_location: c.visit.waiting_location,
+            requirements: c.visit.requirements,
+            bed_id: c.selectedBed ? c.selectedBed.sys_id : ''
+        }).then(function(r) {
+            c.submitting = false;
+            if (r.data.submitError) {
+                c.submitError = r.data.submitError;
+            } else {
+                c.submitSuccess = true;
+                c.admissionResult = r.data.admissionResult;
+            }
+        });
+    };
+
+    c.startNewAdmission = function() {
+        c.currentStep = 1;
+        c.selectedPatient = null;
+        c.searchQuery = '';
+        c.searchResults = [];
+        c.visit = {
+            department_id: '', department_name: '', admission_type: '', admission_type_label: '',
+            priority: '', priority_label: '', care_level: '', care_level_label: '',
+            waiting_location: '', waiting_location_label: '', requirements: ''
+        };
+        c.wards = [];
+        c.rooms = [];
+        c.beds = [];
+        c.selectedWard = null;
+        c.selectedRoom = null;
+        c.selectedBed = null;
+        c.submitSuccess = false;
+        c.admissionResult = null;
+        c.submitError = '';
+    };
+};
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css>/* ── Admission Wizard ───────────────────────────────────────────────────────── */
+
+.adm-wizard {
+  background: #F7F8FA;
+  min-height: 60vh;
+  padding: 24px;
+}
+
+/* ── Step Indicator ────────────────────────────────────────────────────────── */
+.aw-steps {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 28px;
+  padding: 16px 0;
+}
+
+.aw-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 24px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #7A8A90;
+  background: #E8ECEE;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.aw-step-active {
+  background: #08656A;
+  color: #FFFFFF;
+}
+
+.aw-step-done {
+  background: #D1FAE5;
+  color: #065F46;
+}
+
+.aw-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.aw-step-active .aw-step-num {
+  background: rgba(255,255,255,0.2);
+}
+
+.aw-step-done .aw-step-num {
+  background: rgba(6,95,70,0.15);
+}
+
+/* ── Panel ─────────────────────────────────────────────────────────────────── */
+.aw-panel {
+  background: #FFFFFF;
+  border-radius: 10px;
+  padding: 28px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  margin-bottom: 20px;
+}
+
+.aw-panel-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #172C32;
+  margin: 0 0 20px 0;
+}
+
+.aw-panel-title .fa {
+  color: #08656A;
+  margin-right: 8px;
+}
+
+.aw-panel .form-control {
+  border-radius: 6px;
+  border-color: #D0D5D8;
+  font-size: 14px;
+}
+
+.aw-panel .form-control:focus {
+  border-color: #08656A;
+  box-shadow: 0 0 0 2px rgba(8,101,106,0.15);
+}
+
+.aw-panel label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #172C32;
+}
+
+/* ── Patient Banner ────────────────────────────────────────────────────────── */
+.aw-patient-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #E8F5F5;
+  border-radius: 8px;
+  padding: 16px 20px;
+  border: 1px solid #B2DFDB;
+}
+
+.aw-patient-icon {
+  font-size: 32px;
+  color: #08656A;
+}
+
+.aw-patient-info {
+  flex: 1;
+}
+
+.aw-patient-info strong {
+  display: block;
+  font-size: 16px;
+  color: #172C32;
+}
+
+.aw-patient-info span {
+  font-size: 13px;
+  color: #53656A;
+}
+
+/* ── Search ────────────────────────────────────────────────────────────────── */
+.aw-search {
+  margin-bottom: 16px;
+}
+
+.aw-search .input-group-addon {
+  border-radius: 6px 0 0 6px;
+  background: #F5F7F8;
+  border-color: #D0D5D8;
+  color: #53656A;
+}
+
+.aw-loading {
+  padding: 16px 0;
+  color: #53656A;
+}
+
+.aw-no-results {
+  padding: 16px 0;
+  color: #53656A;
+  font-size: 14px;
+}
+
+/* ── Results ───────────────────────────────────────────────────────────────── */
+.aw-results {
+  margin-bottom: 16px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.aw-result-item {
+  padding: 10px 14px;
+  border-bottom: 1px solid #E8ECEE;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.aw-result-item:hover,
+.aw-result-item:focus {
+  background: #E8F5F5;
+  outline: none;
+}
+
+.aw-result-name {
+  font-size: 14px;
+  color: #172C32;
+}
+
+.aw-result-meta {
+  font-size: 12px;
+  color: #7A8A90;
+}
+
+/* ── Register Form ─────────────────────────────────────────────────────────── */
+.aw-register-form {
+  margin-top: 16px;
+  padding: 20px;
+  background: #F8FAFB;
+  border-radius: 8px;
+  border: 1px solid #E8ECEE;
+}
+
+/* ── Placement ─────────────────────────────────────────────────────────────── */
+.aw-placement-breadcrumb {
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: #53656A;
+}
+
+.aw-placement-breadcrumb a {
+  color: #08656A;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.aw-placement-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.aw-place-card {
+  display: flex;
+  align-items: center;
+  padding: 14px 16px;
+  background: #FFFFFF;
+  border: 1px solid #E8ECEE;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.aw-place-card:hover,
+.aw-place-card:focus {
+  border-color: #08656A;
+  box-shadow: 0 2px 8px rgba(8,101,106,0.1);
+  outline: none;
+}
+
+.aw-place-selected {
+  border-color: #08656A;
+  background: #E8F5F5;
+}
+
+.aw-place-name {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 600;
+  color: #172C32;
+}
+
+.aw-place-name .fa {
+  margin-right: 8px;
+  color: #08656A;
+}
+
+.aw-place-meta {
+  font-size: 12px;
+  color: #7A8A90;
+  margin-right: 12px;
+}
+
+.aw-place-arrow {
+  color: #B0BEC5;
+}
+
+/* ── Review ────────────────────────────────────────────────────────────────── */
+.aw-review {
+  margin-bottom: 24px;
+}
+
+.aw-review-section {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #E8ECEE;
+}
+
+.aw-review-section:last-child {
+  border-bottom: none;
+}
+
+.aw-review-section h5 {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #53656A;
+  margin: 0 0 10px 0;
+}
+
+.aw-review-section .dl-horizontal dt {
+  font-size: 13px;
+  color: #7A8A90;
+  font-weight: 400;
+}
+
+.aw-review-section .dl-horizontal dd {
+  font-size: 14px;
+  color: #172C32;
+  font-weight: 500;
+}
+
+.aw-submit-btn {
+  border-radius: 8px;
+  font-weight: 700;
+  padding: 12px 32px;
+  font-size: 16px;
+  background: #08656A;
+  border-color: #08656A;
+}
+
+.aw-submit-btn:hover,
+.aw-submit-btn:focus {
+  background: #064f53;
+  border-color: #064f53;
+}
+
+/* ── Navigation ────────────────────────────────────────────────────────────── */
+.aw-nav {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
+.aw-btn {
+  border-radius: 6px;
+  font-weight: 600;
+  padding: 8px 20px;
+}
+
+.aw-btn.btn-primary {
+  background: #08656A;
+  border-color: #08656A;
+}
+
+.aw-btn.btn-primary:hover,
+.aw-btn.btn-primary:focus {
+  background: #064f53;
+  border-color: #064f53;
+}
+
+/* ── Success ───────────────────────────────────────────────────────────────── */
+.aw-success {
+  text-align: center;
+  padding: 48px 24px;
+}
+
+.aw-success-inner {
+  background: #FFFFFF;
+  border-radius: 12px;
+  padding: 40px;
+  display: inline-block;
+  max-width: 500px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.aw-success-icon {
+  color: #059669;
+  margin-bottom: 16px;
+}
+
+.aw-success h3 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #172C32;
+  margin: 0 0 12px 0;
+}
+
+.aw-success-num {
+  font-size: 18px;
+  color: #172C32;
+}
+
+.aw-success-state {
+  margin-bottom: 8px;
+}
+
+.aw-success-detail {
+  color: #53656A;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.aw-success-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+/* ── Responsive ────────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .adm-wizard {
+    padding: 12px;
+  }
+
+  .aw-panel {
+    padding: 16px;
+  }
+
+  .aw-steps {
+    gap: 4px;
+  }
+
+  .aw-step {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .aw-success-actions {
+    flex-direction: column;
+  }
+}
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description>Multi-step admission wizard: Identify Patient, Capture Visit, Choose Placement, Review &amp; Submit.</description>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>x_2307780_sentin_0_admission_wizard</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {
+}]]></link>
+        <name>Admission Wizard</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+    var handler = new x_2307780_sentin_0.BedOpsCommandHandler();
+
+    // Handle actions
+    if (input && input.action) {
+        var action = input.action;
+
+        // Patient search
+        if (action === 'search_patient') {
+            var query = input.query || '';
+            if (query.length >= 2) {
+                var result = handler.findPatients(query, 20);
+                if (result.success) {
+                    data.searchResults = result.patients;
+                } else {
+                    data.searchError = result.message || 'Search failed.';
+                }
+            }
+            return;
+        }
+
+        // Create patient
+        if (action === 'create_patient') {
+            var patientData = {
+                given_name: input.given_name || '',
+                family_name: input.family_name || '',
+                date_of_birth: input.date_of_birth || '',
+                gender: input.gender || '',
+                phone_primary: input.phone_primary || '',
+                email: input.email || ''
+            };
+            var result = handler.createPatient(patientData);
+            if (result.success) {
+                data.createdPatient = result.patient;
+                data.createSuccess = true;
+            } else {
+                data.createError = result.message || 'Registration failed.';
+            }
+            return;
+        }
+
+        // Load wards for department
+        if (action === 'load_wards') {
+            var deptId = input.department_id || '';
+            data.filteredWards = [];
+            if (deptId) {
+                var wardGR = new GlideRecord('x_2307780_sentin_0_ward');
+                wardGR.addQuery('department', deptId);
+                wardGR.addQuery('active', true);
+                wardGR.addQuery('placement_status', 'open');
+                wardGR.orderBy('name');
+                wardGR.query();
+                while (wardGR.next()) {
+                    data.filteredWards.push({
+                        sys_id: wardGR.getUniqueValue(),
+                        code: wardGR.getValue('code'),
+                        name: wardGR.getValue('name'),
+                        care_level: wardGR.getDisplayValue('care_level'),
+                        floor_wing: wardGR.getValue('floor_wing')
+                    });
+                }
+            }
+            return;
+        }
+
+        // Load rooms for ward
+        if (action === 'load_rooms') {
+            var wardId = input.ward_id || '';
+            data.filteredRooms = [];
+            if (wardId) {
+                var roomGR = new GlideRecord('x_2307780_sentin_0_room');
+                roomGR.addQuery('ward', wardId);
+                roomGR.addQuery('active', true);
+                roomGR.query();
+                while (roomGR.next()) {
+                    data.filteredRooms.push({
+                        sys_id: roomGR.getUniqueValue(),
+                        code: roomGR.getValue('code'),
+                        label: roomGR.getDisplayValue('label_name'),
+                        tier: roomGR.getValue('tier'),
+                        tier_display: roomGR.getDisplayValue('tier'),
+                        isolation_capable: roomGR.getValue('isolation_capable') == '1',
+                        oxygen_available: roomGR.getValue('oxygen_available') == '1',
+                        daily_rate: roomGR.getDisplayValue('daily_rate')
+                    });
+                }
+            }
+            return;
+        }
+
+        // Load beds for room
+        if (action === 'load_beds') {
+            var roomId = input.room_id || '';
+            data.filteredBeds = [];
+            if (roomId) {
+                var bedGR = new GlideRecord('x_2307780_sentin_0_bed');
+                bedGR.addQuery('room', roomId);
+                bedGR.addQuery('in_service', true);
+                bedGR.addQuery('occupancy', 'vacant');
+                bedGR.addQuery('readiness', 'ready');
+                bedGR.orderBy('display_order');
+                bedGR.query();
+                while (bedGR.next()) {
+                    data.filteredBeds.push({
+                        sys_id: bedGR.getUniqueValue(),
+                        bed_code: bedGR.getValue('bed_code'),
+                        label: bedGR.getValue('label_name') || bedGR.getValue('bed_code'),
+                        care_level: bedGR.getDisplayValue('care_level'),
+                        readiness: bedGR.getDisplayValue('readiness'),
+                        isolation_capable: bedGR.getValue('isolation_capable') == '1',
+                        oxygen_available: bedGR.getValue('oxygen_available') == '1',
+                        ventilator_capable: bedGR.getValue('ventilator_capable') == '1'
+                    });
+                }
+            }
+            return;
+        }
+
+        // Submit admission
+        if (action === 'submit_admission') {
+            var admData = {
+                patient_id: input.patient_id || '',
+                department_id: input.department_id || '',
+                admission_type: input.admission_type || '',
+                authorized_priority: input.authorized_priority || '',
+                authorized_care_level: input.authorized_care_level || '',
+                waiting_location: input.waiting_location || '',
+                requirements: input.requirements || '',
+                bed_id: input.bed_id || ''
+            };
+
+            if (!admData.patient_id) {
+                data.submitError = 'Patient is required.';
+                return;
+            }
+            if (!admData.department_id) {
+                data.submitError = 'Department is required.';
+                return;
+            }
+            if (!admData.admission_type) {
+                data.submitError = 'Admission type is required.';
+                return;
+            }
+
+            var result = handler.createAdmission(admData);
+            if (result.success) {
+                data.admissionResult = result;
+                data.submitSuccess = true;
+            } else {
+                data.submitError = result.message || 'Admission failed.';
+            }
+            return;
+        }
+    }
+
+    // Initial load: departments
+    data.departments = [];
+    var deptGR = new GlideRecord('x_2307780_sentin_0_dept');
+    deptGR.addQuery('active', true);
+    deptGR.orderBy('display_order');
+    deptGR.query();
+    while (deptGR.next()) {
+        data.departments.push({
+            sys_id: deptGR.getUniqueValue(),
+            code: deptGR.getValue('code'),
+            name: deptGR.getValue('name')
+        });
+    }
+
+    // Admission type choices
+    data.admissionTypes = [];
+    var choiceGR = new GlideRecord('sys_choice');
+    choiceGR.addQuery('name', 'x_2307780_sentin_0_adm');
+    choiceGR.addQuery('element', 'admission_type');
+    choiceGR.addQuery('inactive', false);
+    choiceGR.orderBy('sequence');
+    choiceGR.query();
+    while (choiceGR.next()) {
+        data.admissionTypes.push({
+            value: choiceGR.getValue('value'),
+            label: choiceGR.getValue('label')
+        });
+    }
+
+    // Priority choices
+    data.priorities = [];
+    choiceGR = new GlideRecord('sys_choice');
+    choiceGR.addQuery('name', 'x_2307780_sentin_0_adm');
+    choiceGR.addQuery('element', 'authorized_priority');
+    choiceGR.addQuery('inactive', false);
+    choiceGR.orderBy('sequence');
+    choiceGR.query();
+    while (choiceGR.next()) {
+        data.priorities.push({
+            value: choiceGR.getValue('value'),
+            label: choiceGR.getValue('label')
+        });
+    }
+
+    // Care level choices
+    data.careLevels = [];
+    choiceGR = new GlideRecord('sys_choice');
+    choiceGR.addQuery('name', 'x_2307780_sentin_0_adm');
+    choiceGR.addQuery('element', 'required_care_level');
+    choiceGR.addQuery('inactive', false);
+    choiceGR.orderBy('sequence');
+    choiceGR.query();
+    while (choiceGR.next()) {
+        data.careLevels.push({
+            value: choiceGR.getValue('value'),
+            label: choiceGR.getValue('label')
+        });
+    }
+
+    // Wait location choices
+    data.waitLocations = [];
+    choiceGR = new GlideRecord('sys_choice');
+    choiceGR.addQuery('name', 'x_2307780_sentin_0_adm');
+    choiceGR.addQuery('element', 'wait_location');
+    choiceGR.addQuery('inactive', false);
+    choiceGR.orderBy('sequence');
+    choiceGR.query();
+    while (choiceGR.next()) {
+        data.waitLocations.push({
+            value: choiceGR.getValue('value'),
+            label: choiceGR.getValue('label')
+        });
+    }
+
+    data.searchResults = [];
+    data.selectedPatient = null;
+})();
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-11-26 08:07:20</sys_created_on>
+        <sys_id>045cc11b7dc74b41881227ccfc079eb4</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Admission Wizard</sys_name>
+        <sys_package display_value="Sentinels Bed Operations Pilot" source="x_2307780_sentin_0">d8fe43811b30db50b87da8a5624bcb6c</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Sentinels Bed Operations Pilot">d8fe43811b30db50b87da8a5624bcb6c</sys_scope>
+        <sys_update_name>sp_widget_045cc11b7dc74b41881227ccfc079eb4</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-11-26 08:07:20</sys_updated_on>
+        <template><![CDATA[<div class="adm-wizard">
+
+  <!-- Success Screen -->
+  <div class="aw-success" ng-if="c.submitSuccess">
+    <div class="aw-success-inner">
+      <i class="fa fa-check-circle fa-4x aw-success-icon"></i>
+      <h3>Admission Created</h3>
+      <p class="aw-success-num" ng-if="c.admissionResult.number">
+        Admission <strong>{{c.admissionResult.number}}</strong>
+      </p>
+      <p class="aw-success-state" ng-if="c.admissionResult.state">
+        Status: <span class="label label-info">{{c.admissionResult.state}}</span>
+      </p>
+      <p class="aw-success-detail" ng-if="c.admissionResult.message">{{c.admissionResult.message}}</p>
+      <div class="aw-success-actions">
+        <button type="button" class="btn btn-primary aw-btn" ng-click="c.startNewAdmission()">
+          <i class="fa fa-plus"></i> New Admission
+        </button>
+        <a class="btn btn-default aw-btn" href="?id=x_2307780_sentin_0_nursing_home">
+          <i class="fa fa-arrow-left"></i> Back to Dashboard
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wizard -->
+  <div ng-if="!c.submitSuccess">
+
+    <!-- Step Indicator -->
+    <div class="aw-steps">
+      <div class="aw-step" ng-repeat="s in c.steps track by s.num"
+           ng-class="{'aw-step-active': c.currentStep === s.num, 'aw-step-done': c.currentStep > s.num}"
+           ng-click="c.goToStep(s.num)" role="button" tabindex="0">
+        <span class="aw-step-num">
+          <i class="fa" ng-class="c.currentStep > s.num ? 'fa-check' : s.icon"></i>
+        </span>
+        <span class="aw-step-label hidden-xs">{{s.label}}</span>
+      </div>
+    </div>
+
+    <!-- Step 1: Identify Patient -->
+    <div class="aw-panel" ng-if="c.currentStep === 1">
+      <h3 class="aw-panel-title"><i class="fa fa-user"></i> Identify Patient</h3>
+
+      <!-- Selected -->
+      <div class="aw-patient-banner" ng-if="c.selectedPatient">
+        <i class="fa fa-user-circle-o aw-patient-icon"></i>
+        <div class="aw-patient-info">
+          <strong>{{c.selectedPatient.display_name}}</strong>
+          <span>{{c.selectedPatient.patient_number}}<span ng-if="c.selectedPatient.dob"> &middot; {{c.selectedPatient.dob}}</span></span>
+        </div>
+        <button type="button" class="btn btn-sm btn-default" ng-click="c.clearPatient()">
+          <i class="fa fa-exchange"></i> Change
+        </button>
+      </div>
+
+      <!-- Search -->
+      <div ng-if="!c.selectedPatient">
+        <div class="input-group aw-search">
+          <span class="input-group-addon"><i class="fa fa-search"></i></span>
+          <input type="text" class="form-control" placeholder="Search patient name, number, or phone..."
+                 ng-model="c.searchQuery" ng-change="c.onPatientSearch()" aria-label="Search patients" />
+        </div>
+
+        <div class="text-center aw-loading" ng-if="c.searchLoading">
+          <i class="fa fa-spinner fa-spin"></i> Searching...
+        </div>
+
+        <div class="aw-results" ng-if="c.searchResults.length > 0 && !c.searchLoading">
+          <div class="aw-result-item" ng-repeat="p in c.searchResults track by p.sys_id"
+               ng-click="c.selectPatient(p)" role="button" tabindex="0">
+            <div class="aw-result-name"><strong>{{p.display_name}}</strong></div>
+            <div class="aw-result-meta">{{p.patient_number}}<span ng-if="p.dob"> &middot; {{p.dob}}</span><span ng-if="p.gender"> &middot; {{p.gender}}</span></div>
+          </div>
+        </div>
+
+        <div class="aw-no-results" ng-if="c.searchResults.length === 0 && c.searchQuery.length >= 2 && !c.searchLoading">
+          <i class="fa fa-info-circle"></i> No patients found.
+        </div>
+
+        <hr />
+        <button type="button" class="btn btn-default" ng-click="c.toggleRegister()">
+          <i class="fa" ng-class="c.showRegister ? 'fa-times' : 'fa-user-plus'"></i>
+          {{c.showRegister ? 'Cancel' : 'Register New Patient'}}
+        </button>
+
+        <!-- Inline Registration -->
+        <div class="aw-register-form" ng-if="c.showRegister">
+          <div class="alert alert-danger" ng-if="c.createError"><i class="fa fa-exclamation-circle"></i> {{c.createError}}</div>
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Given Name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" ng-model="c.newPatient.given_name" />
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Family Name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" ng-model="c.newPatient.family_name" />
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>Date of Birth</label>
+                <input type="text" class="form-control" ng-model="c.newPatient.date_of_birth" placeholder="YYYY-MM-DD" />
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>Gender</label>
+                <select class="form-control" ng-model="c.newPatient.gender">
+                  <option value="">-- Select --</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>Phone</label>
+                <input type="text" class="form-control" ng-model="c.newPatient.phone_primary" />
+              </div>
+            </div>
+          </div>
+          <button type="button" class="btn btn-primary aw-btn" ng-click="c.registerPatient()"
+                  ng-disabled="c.createLoading || !c.newPatient.given_name || !c.newPatient.family_name">
+            <span ng-if="!c.createLoading"><i class="fa fa-check"></i> Register</span>
+            <span ng-if="c.createLoading"><i class="fa fa-spinner fa-spin"></i> Registering...</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Capture Visit -->
+    <div class="aw-panel" ng-if="c.currentStep === 2">
+      <h3 class="aw-panel-title"><i class="fa fa-clipboard"></i> Capture Visit Details</h3>
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label>Department <span class="text-danger">*</span></label>
+            <select class="form-control" ng-model="c.visit.department_id" ng-change="c.onDepartmentChange()">
+              <option value="">-- Select Department --</option>
+              <option ng-repeat="d in c.departments track by d.sys_id" value="{{d.sys_id}}">{{d.name}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label>Admission Type <span class="text-danger">*</span></label>
+            <select class="form-control" ng-model="c.visit.admission_type">
+              <option value="">-- Select Type --</option>
+              <option ng-repeat="t in c.admissionTypes track by t.value" value="{{t.value}}">{{t.label}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label>Priority</label>
+            <select class="form-control" ng-model="c.visit.priority">
+              <option value="">-- Select Priority --</option>
+              <option ng-repeat="p in c.priorities track by p.value" value="{{p.value}}">{{p.label}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label>Care Level</label>
+            <select class="form-control" ng-model="c.visit.care_level">
+              <option value="">-- Select Care Level --</option>
+              <option ng-repeat="cl in c.careLevels track by cl.value" value="{{cl.value}}">{{cl.label}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label>Waiting Location</label>
+            <select class="form-control" ng-model="c.visit.waiting_location">
+              <option value="">-- Select Location --</option>
+              <option ng-repeat="wl in c.waitLocations track by wl.value" value="{{wl.value}}">{{wl.label}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label>Requirements</label>
+            <textarea class="form-control" rows="2" ng-model="c.visit.requirements"
+                      placeholder="Special requirements..."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Choose Placement -->
+    <div class="aw-panel" ng-if="c.currentStep === 3">
+      <h3 class="aw-panel-title"><i class="fa fa-bed"></i> Choose Placement</h3>
+      <p class="text-muted">Select a ward, room, and bed. Leave unselected to place patient in the waiting queue.</p>
+
+      <div class="text-center aw-loading" ng-if="c.placementLoading">
+        <i class="fa fa-spinner fa-spin"></i> Loading...
+      </div>
+
+      <!-- Breadcrumb -->
+      <div class="aw-placement-breadcrumb" ng-if="c.selectedWard || c.selectedRoom || c.selectedBed">
+        <span ng-if="c.selectedWard">
+          <a ng-click="c.clearWard()" role="button">Wards</a> &raquo;
+          <strong>{{c.selectedWard.name}}</strong>
+        </span>
+        <span ng-if="c.selectedRoom">
+          &raquo; <a ng-click="c.clearRoom()" role="button">Rooms</a> &raquo;
+          <strong>{{c.selectedRoom.label || c.selectedRoom.code}}</strong>
+        </span>
+        <span ng-if="c.selectedBed">
+          &raquo; Bed <strong>{{c.selectedBed.label}}</strong>
+        </span>
+      </div>
+
+      <!-- Ward List -->
+      <div class="aw-placement-list" ng-if="!c.selectedWard && !c.placementLoading">
+        <div class="aw-no-results" ng-if="c.wards.length === 0">
+          <i class="fa fa-info-circle"></i> Select a department in Step 2 to see available wards.
+        </div>
+        <div class="aw-place-card" ng-repeat="w in c.wards track by w.sys_id"
+             ng-click="c.selectWard(w)" role="button" tabindex="0">
+          <div class="aw-place-name"><i class="fa fa-hospital-o"></i> {{w.name}}</div>
+          <div class="aw-place-meta">{{w.care_level}} &middot; {{w.floor_wing}}</div>
+          <i class="fa fa-chevron-right aw-place-arrow"></i>
+        </div>
+      </div>
+
+      <!-- Room List -->
+      <div class="aw-placement-list" ng-if="c.selectedWard && !c.selectedRoom && !c.placementLoading">
+        <div class="aw-no-results" ng-if="c.rooms.length === 0">
+          <i class="fa fa-info-circle"></i> No rooms in this ward.
+        </div>
+        <div class="aw-place-card" ng-repeat="r in c.rooms track by r.sys_id"
+             ng-click="c.selectRoom(r)" role="button" tabindex="0">
+          <div class="aw-place-name"><i class="fa fa-th-large"></i> {{r.label || r.code}}</div>
+          <div class="aw-place-meta">
+            Tier: {{r.tier_display}}
+            <span ng-if="r.daily_rate"> &middot; Rate: {{r.daily_rate}}</span>
+            <span ng-if="r.isolation_capable"> &middot; <i class="fa fa-shield" title="Isolation"></i></span>
+            <span ng-if="r.oxygen_available"> &middot; <i class="fa fa-tint" title="Oxygen"></i></span>
+          </div>
+          <i class="fa fa-chevron-right aw-place-arrow"></i>
+        </div>
+      </div>
+
+      <!-- Bed List -->
+      <div class="aw-placement-list" ng-if="c.selectedRoom && !c.placementLoading">
+        <div class="aw-no-results" ng-if="c.beds.length === 0">
+          <i class="fa fa-info-circle"></i> No available beds in this room.
+        </div>
+        <div class="aw-place-card" ng-repeat="b in c.beds track by b.sys_id"
+             ng-click="c.selectBed(b)" role="button" tabindex="0"
+             ng-class="{'aw-place-selected': c.selectedBed && c.selectedBed.sys_id === b.sys_id}">
+          <div class="aw-place-name">
+            <i class="fa fa-check-circle" ng-if="c.selectedBed && c.selectedBed.sys_id === b.sys_id"></i>
+            <i class="fa fa-bed" ng-if="!c.selectedBed || c.selectedBed.sys_id !== b.sys_id"></i>
+            {{b.label}}
+          </div>
+          <div class="aw-place-meta">
+            {{b.care_level}} &middot; {{b.readiness}}
+            <span ng-if="b.isolation_capable"> &middot; <i class="fa fa-shield" title="Isolation"></i></span>
+            <span ng-if="b.oxygen_available"> &middot; <i class="fa fa-tint" title="Oxygen"></i></span>
+            <span ng-if="b.ventilator_capable"> &middot; <i class="fa fa-heartbeat" title="Ventilator"></i></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4: Review & Submit -->
+    <div class="aw-panel" ng-if="c.currentStep === 4">
+      <h3 class="aw-panel-title"><i class="fa fa-check-circle"></i> Review &amp; Submit</h3>
+
+      <div class="alert alert-danger" ng-if="c.submitError">
+        <i class="fa fa-exclamation-circle"></i> {{c.submitError}}
+      </div>
+
+      <div class="aw-review">
+        <div class="aw-review-section">
+          <h5>Patient</h5>
+          <p><strong>{{c.selectedPatient.display_name}}</strong> ({{c.selectedPatient.patient_number}})</p>
+        </div>
+        <div class="aw-review-section">
+          <h5>Visit Details</h5>
+          <dl class="dl-horizontal">
+            <dt>Department</dt><dd>{{c.visit.department_name}}</dd>
+            <dt>Admission Type</dt><dd>{{c.getLabelForValue(c.admissionTypes, c.visit.admission_type)}}</dd>
+            <dt ng-if="c.visit.priority">Priority</dt><dd ng-if="c.visit.priority">{{c.getLabelForValue(c.priorities, c.visit.priority)}}</dd>
+            <dt ng-if="c.visit.care_level">Care Level</dt><dd ng-if="c.visit.care_level">{{c.getLabelForValue(c.careLevels, c.visit.care_level)}}</dd>
+            <dt ng-if="c.visit.waiting_location">Waiting Location</dt><dd ng-if="c.visit.waiting_location">{{c.getLabelForValue(c.waitLocations, c.visit.waiting_location)}}</dd>
+            <dt ng-if="c.visit.requirements">Requirements</dt><dd ng-if="c.visit.requirements">{{c.visit.requirements}}</dd>
+          </dl>
+        </div>
+        <div class="aw-review-section">
+          <h5>Placement</h5>
+          <p ng-if="c.selectedBed">
+            <i class="fa fa-bed"></i> Bed: <strong>{{c.selectedBed.label}}</strong>
+            <span ng-if="c.selectedRoom"> in {{c.selectedRoom.label || c.selectedRoom.code}}</span>
+            <span ng-if="c.selectedWard"> / {{c.selectedWard.name}}</span>
+          </p>
+          <p ng-if="!c.selectedBed">
+            <i class="fa fa-clock-o"></i> No bed selected &mdash; patient will be placed in the <strong>waiting queue</strong>.
+          </p>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-primary btn-lg aw-submit-btn" ng-click="c.submitAdmission()"
+              ng-disabled="c.submitting">
+        <span ng-if="!c.submitting"><i class="fa fa-check"></i> Confirm Admission</span>
+        <span ng-if="c.submitting"><i class="fa fa-spinner fa-spin"></i> Submitting...</span>
+      </button>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="aw-nav" ng-if="!c.submitSuccess">
+      <button type="button" class="btn btn-default aw-btn" ng-click="c.prevStep()"
+              ng-disabled="c.currentStep === 1">
+        <i class="fa fa-arrow-left"></i> Back
+      </button>
+      <button type="button" class="btn btn-primary aw-btn" ng-click="c.nextStep()"
+              ng-disabled="!c.canProceed()" ng-if="c.currentStep < 4">
+        Next <i class="fa fa-arrow-right"></i>
+      </button>
+    </div>
+
+  </div>
+</div>
+]]></template>
+    </sp_widget>
+</record_update>

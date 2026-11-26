@@ -5,7 +5,7 @@
         <description>Maintenance technician</description>
         <elevated_privilege>false</elevated_privilege>
         <encryption_context/>
-        <federated_id/>
+        <federated_id>M+eCnj+wQDKkBAOHr/GECi5oW0VVnRzsbT9z7GFv48k=</federated_id>
         <grantable>true</grantable>
         <includes_roles/>
         <name>x_2307780_sentin_0.maintenance</name>

@@ -59,7 +59,7 @@
         <short_description/>
         <size>md</size>
         <sp_column display_value="100">bbd88734814a45fcb48a426165a2a25d</sp_column>
-        <sp_widget display_value="">573e4fdde2a54d9bbf889a8ed8f3d51a</sp_widget>
+        <sp_widget display_value="Bed Operations Board">573e4fdde2a54d9bbf889a8ed8f3d51a</sp_widget>
         <sys_class_name>sp_instance</sys_class_name>
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-11-25 10:05:37</sys_created_on>

@@ -13,6 +13,6 @@
         <sys_update_name>sys_security_acl_role_2d6b1d20478e417bad86b143e02afc18</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
         <sys_updated_on>2026-11-26 06:18:24</sys_updated_on>
-        <sys_user_role display_value="">9c3fd78beda944628401fd9db3fb76e0</sys_user_role>
+        <sys_user_role display_value="x_2307780_sentin_0.hospital_admin" name="x_2307780_sentin_0.hospital_admin">9c3fd78beda944628401fd9db3fb76e0</sys_user_role>
     </sys_security_acl_role>
 </record_update>

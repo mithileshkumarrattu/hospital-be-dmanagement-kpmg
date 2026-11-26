@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_user_role_contains">
+    <sys_user_role_contains action="INSERT_OR_UPDATE">
+        <contains display_value="x_2307780_sentin_0.reception" name="x_2307780_sentin_0.reception">04e759a495dc4a41975f11c7439d61e9</contains>
+        <role display_value="x_2307780_sentin_0.bed_admin" name="x_2307780_sentin_0.bed_admin">2714b252127643f5bd2ae80f6fa6276b</role>
+        <sys_class_name>sys_user_role_contains</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-11-25 09:54:27</sys_created_on>
+        <sys_id>99d977c1bf964e208d7fc2546118dd93</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>x_2307780_sentin_0.reception.x_2307780_sentin_0.bed_admin</sys_name>
+        <sys_package display_value="Sentinels Bed Operations Pilot" source="x_2307780_sentin_0">d8fe43811b30db50b87da8a5624bcb6c</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Sentinels Bed Operations Pilot">d8fe43811b30db50b87da8a5624bcb6c</sys_scope>
+        <sys_update_name>sys_user_role_contains_99d977c1bf964e208d7fc2546118dd93</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-11-25 09:54:27</sys_updated_on>
+    </sys_user_role_contains>
+</record_update>

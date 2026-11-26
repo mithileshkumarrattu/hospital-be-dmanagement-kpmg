@@ -877,8 +877,7 @@
   .btn-refresh {
     align-self: flex-end;
   }
-}
-</css>
+}</css>
         <data_table>sp_instance</data_table>
         <demo_data/>
         <description/>

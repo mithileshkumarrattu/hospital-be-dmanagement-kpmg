@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element audit="true" db_object_id="1d835fee03104881814a8ff80245202f" label="Ward" name="x_2307780_sentin_0_ward" type="collection">
+        <element display="true" label="Ward Name" mandatory="true" max_length="100" name="name" type="string"/>
+        <element default="true" label="Active" name="active" type="boolean"/>
+        <element label="Nursing Group" name="nursing_group" reference="sys_user_group" type="reference"/>
+        <element label="Housekeeping Group" name="housekeeping_group" reference="sys_user_group" type="reference"/>
+        <element label="Maintenance Group" name="maintenance_group" reference="sys_user_group" type="reference"/>
+        <element label="Station Phone" max_length="20" name="station_phone" type="string"/>
+        <element label="Closure Reason" max_length="255" name="closure_reason" type="string"/>
+        <element label="Service Policy" name="policy" reference="x_2307780_sentin_0_policy" reference_cascade_rule="none" type="reference"/>
+        <element label="Floor / Wing" max_length="50" name="floor_wing" type="string"/>
+        <element label="Department" mandatory="true" name="department" reference="x_2307780_sentin_0_dept" reference_cascade_rule="none" type="reference"/>
+        <element label="Fallback Routing Group" name="fallback_group" reference="sys_user_group" type="reference"/>
+        <element label="Care Level" mandatory="true" name="care_level" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="General" sequence="1" value="general"/>
+                <element inactive_on_update="false" label="Isolation" sequence="8" value="isolation"/>
+                <element inactive_on_update="false" label="Maternity" sequence="5" value="maternity"/>
+                <element inactive_on_update="false" label="Psychiatric" sequence="9" value="psychiatric"/>
+                <element inactive_on_update="false" label="Emergency" sequence="7" value="emergency"/>
+                <element inactive_on_update="false" label="ICU" sequence="3" value="icu"/>
+                <element inactive_on_update="false" label="Pediatric" sequence="4" value="pediatric"/>
+                <element inactive_on_update="false" label="HDU" sequence="2" value="hdu"/>
+                <element inactive_on_update="false" label="Surgical" sequence="6" value="surgical"/>
+            </choice>
+        </element>
+        <element default="open" label="Placement Status" mandatory="true" name="placement_status" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Restricted" sequence="3" value="restricted"/>
+                <element inactive_on_update="false" label="Open for Placement" sequence="1" value="open"/>
+                <element inactive_on_update="false" label="Closed to Placement" sequence="2" value="closed"/>
+            </choice>
+        </element>
+        <element label="Escalation Group" name="escalation_group" reference="sys_user_group" type="reference"/>
+        <element label="Closure Time" name="closure_time" type="glide_date_time"/>
+        <element label="Ward Code" mandatory="true" max_length="20" name="code" type="string"/>
+        <index name="index" unique="true">
+            <element name="code"/>
+        </index>
+        <index name="index2">
+            <element name="department"/>
+        </index>
+        <index name="index3">
+            <element name="escalation_group"/>
+        </index>
+        <index name="index4">
+            <element name="fallback_group"/>
+        </index>
+        <index name="index5">
+            <element name="housekeeping_group"/>
+        </index>
+        <index name="index6">
+            <element name="maintenance_group"/>
+        </index>
+        <index name="index7">
+            <element name="nursing_group"/>
+        </index>
+        <index name="index8">
+            <element name="policy"/>
+        </index>
+    </element>
+</database>

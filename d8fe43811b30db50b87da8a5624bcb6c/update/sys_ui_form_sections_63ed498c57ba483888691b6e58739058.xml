@@ -3,44 +3,44 @@
         <sys_ui_form_section action="INSERT_OR_UPDATE">
             <position>0</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:28:22</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:46</sys_created_on>
             <sys_domain>global</sys_domain>
             <sys_domain_path>/</sys_domain_path>
             <sys_id>af9aff0825d046d59699689a32311c20</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_overrides/>
             <sys_ui_form display_value="x_2307780_sentin_0_acc_grant" name="x_2307780_sentin_0_acc_grant" sys_domain="global" view="Default view">63ed498c57ba483888691b6e58739058</sys_ui_form>
-            <sys_ui_section display_value="">50b51413cb66479796221f8325aae79b</sys_ui_section>
+            <sys_ui_section caption="Grant Details" display_value="Grant Details" name="x_2307780_sentin_0_acc_grant" sys_domain="global" view="Default view">50b51413cb66479796221f8325aae79b</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:28:22</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:46</sys_updated_on>
         </sys_ui_form_section>
         <sys_ui_form_section action="INSERT_OR_UPDATE">
             <position>1</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:28:22</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:46</sys_created_on>
             <sys_domain>global</sys_domain>
             <sys_domain_path>/</sys_domain_path>
             <sys_id>01503760d04f40a8b7f47745ae59d50d</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_overrides/>
             <sys_ui_form display_value="x_2307780_sentin_0_acc_grant" name="x_2307780_sentin_0_acc_grant" sys_domain="global" view="Default view">63ed498c57ba483888691b6e58739058</sys_ui_form>
-            <sys_ui_section display_value="">2247f430b974435f96f5dc50ad80501c</sys_ui_section>
+            <sys_ui_section caption="Permissions" display_value="Permissions" name="x_2307780_sentin_0_acc_grant" sys_domain="global" view="Default view">2247f430b974435f96f5dc50ad80501c</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:28:22</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:46</sys_updated_on>
         </sys_ui_form_section>
         <sys_ui_form_section action="INSERT_OR_UPDATE">
             <position>2</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:28:22</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:46</sys_created_on>
             <sys_domain>global</sys_domain>
             <sys_domain_path>/</sys_domain_path>
             <sys_id>ea83a967b41b4a9bb7985916345beea1</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_overrides/>
             <sys_ui_form display_value="x_2307780_sentin_0_acc_grant" name="x_2307780_sentin_0_acc_grant" sys_domain="global" view="Default view">63ed498c57ba483888691b6e58739058</sys_ui_form>
-            <sys_ui_section display_value="">c186c872df7244b9a252674e99ced7e0</sys_ui_section>
+            <sys_ui_section caption="Revocation" display_value="Revocation" name="x_2307780_sentin_0_acc_grant" sys_domain="global" view="Default view">c186c872df7244b9a252674e99ced7e0</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:28:22</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:46</sys_updated_on>
         </sys_ui_form_section>
         <sys_ui_form action="INSERT_OR_UPDATE">
             <name>x_2307780_sentin_0_acc_grant</name>

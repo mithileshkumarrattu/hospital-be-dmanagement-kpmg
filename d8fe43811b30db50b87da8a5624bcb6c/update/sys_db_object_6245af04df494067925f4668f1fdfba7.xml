@@ -16,7 +16,7 @@
         <label>Bed Work Task</label>
         <live_feed_enabled>false</live_feed_enabled>
         <name>x_2307780_sentin_0_bed_work</name>
-        <number_ref display_value="">c1e67abfabf4476eb70349de417bc6c2</number_ref>
+        <number_ref display_value="BWK">c1e67abfabf4476eb70349de417bc6c2</number_ref>
         <provider_class/>
         <read_access>true</read_access>
         <scriptable_table>false</scriptable_table>

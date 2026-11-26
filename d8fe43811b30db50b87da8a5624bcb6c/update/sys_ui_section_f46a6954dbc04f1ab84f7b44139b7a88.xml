@@ -4,13 +4,13 @@
             <element>.begin_split</element>
             <position>0</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:28:31</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:54</sys_created_on>
             <sys_id>19da2cf4a99447309c30fece24ad04bb</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Patient &amp; Visit" display_value="Patient &amp; Visit" name="x_2307780_sentin_0_adm" sys_domain="global" view="Default view">f46a6954dbc04f1ab84f7b44139b7a88</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:28:31</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:54</sys_updated_on>
             <sys_user/>
             <type>.begin_split</type>
         </sys_ui_element>
@@ -18,13 +18,13 @@
             <element>patient</element>
             <position>1</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:28:31</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:54</sys_created_on>
             <sys_id>0e7dd49455764c04ac8876845b475013</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Patient &amp; Visit" display_value="Patient &amp; Visit" name="x_2307780_sentin_0_adm" sys_domain="global" view="Default view">f46a6954dbc04f1ab84f7b44139b7a88</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:28:31</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:54</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
@@ -32,13 +32,13 @@
             <element>admission_type</element>
             <position>2</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:28:31</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:54</sys_created_on>
             <sys_id>8790d80597034b2b96a08b169bf9ad43</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Patient &amp; Visit" display_value="Patient &amp; Visit" name="x_2307780_sentin_0_adm" sys_domain="global" view="Default view">f46a6954dbc04f1ab84f7b44139b7a88</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:28:31</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:54</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
@@ -46,13 +46,13 @@
             <element>.split</element>
             <position>3</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:28:31</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:54</sys_created_on>
             <sys_id>d47926dcecf44db5afd532d8ece9dec1</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Patient &amp; Visit" display_value="Patient &amp; Visit" name="x_2307780_sentin_0_adm" sys_domain="global" view="Default view">f46a6954dbc04f1ab84f7b44139b7a88</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:28:31</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:54</sys_updated_on>
             <sys_user/>
             <type>.split</type>
         </sys_ui_element>
@@ -60,13 +60,13 @@
             <element>department</element>
             <position>4</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:28:31</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:54</sys_created_on>
             <sys_id>a9827139deb841318ede31b1b564b269</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Patient &amp; Visit" display_value="Patient &amp; Visit" name="x_2307780_sentin_0_adm" sys_domain="global" view="Default view">f46a6954dbc04f1ab84f7b44139b7a88</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:28:31</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:54</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
@@ -74,13 +74,13 @@
             <element>preferred_ward</element>
             <position>5</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:28:31</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:54</sys_created_on>
             <sys_id>a1595499287f46528ddffa4570b64674</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Patient &amp; Visit" display_value="Patient &amp; Visit" name="x_2307780_sentin_0_adm" sys_domain="global" view="Default view">f46a6954dbc04f1ab84f7b44139b7a88</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:28:31</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:54</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
@@ -88,13 +88,13 @@
             <element>.end_split</element>
             <position>6</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:28:31</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:54</sys_created_on>
             <sys_id>736d0ce044ce437da3aedcffb0801738</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Patient &amp; Visit" display_value="Patient &amp; Visit" name="x_2307780_sentin_0_adm" sys_domain="global" view="Default view">f46a6954dbc04f1ab84f7b44139b7a88</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:28:31</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:54</sys_updated_on>
             <sys_user/>
             <type>.end_split</type>
         </sys_ui_element>

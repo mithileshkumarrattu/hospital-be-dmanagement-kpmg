@@ -1,0 +1,560 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function () {
+    var c = this;
+
+    c.activeTab = 'newFaults';
+    c.submitting = false;
+    c.alertMessage = '';
+    c.alertType = '';
+    c.selectedTask = null;
+    c.showDrawer = false;
+    c.showReopenModal = false;
+    c.reopenReason = '';
+    c.resolutionNote = '';
+
+    c.setTab = function (tab) {
+        c.activeTab = tab;
+    };
+
+    c.getActiveList = function () {
+        if (c.activeTab === 'newFaults') return c.data.newFaults;
+        if (c.activeTab === 'myRepairs') return c.data.myRepairs;
+        if (c.activeTab === 'completed') return c.data.completedToday;
+        return [];
+    };
+
+    c.openDrawer = function (task) {
+        c.selectedTask = task;
+        c.showDrawer = true;
+        c.resolutionNote = '';
+    };
+
+    c.closeDrawer = function () {
+        c.showDrawer = false;
+        c.selectedTask = null;
+    };
+
+    c.claimTask = function (task) {
+        c.submitting = true;
+        c.data.action = 'claim';
+        c.data.task_id = task.sys_id;
+        c.server.update().then(function () {
+            c.submitting = false;
+            handleResult();
+        });
+    };
+
+    c.startRepair = function (task) {
+        c.submitting = true;
+        c.data.action = 'start_repair';
+        c.data.task_id = task.sys_id;
+        c.server.update().then(function () {
+            c.submitting = false;
+            handleResult();
+        });
+    };
+
+    c.completeRepair = function (task) {
+        c.submitting = true;
+        c.data.action = 'complete_repair';
+        c.data.task_id = task.sys_id;
+        c.data.resolution_note = c.resolutionNote;
+        c.server.update().then(function () {
+            c.submitting = false;
+            c.showDrawer = false;
+            handleResult();
+        });
+    };
+
+    c.openReopenModal = function (task) {
+        c.selectedTask = task;
+        c.reopenReason = '';
+        c.showReopenModal = true;
+    };
+
+    c.closeReopenModal = function () {
+        c.showReopenModal = false;
+    };
+
+    c.submitReopen = function () {
+        if (!c.selectedTask || !c.reopenReason) return;
+        c.submitting = true;
+        c.data.action = 'reopen';
+        c.data.task_id = c.selectedTask.sys_id;
+        c.data.reopen_reason = c.reopenReason;
+        c.server.update().then(function () {
+            c.submitting = false;
+            c.showReopenModal = false;
+            handleResult();
+        });
+    };
+
+    c.refresh = function () {
+        c.server.refresh();
+    };
+
+    function handleResult() {
+        if (c.data.actionResult) {
+            c.alertMessage = c.data.actionResult.message;
+            c.alertType = c.data.actionResult.success ? 'success' : 'danger';
+            c.data.action = null;
+            c.data.actionResult = null;
+            c.server.refresh();
+        }
+    }
+};
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css>/* ═══════════════════════════════════════════════════════════════════════════
+   Maintenance Dashboard — Sentinels brand, amber/warning accents
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.mt-container { background: #F7F8FA; min-height: 100vh; padding: 24px; color: #2D3748; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
+
+/* ── Header ────────────────────────────────────────────────────────────────── */
+.mt-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+.mt-title { margin: 0; font-size: 26px; font-weight: 700; color: #172C32; }
+.mt-title .fa { color: #D97706; margin-right: 8px; }
+.mt-refresh-btn { border-radius: 6px; font-weight: 500; }
+
+/* ── Alert ─────────────────────────────────────────────────────────────────── */
+.mt-alert { border-radius: 6px; font-size: 14px; margin-bottom: 16px; padding: 10px 14px; }
+
+/* ── Action Cards ──────────────────────────────────────────────────────────── */
+.mt-action-row { margin-bottom: 20px; }
+.mt-action-card { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px; border-radius: 10px; color: #fff; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; margin-bottom: 12px; }
+.mt-action-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.18); }
+.mt-card-red { background: linear-gradient(135deg, #DC2626 0%, #EF4444 100%); }
+.mt-card-amber { background: linear-gradient(135deg, #D97706 0%, #F59E0B 100%); }
+.mt-card-green { background: linear-gradient(135deg, #059669 0%, #10B981 100%); }
+.mt-card-body { display: flex; align-items: center; gap: 12px; }
+.mt-card-icon { font-size: 20px; opacity: 0.9; }
+.mt-card-title { font-size: 15px; font-weight: 600; }
+.mt-card-badge { background: rgba(255,255,255,0.25); padding: 4px 12px; border-radius: 20px; font-size: 16px; font-weight: 700; }
+
+/* ── Tab Bar ───────────────────────────────────────────────────────────────── */
+.mt-tab-bar { margin-bottom: 20px; display: flex; gap: 8px; flex-wrap: wrap; }
+.mt-tab-btn { background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 6px; padding: 10px 18px; font-size: 14px; font-weight: 500; color: #4A5568; transition: all 0.15s ease; }
+.mt-tab-btn:hover { border-color: #D97706; color: #D97706; }
+.mt-tab-active { background: #D97706; color: #FFFFFF; border-color: #D97706; }
+.mt-tab-active:hover, .mt-tab-active:focus { background: #B45309; color: #FFFFFF; border-color: #B45309; }
+.mt-tab-btn .fa { margin-right: 6px; }
+.mt-badge { background: rgba(255,255,255,0.3); margin-left: 6px; }
+
+/* ── Table ─────────────────────────────────────────────────────────────────── */
+.mt-panel { background: #FFFFFF; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); margin-bottom: 24px; overflow: hidden; }
+.mt-table { margin-bottom: 0; }
+.mt-table &gt; thead &gt; tr &gt; th { background: #F8FAFB; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #53656A; padding: 12px 16px; border-bottom: 2px solid #E2E8F0; white-space: nowrap; }
+.mt-table &gt; tbody &gt; tr &gt; td { padding: 14px 16px; vertical-align: middle; border-top: 1px solid #F0F2F4; font-size: 14px; color: #2D3748; }
+.mt-table &gt; tbody &gt; tr:hover { background: #F8FAFB; }
+.mt-row-clickable { cursor: pointer; }
+.mt-cell-number { font-weight: 600; color: #08656A; white-space: nowrap; }
+.mt-cell-desc { max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mt-action-cell { white-space: nowrap; }
+.mt-act-btn { border-radius: 6px; font-weight: 500; font-size: 13px; margin: 2px; min-height: 44px; min-width: 44px; }
+.mt-act-btn .fa { margin-right: 4px; }
+
+/* ── Empty State ───────────────────────────────────────────────────────────── */
+.mt-empty { padding: 48px 24px; text-align: center; color: #53656A; }
+.mt-empty .fa { color: #CBD5E1; margin-bottom: 12px; }
+.mt-empty p { font-size: 15px; margin-top: 8px; }
+
+/* ── Drawer ────────────────────────────────────────────────────────────────── */
+.mt-drawer-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1050; display: flex; justify-content: flex-end; }
+.mt-drawer { background: #FFFFFF; width: 420px; max-width: 90vw; height: 100%; box-shadow: -4px 0 20px rgba(0,0,0,0.15); display: flex; flex-direction: column; }
+.mt-drawer-header { padding: 16px 20px; border-bottom: 1px solid #E2E8F0; display: flex; justify-content: space-between; align-items: center; }
+.mt-drawer-header h4 { margin: 0; font-weight: 700; color: #172C32; font-size: 16px; }
+.mt-drawer-body { padding: 20px; flex: 1; overflow-y: auto; }
+.mt-detail-row { padding: 8px 0; border-bottom: 1px solid #F0F2F4; font-size: 14px; }
+.mt-drawer-footer { padding: 12px 20px; border-top: 1px solid #E2E8F0; display: flex; justify-content: flex-end; gap: 8px; }
+
+/* ── Modal ─────────────────────────────────────────────────────────────────── */
+.mt-modal { background: #FFFFFF; border-radius: 10px; width: 90%; max-width: 500px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); margin: auto; }
+
+/* ── Responsive ────────────────────────────────────────────────────────────── */
+@media (max-width: 991px) {
+  .mt-table { font-size: 13px; }
+}
+@media (max-width: 767px) {
+  .mt-container { padding: 12px; }
+  .mt-title { font-size: 20px; }
+  .mt-tab-bar { flex-direction: column; }
+  .mt-tab-btn { width: 100%; text-align: left; }
+  .mt-table { display: block; overflow-x: auto; }
+}
+@media (max-width: 480px) {
+  .mt-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .mt-drawer { width: 100%; }
+}
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description>Maintenance repair queue: fault triage, repair tracking, completion workflow.</description>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>x_2307780_sentin_0_maint_dashboard</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {
+}]]></link>
+        <name>Maintenance Dashboard</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function () {
+    /* ── Label Maps ────────────────────────────────────────────────────────── */
+    var STATE_LABELS = { '1': 'New', '2': 'Work in Progress', '3': 'Closed Complete', '7': 'Closed Incomplete' };
+    var STATE_CLASS  = { '1': 'label-danger', '2': 'label-warning', '3': 'label-success', '7': 'label-default' };
+    var PRIORITY_LABELS = { '1': 'Critical', '2': 'High', '3': 'Moderate', '4': 'Low', '5': 'Planning' };
+    var PRIORITY_CLASS  = { '1': 'label-danger', '2': 'label-warning', '3': 'label-info', '4': 'label-success', '5': 'label-default' };
+
+    /* ── Handler actions ───────────────────────────────────────────────────── */
+    if (input && input.action === 'claim') {
+        try {
+            var grClaim = new GlideRecord('x_2307780_sentin_0_bed_work');
+            if (grClaim.get(input.task_id)) {
+                grClaim.setValue('assigned_to', gs.getUserID());
+                grClaim.setValue('state', '2');
+                grClaim.setValue('accepted_at', new GlideDateTime().getValue());
+                grClaim.update();
+                data.actionResult = { success: true, message: 'Fault claimed successfully.' };
+            } else {
+                data.actionResult = { success: false, message: 'Task not found.' };
+            }
+        } catch (e) {
+            data.actionResult = { success: false, message: 'Claim failed: ' + e.message };
+        }
+        return;
+    }
+
+    if (input && input.action === 'start_repair') {
+        try {
+            var grStart = new GlideRecord('x_2307780_sentin_0_bed_work');
+            if (grStart.get(input.task_id)) {
+                grStart.setValue('state', '2');
+                grStart.setValue('started_at', new GlideDateTime().getValue());
+                grStart.update();
+                data.actionResult = { success: true, message: 'Repair started.' };
+            } else {
+                data.actionResult = { success: false, message: 'Task not found.' };
+            }
+        } catch (e) {
+            data.actionResult = { success: false, message: 'Start failed: ' + e.message };
+        }
+        return;
+    }
+
+    if (input && input.action === 'complete_repair') {
+        try {
+            var handler = new x_2307780_sentin_0.BedOpsCommandHandler();
+            var result = handler.completeRepair(input.task_id, input.resolution_note || '');
+            data.actionResult = { success: true, message: 'Repair completed.' };
+        } catch (e) {
+            data.actionResult = { success: false, message: 'Complete failed: ' + e.message };
+        }
+        return;
+    }
+
+    if (input && input.action === 'reopen') {
+        try {
+            var grReopen = new GlideRecord('x_2307780_sentin_0_bed_work');
+            if (grReopen.get(input.task_id)) {
+                grReopen.setValue('state', '1');
+                grReopen.setValue('assigned_to', '');
+                grReopen.setValue('resolution_note', 'Reopened: ' + (input.reopen_reason || 'No reason provided'));
+                grReopen.update();
+                data.actionResult = { success: true, message: 'Task reopened.' };
+            } else {
+                data.actionResult = { success: false, message: 'Task not found.' };
+            }
+        } catch (e) {
+            data.actionResult = { success: false, message: 'Reopen failed: ' + e.message };
+        }
+        return;
+    }
+
+    /* ── Helper: enrich task ───────────────────────────────────────────────── */
+    var nowDT = new GlideDateTime();
+    function buildRepairObj(gr) {
+        var bedCode = '', wardName = '', roomLabel = '', bedSysId = '';
+        var bedRef = gr.getValue('bed');
+        if (bedRef) {
+            bedSysId = bedRef;
+            var grBed = new GlideRecord('x_2307780_sentin_0_bed');
+            if (grBed.get(bedRef)) {
+                bedCode = grBed.getValue('bed_code') || '';
+                roomLabel = grBed.getValue('room_label') || '';
+                wardName = grBed.getValue('ward_label') || '';
+                if (!roomLabel) {
+                    var roomRef = grBed.getValue('room');
+                    if (roomRef) {
+                        var grRoom = new GlideRecord('x_2307780_sentin_0_room');
+                        if (grRoom.get(roomRef)) {
+                            roomLabel = grRoom.getValue('label_name') || '';
+                            var wardRef = grRoom.getValue('ward');
+                            if (wardRef) {
+                                var grWard = new GlideRecord('x_2307780_sentin_0_ward');
+                                if (grWard.get(wardRef)) {
+                                    wardName = grWard.getValue('name') || '';
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        var stateVal = gr.getValue('state') || '1';
+        var priorityVal = gr.getValue('priority') || '3';
+
+        return {
+            sys_id: gr.getUniqueValue(),
+            number: gr.getValue('number') || gr.getUniqueValue().substring(0, 8),
+            bed_code: bedCode,
+            bed_id: bedSysId,
+            ward_name: wardName,
+            room_label: roomLabel,
+            short_description: gr.getValue('short_description') || 'No description',
+            fault_category: gr.getDisplayValue('fault_category') || '',
+            state: STATE_LABELS[stateVal] || stateVal,
+            state_raw: stateVal,
+            state_class: STATE_CLASS[stateVal] || 'label-default',
+            priority: PRIORITY_LABELS[priorityVal] || priorityVal,
+            priority_class: PRIORITY_CLASS[priorityVal] || 'label-default',
+            assigned_to: gr.getDisplayValue('assigned_to'),
+            created_on: gr.getDisplayValue('sys_created_on'),
+            resolution_note: gr.getValue('resolution_note') || '',
+            issue_description: gr.getValue('issue_description') || ''
+        };
+    }
+
+    /* ── Query Tasks ──────────────────────────────────────────────────────── */
+    data.newFaults = [];
+    data.myRepairs = [];
+    data.completedToday = [];
+    var currentUserId = gs.getUserID();
+
+    /* Active repair tasks */
+    var grActive = new GlideRecord('x_2307780_sentin_0_bed_work');
+    grActive.addQuery('work_type', 'repair');
+    grActive.addQuery('state', 'IN', '1,2');
+    grActive.orderBy('priority');
+    grActive.orderBy('sys_created_on');
+    grActive.setLimit(200);
+    grActive.query();
+    while (grActive.next()) {
+        var task = buildRepairObj(grActive);
+        var assignedTo = grActive.getValue('assigned_to') || '';
+        var stVal = grActive.getValue('state');
+
+        if (assignedTo === currentUserId) {
+            data.myRepairs.push(task);
+        } else if (!assignedTo && stVal === '1') {
+            data.newFaults.push(task);
+        }
+    }
+
+    /* Completed today */
+    var todayStart = new GlideDateTime();
+    todayStart.setDisplayValue(todayStart.getDate().getDisplayValue() + ' 00:00:00');
+    var grDone = new GlideRecord('x_2307780_sentin_0_bed_work');
+    grDone.addQuery('work_type', 'repair');
+    grDone.addQuery('state', '3');
+    grDone.addQuery('completed_at', '>=', todayStart.getValue());
+    grDone.orderByDesc('completed_at');
+    grDone.setLimit(50);
+    grDone.query();
+    while (grDone.next()) {
+        data.completedToday.push(buildRepairObj(grDone));
+    }
+
+    /* ── Metrics ──────────────────────────────────────────────────────────── */
+    data.metrics = {
+        newFaults: data.newFaults.length,
+        myRepairs: data.myRepairs.length,
+        completedToday: data.completedToday.length
+    };
+})();
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-11-26 08:07:21</sys_created_on>
+        <sys_id>c500986e10dd4f49b9968015855f3fed</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Maintenance Dashboard</sys_name>
+        <sys_package display_value="Sentinels Bed Operations Pilot" source="x_2307780_sentin_0">d8fe43811b30db50b87da8a5624bcb6c</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Sentinels Bed Operations Pilot">d8fe43811b30db50b87da8a5624bcb6c</sys_scope>
+        <sys_update_name>sp_widget_c500986e10dd4f49b9968015855f3fed</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-11-26 08:07:21</sys_updated_on>
+        <template><![CDATA[<div class="mt-container">
+  <!-- Header -->
+  <div class="mt-header">
+    <h2 class="mt-title"><i class="fa fa-wrench"></i> Maintenance Dashboard</h2>
+    <button type="button" class="btn btn-default mt-refresh-btn" ng-click="c.refresh()" ng-disabled="c.submitting">
+      <i class="fa fa-refresh"></i> Refresh
+    </button>
+  </div>
+
+  <!-- Alert -->
+  <div class="alert mt-alert" ng-class="'alert-' + c.alertType" ng-if="c.alertMessage">
+    <button type="button" class="close" ng-click="c.alertMessage = ''"><span>&times;</span></button>
+    <i class="fa" ng-class="{'fa-check-circle': c.alertType === 'success', 'fa-exclamation-circle': c.alertType === 'danger'}"></i>
+    {{c.alertMessage}}
+  </div>
+
+  <!-- Metric Cards -->
+  <div class="row mt-action-row">
+    <div class="col-md-4 col-sm-6 col-xs-12">
+      <div class="mt-action-card mt-card-red" ng-click="c.setTab('newFaults')">
+        <div class="mt-card-body">
+          <i class="fa fa-exclamation-circle mt-card-icon"></i>
+          <span class="mt-card-title">New Faults</span>
+        </div>
+        <span class="mt-card-badge">{{c.data.metrics.newFaults}}</span>
+      </div>
+    </div>
+    <div class="col-md-4 col-sm-6 col-xs-12">
+      <div class="mt-action-card mt-card-amber" ng-click="c.setTab('myRepairs')">
+        <div class="mt-card-body">
+          <i class="fa fa-wrench mt-card-icon"></i>
+          <span class="mt-card-title">My Repairs</span>
+        </div>
+        <span class="mt-card-badge">{{c.data.metrics.myRepairs}}</span>
+      </div>
+    </div>
+    <div class="col-md-4 col-sm-6 col-xs-12">
+      <div class="mt-action-card mt-card-green" ng-click="c.setTab('completed')">
+        <div class="mt-card-body">
+          <i class="fa fa-check-circle mt-card-icon"></i>
+          <span class="mt-card-title">Completed Today</span>
+        </div>
+        <span class="mt-card-badge">{{c.data.metrics.completedToday}}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab Bar -->
+  <div class="mt-tab-bar">
+    <button type="button" class="btn mt-tab-btn" ng-class="{'mt-tab-active': c.activeTab === 'newFaults'}" ng-click="c.setTab('newFaults')">
+      <i class="fa fa-exclamation-circle"></i> New Faults <span class="badge mt-badge">{{c.data.metrics.newFaults}}</span>
+    </button>
+    <button type="button" class="btn mt-tab-btn" ng-class="{'mt-tab-active': c.activeTab === 'myRepairs'}" ng-click="c.setTab('myRepairs')">
+      <i class="fa fa-wrench"></i> My Repairs <span class="badge mt-badge">{{c.data.metrics.myRepairs}}</span>
+    </button>
+    <button type="button" class="btn mt-tab-btn" ng-class="{'mt-tab-active': c.activeTab === 'completed'}" ng-click="c.setTab('completed')">
+      <i class="fa fa-check"></i> Completed <span class="badge mt-badge">{{c.data.metrics.completedToday}}</span>
+    </button>
+  </div>
+
+  <!-- Work Queue Table -->
+  <div class="mt-panel" ng-if="c.getActiveList().length">
+    <table class="table mt-table">
+      <thead>
+        <tr>
+          <th>Task</th>
+          <th>Bed</th>
+          <th>Ward / Room</th>
+          <th>Description</th>
+          <th>Priority</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="task in c.getActiveList() track by task.sys_id" ng-click="c.openDrawer(task)" class="mt-row-clickable">
+          <td class="mt-cell-number">{{task.number}}</td>
+          <td><strong>{{task.bed_code}}</strong></td>
+          <td>{{task.ward_name}} <span class="text-muted">&mdash; {{task.room_label}}</span></td>
+          <td class="mt-cell-desc">{{task.short_description}}</td>
+          <td><span class="label" ng-class="task.priority_class">{{task.priority}}</span></td>
+          <td><span class="label" ng-class="task.state_class">{{task.state}}</span></td>
+          <td class="mt-action-cell" ng-click="$event.stopPropagation()">
+            <button type="button" class="btn btn-xs btn-primary mt-act-btn" ng-if="c.activeTab === 'newFaults'" ng-click="c.claimTask(task)" ng-disabled="c.submitting">
+              <i class="fa fa-hand-rock-o"></i> Claim
+            </button>
+            <button type="button" class="btn btn-xs btn-info mt-act-btn" ng-if="c.activeTab === 'myRepairs' && task.state_raw === '1'" ng-click="c.startRepair(task)" ng-disabled="c.submitting">
+              <i class="fa fa-play"></i> Start
+            </button>
+            <button type="button" class="btn btn-xs btn-success mt-act-btn" ng-if="c.activeTab === 'myRepairs' && task.state_raw === '2'" ng-click="c.openDrawer(task)" ng-disabled="c.submitting">
+              <i class="fa fa-check"></i> Complete
+            </button>
+            <button type="button" class="btn btn-xs btn-warning mt-act-btn" ng-if="c.activeTab === 'completed'" ng-click="c.openReopenModal(task)" ng-disabled="c.submitting">
+              <i class="fa fa-undo"></i> Reopen
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Empty State -->
+  <div class="mt-empty" ng-if="!c.getActiveList().length">
+    <i class="fa fa-wrench fa-3x"></i>
+    <p>No tasks in this queue.</p>
+  </div>
+
+  <!-- Repair Detail Drawer -->
+  <div class="mt-drawer-overlay" ng-if="c.showDrawer" ng-click="c.closeDrawer()">
+    <div class="mt-drawer" ng-click="$event.stopPropagation()">
+      <div class="mt-drawer-header">
+        <h4>{{c.selectedTask.number}} — Repair Detail</h4>
+        <button type="button" class="close" ng-click="c.closeDrawer()"><span>&times;</span></button>
+      </div>
+      <div class="mt-drawer-body">
+        <div class="mt-detail-row"><strong>Bed:</strong> {{c.selectedTask.bed_code}}</div>
+        <div class="mt-detail-row"><strong>Ward:</strong> {{c.selectedTask.ward_name}}</div>
+        <div class="mt-detail-row"><strong>Room:</strong> {{c.selectedTask.room_label}}</div>
+        <div class="mt-detail-row"><strong>Category:</strong> {{c.selectedTask.fault_category}}</div>
+        <div class="mt-detail-row"><strong>Description:</strong> {{c.selectedTask.short_description}}</div>
+        <div class="mt-detail-row" ng-if="c.selectedTask.issue_description"><strong>Issue Detail:</strong> {{c.selectedTask.issue_description}}</div>
+        <div class="mt-detail-row"><strong>Created:</strong> {{c.selectedTask.created_on}}</div>
+        <div class="mt-detail-row"><strong>Status:</strong> <span class="label" ng-class="c.selectedTask.state_class">{{c.selectedTask.state}}</span></div>
+
+        <div class="form-group m-t-sm" ng-if="c.selectedTask.state_raw === '2'">
+          <label for="res-note">Resolution Note</label>
+          <textarea id="res-note" class="form-control" rows="3" ng-model="c.resolutionNote" placeholder="Describe the repair performed..."></textarea>
+        </div>
+      </div>
+      <div class="mt-drawer-footer">
+        <button type="button" class="btn btn-default" ng-click="c.closeDrawer()">Close</button>
+        <button type="button" class="btn btn-success" ng-if="c.selectedTask.state_raw === '2'" ng-click="c.completeRepair(c.selectedTask)" ng-disabled="c.submitting">
+          <i class="fa fa-check"></i> Complete Repair
+        </button>
+        <button type="button" class="btn btn-info" ng-if="c.selectedTask.state_raw === '1'" ng-click="c.startRepair(c.selectedTask)" ng-disabled="c.submitting">
+          <i class="fa fa-play"></i> Start Repair
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reopen Modal -->
+  <div class="mt-drawer-overlay" ng-if="c.showReopenModal" ng-click="c.closeReopenModal()">
+    <div class="mt-modal" ng-click="$event.stopPropagation()">
+      <div class="mt-drawer-header">
+        <h4>Reopen Task</h4>
+        <button type="button" class="close" ng-click="c.closeReopenModal()"><span>&times;</span></button>
+      </div>
+      <div class="mt-drawer-body">
+        <p>Reopen repair task <strong>{{c.selectedTask.number}}</strong></p>
+        <div class="form-group">
+          <label for="reopen-reason">Reason <span class="text-danger">*</span></label>
+          <textarea id="reopen-reason" class="form-control" rows="3" ng-model="c.reopenReason" placeholder="Why does this need to be reopened?"></textarea>
+        </div>
+      </div>
+      <div class="mt-drawer-footer">
+        <button type="button" class="btn btn-default" ng-click="c.closeReopenModal()">Cancel</button>
+        <button type="button" class="btn btn-warning" ng-click="c.submitReopen()" ng-disabled="!c.reopenReason || c.submitting">
+          <i class="fa fa-undo"></i> Reopen
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+]]></template>
+    </sp_widget>
+</record_update>

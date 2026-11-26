@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_instance">
+  <sp_instance action="DELETE" apply_defaults="true">
+    <sys_id>d7e424c7024b4b538f2557ee623295c3</sys_id>
+    <sys_scope display_value="x_2307780_sentin_0">d8fe43811b30db50b87da8a5624bcb6c</sys_scope>
+    <sys_update_name>sp_instance_d7e424c7024b4b538f2557ee623295c3</sys_update_name>
+    <active>true</active>
+    <advanced_placeholder_dimensions>false</advanced_placeholder_dimensions>
+    <async_load>false</async_load>
+    <async_load_device_type>desktop,tablet,mobile</async_load_device_type>
+    <async_load_trigger>viewport</async_load_trigger>
+    <class_name/>
+    <color>default</color>
+    <css/>
+    <glyph/>
+    <id/>
+    <order>100</order>
+    <placeholder_dimensions>{
+	"mobile": {
+		"height": "250px",
+		"width": "100%"
+	},
+	"desktop": {
+		"height": "250px",
+		"width": "100%"
+	},
+	"tablet": {
+		"height": "250px",
+		"width": "100%"
+	}
+}</placeholder_dimensions>
+    <placeholder_dimensions_script>function evaluateConfig(options) { return {
+	"mobile": {
+		"height": "250px",
+		"width": "100%"
+	},
+	"desktop": {
+		"height": "250px",
+		"width": "100%"
+	},
+	"tablet": {
+		"height": "250px",
+		"width": "100%"
+	}
+}; }</placeholder_dimensions_script>
+    <placeholder_template>&lt;!--
+	AngularJS template with configurable options.
+	Use the "options" object to control dynamic behavior.
+	Example: Display an element when max row count is 10:
+	&lt;div ng-if="options.maxRowCount === 10"&gt;&lt;/div&gt;
+	The "skeleton-container" class is used for loading placeholders.
+--&gt;
+	&lt;div class="skeleton-container"&gt;
+	&lt;!-- Header Skeleton --&gt;
+	&lt;div class="skeleton-box skeleton-header"&gt;&lt;/div&gt;
+	&lt;!-- Body Skeleton --&gt;
+	&lt;div class="skeleton-box skeleton-line"&gt;&lt;/div&gt;
+	&lt;div class="skeleton-box skeleton-line small"&gt;&lt;/div&gt;
+	&lt;div class="skeleton-box skeleton-line medium"&gt;&lt;/div&gt;
+&lt;/div&gt;</placeholder_template>
+    <preserve_placeholder_size>false</preserve_placeholder_size>
+    <roles/>
+    <short_description/>
+    <size>md</size>
+    <sp_column>87fd219f269e4649b28ad3f039b0175b</sp_column>
+    <sp_widget>aa64e712d14d4fb483c3814f53ace2e1</sp_widget>
+    <title/>
+    <url/>
+    <widget_parameters/>
+  </sp_instance>
+<sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="Sentinels Bed Operations Pilot">d8fe43811b30db50b87da8a5624bcb6c</application>
+        <file_path/>
+        <instance_id>36b1ce93eb1c931ce9bbfddacad0cd4d</instance_id>
+        <instance_name>dev475475</instance_name>
+        <merge_base/>
+        <name>sp_instance_d7e424c7024b4b538f2557ee623295c3</name>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_instance">
+  <sp_instance action="INSERT_OR_UPDATE" apply_defaults="true">
+    <sys_id>d7e424c7024b4b538f2557ee623295c3</sys_id>
+    <sys_scope display_value="x_2307780_sentin_0">d8fe43811b30db50b87da8a5624bcb6c</sys_scope>
+    <sys_update_name>sp_instance_d7e424c7024b4b538f2557ee623295c3</sys_update_name>
+    <active>true</active>
+    <advanced_placeholder_dimensions>false</advanced_placeholder_dimensions>
+    <async_load>false</async_load>
+    <async_load_device_type>desktop,tablet,mobile</async_load_device_type>
+    <async_load_trigger>viewport</async_load_trigger>
+    <class_name/>
+    <color>default</color>
+    <css/>
+    <glyph/>
+    <id/>
+    <order>100</order>
+    <placeholder_dimensions>{
+	"mobile": {
+		"height": "250px",
+		"width": "100%"
+	},
+	"desktop": {
+		"height": "250px",
+		"width": "100%"
+	},
+	"tablet": {
+		"height": "250px",
+		"width": "100%"
+	}
+}</placeholder_dimensions>
+    <placeholder_dimensions_script>function evaluateConfig(options) { return {
+	"mobile": {
+		"height": "250px",
+		"width": "100%"
+	},
+	"desktop": {
+		"height": "250px",
+		"width": "100%"
+	},
+	"tablet": {
+		"height": "250px",
+		"width": "100%"
+	}
+}; }</placeholder_dimensions_script>
+    <placeholder_template>&lt;!--
+	AngularJS template with configurable options.
+	Use the "options" object to control dynamic behavior.
+	Example: Display an element when max row count is 10:
+	&lt;div ng-if="options.maxRowCount === 10"&gt;&lt;/div&gt;
+	The "skeleton-container" class is used for loading placeholders.
+--&gt;
+	&lt;div class="skeleton-container"&gt;
+	&lt;!-- Header Skeleton --&gt;
+	&lt;div class="skeleton-box skeleton-header"&gt;&lt;/div&gt;
+	&lt;!-- Body Skeleton --&gt;
+	&lt;div class="skeleton-box skeleton-line"&gt;&lt;/div&gt;
+	&lt;div class="skeleton-box skeleton-line small"&gt;&lt;/div&gt;
+	&lt;div class="skeleton-box skeleton-line medium"&gt;&lt;/div&gt;
+&lt;/div&gt;</placeholder_template>
+    <preserve_placeholder_size>false</preserve_placeholder_size>
+    <roles/>
+    <short_description/>
+    <size>md</size>
+    <sp_column>87fd219f269e4649b28ad3f039b0175b</sp_column>
+    <sp_widget>aa64e712d14d4fb483c3814f53ace2e1</sp_widget>
+    <title/>
+    <url/>
+    <widget_parameters/>
+  </sp_instance>
+</record_update>]]></payload>
+        <payload_hash>1511720408</payload_hash>
+        <record_name/>
+        <reverted_from/>
+        <source>9e31c0ad1b345f50b87da8a5624bcb41</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-11-26 08:07:18</sys_created_on>
+        <sys_id>0a51c0ed1b345f50b87da8a5624bcbd9</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>1a216e507a90000001</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-11-26 08:07:18</sys_updated_on>
+        <type>Instance</type>
+        <update_guid>c651c0ed8a345f50a26e93f179b4bbd8</update_guid>
+        <update_guid_history>c651c0ed8a345f50a26e93f179b4bbd8:873836195</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete display_value="">ac5d48291bb45f50b87da8a5624bcbca</sys_audit_delete>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-11-26 08:59:37</sys_created_on>
+        <sys_db_object display_value="" name="sp_instance">sp_instance</sys_db_object>
+        <sys_id>0d0d546c19724aa38a0e5bab35652381</sys_id>
+        <sys_metadata>d7e424c7024b4b538f2557ee623295c3</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name/>
+        <sys_package display_value="Sentinels Bed Operations Pilot" source="x_2307780_sentin_0">d8fe43811b30db50b87da8a5624bcb6c</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="Sentinels Bed Operations Pilot">d8fe43811b30db50b87da8a5624bcb6c</sys_scope>
+        <sys_scope_delete display_value="">123ccb62d26c4c50a12ed2cde9a20100</sys_scope_delete>
+        <sys_update_name>sp_instance_d7e424c7024b4b538f2557ee623295c3</sys_update_name>
+        <sys_update_version display_value="sp_instance_d7e424c7024b4b538f2557ee623295c3">0a51c0ed1b345f50b87da8a5624bcbd9</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-11-26 08:59:37</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

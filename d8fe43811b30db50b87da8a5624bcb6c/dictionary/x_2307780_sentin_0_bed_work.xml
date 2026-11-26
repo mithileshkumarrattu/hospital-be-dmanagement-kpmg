@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element audit="true" db_object_id="6245af04df494067925f4668f1fdfba7" extends="task" label="Bed Work Task" name="x_2307780_sentin_0_bed_work" type="collection">
+        <element label="Parent Work Task" name="parent_work" reference="x_2307780_sentin_0_bed_work" reference_cascade_rule="none" type="reference"/>
+        <element label="Work Type" mandatory="true" name="work_type" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Turnover Cleaning" sequence="1" value="turnover_cleaning"/>
+                <element inactive_on_update="false" label="Re-cleaning" sequence="4" value="re_cleaning"/>
+                <element inactive_on_update="false" label="Enhanced Cleaning" sequence="2" value="enhanced_clean"/>
+                <element inactive_on_update="false" label="Routine Linen" sequence="3" value="routine_linen"/>
+                <element inactive_on_update="false" label="Readiness Inspection" sequence="6" value="readiness_inspection"/>
+                <element inactive_on_update="false" label="Maintenance Repair" sequence="5" value="maintenance_repair"/>
+            </choice>
+        </element>
+        <element label="Completed At" name="completed_at" type="glide_date_time"/>
+        <element label="Started At" name="started_at" type="glide_date_time"/>
+        <element label="Planned At" name="planned_at" type="glide_date_time"/>
+        <element label="Verified By" name="verified_by" reference="sys_user" type="reference"/>
+        <element label="Issue Description" max_length="1000" name="issue_description" type="string"/>
+        <element label="Result" name="result" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Fault Found" sequence="2" value="fault_found"/>
+                <element inactive_on_update="false" label="Failed Inspection" sequence="3" value="failed_inspection"/>
+                <element inactive_on_update="false" label="Cancelled" sequence="4" value="cancelled"/>
+                <element inactive_on_update="false" label="Success" sequence="1" value="success"/>
+            </choice>
+        </element>
+        <element label="Source Allocation" name="source_allocation" reference="x_2307780_sentin_0_bed_alloc" reference_cascade_rule="none" type="reference"/>
+        <element label="Cycle Key" max_length="100" name="cycle_key" type="string"/>
+        <element label="Resolution Note" max_length="1000" name="resolution_note" type="string"/>
+        <element label="Fault Category" name="fault_category" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Electrical" sequence="4" value="electrical"/>
+                <element inactive_on_update="false" label="Other" sequence="6" value="other"/>
+                <element inactive_on_update="false" label="Equipment" sequence="1" value="equipment"/>
+                <element inactive_on_update="false" label="Biohazard" sequence="5" value="biohazard"/>
+                <element inactive_on_update="false" label="Structural" sequence="2" value="structural"/>
+                <element inactive_on_update="false" label="Plumbing" sequence="3" value="plumbing"/>
+            </choice>
+        </element>
+        <element label="Dispatch Key" max_length="100" name="dispatch_key" type="string"/>
+        <element label="Verified At" name="verified_at" type="glide_date_time"/>
+        <element label="Accepted At" name="accepted_at" type="glide_date_time"/>
+        <element label="Bed" mandatory="true" name="bed" reference="x_2307780_sentin_0_bed" reference_cascade_rule="none" type="reference"/>
+    </element>
+</database>

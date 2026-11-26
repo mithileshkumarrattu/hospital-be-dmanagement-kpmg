@@ -1,0 +1,538 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function () {
+    var c = this;
+
+    c.expandedDept = null;
+    c.submitting = false;
+    c.alertMessage = '';
+    c.alertType = '';
+
+    c.toggleDept = function (dept) {
+        if (c.expandedDept === dept.sys_id) {
+            c.expandedDept = null;
+        } else {
+            c.expandedDept = dept.sys_id;
+        }
+    };
+
+    c.isDeptExpanded = function (dept) {
+        return c.expandedDept === dept.sys_id;
+    };
+
+    c.acknowledgeEscalation = function (delay) {
+        c.submitting = true;
+        c.data.action = 'acknowledge_escalation';
+        c.data.delay_id = delay.sys_id;
+        c.server.update().then(function () {
+            c.submitting = false;
+            if (c.data.actionResult) {
+                c.alertMessage = c.data.actionResult.message;
+                c.alertType = c.data.actionResult.success ? 'success' : 'danger';
+                c.data.action = null;
+                c.data.actionResult = null;
+            }
+        });
+    };
+
+    c.getUtilizationClass = function (pct) {
+        if (pct >= 90) return 'cap-util-critical';
+        if (pct >= 75) return 'cap-util-high';
+        if (pct >= 50) return 'cap-util-moderate';
+        return 'cap-util-low';
+    };
+
+    c.refresh = function () {
+        c.server.refresh();
+    };
+};
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css>/* ═══════════════════════════════════════════════════════════════════════════
+   Capacity Dashboard — Calm, data-focused, Sentinels brand
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.cap-container { background: #F7F8FA; min-height: 100vh; padding: 24px; color: #2D3748; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
+
+/* ── Header ────────────────────────────────────────────────────────────────── */
+.cap-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+.cap-title { margin: 0; font-size: 26px; font-weight: 700; color: #172C32; }
+.cap-title .fa { color: #08656A; margin-right: 8px; }
+.cap-refresh-btn { border-radius: 6px; font-weight: 500; }
+
+/* ── Alert ─────────────────────────────────────────────────────────────────── */
+.cap-alert { border-radius: 6px; font-size: 14px; margin-bottom: 16px; }
+
+/* ── KPI Cards ─────────────────────────────────────────────────────────────── */
+.cap-kpi-row { margin-bottom: 24px; }
+.cap-kpi-card { background: #FFFFFF; border-radius: 8px; padding: 18px 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); text-align: center; margin-bottom: 12px; border-top: 4px solid #E8ECEE; }
+.cap-kpi-count { display: block; font-size: 32px; font-weight: 700; color: #172C32; line-height: 1.2; }
+.cap-kpi-label { display: block; font-size: 12px; font-weight: 500; color: #53656A; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 6px; }
+
+.cap-kpi-total { border-top-color: #08656A; } .cap-kpi-total .cap-kpi-count { color: #08656A; }
+.cap-kpi-occupancy { border-top-color: #3B82F6; } .cap-kpi-occupancy .cap-kpi-count { color: #3B82F6; }
+.cap-kpi-available { border-top-color: #059669; } .cap-kpi-available .cap-kpi-count { color: #059669; }
+.cap-kpi-waiting { border-top-color: #3B3F8C; } .cap-kpi-waiting .cap-kpi-count { color: #3B3F8C; }
+.cap-kpi-held { border-top-color: #D97706; } .cap-kpi-held .cap-kpi-count { color: #D97706; }
+.cap-kpi-blocked { border-top-color: #DC2626; } .cap-kpi-blocked .cap-kpi-count { color: #DC2626; }
+
+/* ── Panel ─────────────────────────────────────────────────────────────────── */
+.cap-panel { background: #FFFFFF; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); margin-bottom: 24px; overflow: hidden; }
+.cap-panel-header { padding: 16px 20px; border-bottom: 1px solid #E2E8F0; }
+.cap-panel-header-warn { background: #FFFBEB; }
+.cap-panel-title { margin: 0; font-size: 16px; font-weight: 700; color: #172C32; }
+.cap-panel-title .fa { color: #08656A; margin-right: 8px; }
+.cap-panel-header-warn .cap-panel-title .fa { color: #D97706; }
+
+/* ── Table ─────────────────────────────────────────────────────────────────── */
+.cap-table { margin-bottom: 0; }
+.cap-table &gt; thead &gt; tr &gt; th { background: #F8FAFB; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #53656A; padding: 12px 16px; border-bottom: 2px solid #E2E8F0; white-space: nowrap; }
+.cap-table &gt; tbody &gt; tr &gt; td { padding: 14px 16px; vertical-align: middle; border-top: 1px solid #F0F2F4; font-size: 14px; color: #2D3748; }
+
+/* Department rows */
+.cap-dept-row { cursor: pointer; }
+.cap-dept-row:hover { background: #F8FAFB; }
+.cap-expand-cell { width: 32px; text-align: center; color: #718096; }
+.cap-cell-available { font-weight: 700; color: #059669; }
+.cap-cell-waiting { font-weight: 600; color: #3B3F8C; }
+
+/* Ward rows */
+.cap-ward-row { background: #FAFBFC; }
+.cap-ward-row td { font-size: 13px; color: #4A5568; }
+.cap-ward-name { color: #718096; }
+
+/* Utilization badge */
+.cap-util-badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; }
+.cap-util-low { background: #D1FAE5; color: #065F46; }
+.cap-util-moderate { background: #DBEAFE; color: #1E40AF; }
+.cap-util-high { background: #FEF3C7; color: #92400E; }
+.cap-util-critical { background: #FEE2E2; color: #991B1B; }
+
+/* Delay rows */
+.cap-row-danger { background: #FEF2F2; }
+.cap-row-warning { background: #FFFBEB; }
+.cap-cell-elapsed { font-weight: 700; color: #DC2626; }
+.cap-ack-btn { border-radius: 6px; font-weight: 500; }
+
+/* ── Empty State ───────────────────────────────────────────────────────────── */
+.cap-empty { padding: 48px 24px; text-align: center; color: #53656A; }
+.cap-empty .fa { color: #CBD5E1; margin-bottom: 12px; }
+.cap-empty p { font-size: 15px; margin-top: 8px; }
+
+/* ── Responsive ────────────────────────────────────────────────────────────── */
+@media (max-width: 991px) {
+  .cap-kpi-card { padding: 14px 10px; }
+  .cap-kpi-count { font-size: 26px; }
+}
+@media (max-width: 767px) {
+  .cap-container { padding: 12px; }
+  .cap-title { font-size: 20px; }
+  .cap-table { display: block; overflow-x: auto; }
+}
+@media (max-width: 480px) {
+  .cap-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+}
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description>Hospital capacity overview: occupancy rates, department metrics, delays &amp; escalations.</description>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>x_2307780_sentin_0_capacity_dashboard</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {
+}]]></link>
+        <name>Capacity Dashboard</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function () {
+    /* ── Label Maps ────────────────────────────────────────────────────────── */
+    var OCCUPANCY_LABELS = { vacant: 'Vacant', held: 'Held', occupied: 'Occupied' };
+    var READINESS_LABELS = {
+        ready: 'Ready', awaiting_cleaning: 'Awaiting Cleaning',
+        cleaning_in_progress: 'Cleaning In Progress',
+        awaiting_nurse_check: 'Awaiting Nurse Check',
+        blocked: 'Blocked', not_assessed: 'Not Assessed'
+    };
+    var ADM_STATE_LABELS = {
+        waiting: 'Waiting', held: 'Held', admitted: 'Admitted',
+        in_stay: 'In Stay', discharge_authorized: 'Discharge Auth.',
+        discharged: 'Discharged', cancelled: 'Cancelled'
+    };
+
+    /* ── Handler actions ───────────────────────────────────────────────────── */
+    if (input && input.action === 'acknowledge_escalation') {
+        data.actionResult = { success: true, message: 'Escalation acknowledged.' };
+        return;
+    }
+
+    /* ── Build department & ward structures ────────────────────────────────── */
+    var deptMap = {};
+    var wardMap = {};
+    var nowDT = new GlideDateTime();
+
+    /* Load departments */
+    var grDept = new GlideRecord('x_2307780_sentin_0_dept');
+    grDept.addQuery('active', true);
+    grDept.orderBy('display_order');
+    grDept.setLimit(50);
+    grDept.query();
+    while (grDept.next()) {
+        deptMap[grDept.getUniqueValue()] = {
+            sys_id: grDept.getUniqueValue(),
+            name: grDept.getValue('name'),
+            total: 0, occupied: 0, available: 0, held: 0, cleaning: 0, blocked: 0,
+            waiting: 0,
+            wards: []
+        };
+    }
+
+    /* Load wards */
+    var grWard = new GlideRecord('x_2307780_sentin_0_ward');
+    grWard.addQuery('active', true);
+    grWard.setLimit(200);
+    grWard.query();
+    while (grWard.next()) {
+        var deptId = grWard.getValue('department');
+        wardMap[grWard.getUniqueValue()] = {
+            sys_id: grWard.getUniqueValue(),
+            name: grWard.getValue('name'),
+            department_id: deptId,
+            total: 0, occupied: 0, available: 0, held: 0, cleaning: 0, blocked: 0
+        };
+    }
+
+    /* Build room → ward lookup */
+    var roomWardMap = {};
+    var grRoom = new GlideRecord('x_2307780_sentin_0_room');
+    grRoom.addQuery('active', true);
+    grRoom.setLimit(500);
+    grRoom.query();
+    while (grRoom.next()) {
+        roomWardMap[grRoom.getUniqueValue()] = grRoom.getValue('ward');
+    }
+
+    /* ── Count beds ───────────────────────────────────────────────────────── */
+    var totalBeds = 0;
+    var totalOccupied = 0;
+    var totalAvailable = 0;
+    var totalHeld = 0;
+    var totalBlocked = 0;
+
+    var grBed = new GlideRecord('x_2307780_sentin_0_bed');
+    grBed.addQuery('in_service', true);
+    grBed.setLimit(2000);
+    grBed.query();
+    while (grBed.next()) {
+        var roomRef = grBed.getValue('room');
+        var wardId = roomWardMap[roomRef] || '';
+        var ward = wardMap[wardId];
+        var dept = ward ? deptMap[ward.department_id] : null;
+
+        var occ = grBed.getValue('occupancy') || 'vacant';
+        var rdy = grBed.getValue('readiness') || 'not_assessed';
+
+        totalBeds++;
+        if (ward) ward.total++;
+        if (dept) dept.total++;
+
+        if (occ === 'occupied') {
+            totalOccupied++;
+            if (ward) ward.occupied++;
+            if (dept) dept.occupied++;
+        } else if (occ === 'held') {
+            totalHeld++;
+            if (ward) ward.held++;
+            if (dept) dept.held++;
+        } else {
+            /* vacant */
+            if (rdy === 'ready') {
+                totalAvailable++;
+                if (ward) ward.available++;
+                if (dept) dept.available++;
+            } else if (rdy === 'blocked') {
+                totalBlocked++;
+                if (ward) ward.blocked++;
+                if (dept) dept.blocked++;
+            } else if (rdy === 'awaiting_cleaning' || rdy === 'cleaning_in_progress') {
+                if (ward) ward.cleaning++;
+                if (dept) dept.cleaning++;
+            }
+        }
+    }
+
+    /* ── Waiting demand per department ─────────────────────────────────────── */
+    var totalWaiting = 0;
+    var grAdm = new GlideRecord('x_2307780_sentin_0_adm');
+    grAdm.addQuery('admission_state', 'waiting');
+    grAdm.setLimit(500);
+    grAdm.query();
+    while (grAdm.next()) {
+        totalWaiting++;
+        var admDept = grAdm.getValue('department');
+        if (admDept && deptMap[admDept]) {
+            deptMap[admDept].waiting++;
+        }
+    }
+
+    /* ── Assemble department array with ward children ─────────────────────── */
+    data.departments = [];
+    for (var dId in deptMap) {
+        var d = deptMap[dId];
+        d.utilization = d.total > 0 ? Math.round((d.occupied / d.total) * 100) : 0;
+        d.wards = [];
+        for (var wId in wardMap) {
+            var w = wardMap[wId];
+            if (w.department_id === dId) {
+                w.utilization = w.total > 0 ? Math.round((w.occupied / w.total) * 100) : 0;
+                d.wards.push(w);
+            }
+        }
+        data.departments.push(d);
+    }
+
+    /* ── Delay / escalation list ──────────────────────────────────────────── */
+    data.delays = [];
+
+    /* Unclaimed tasks > 30 min */
+    var threshold30 = new GlideDateTime();
+    threshold30.addSeconds(-1800);
+    var grUnclaimed = new GlideRecord('x_2307780_sentin_0_bed_work');
+    grUnclaimed.addQuery('state', '1');
+    grUnclaimed.addNullQuery('assigned_to');
+    grUnclaimed.addQuery('sys_created_on', '<=', threshold30.getValue());
+    grUnclaimed.setLimit(50);
+    grUnclaimed.query();
+    while (grUnclaimed.next()) {
+        var cDT = new GlideDateTime(grUnclaimed.getValue('sys_created_on'));
+        var durU = GlideDateTime.subtract(cDT, nowDT);
+        var minsU = Math.floor(durU.getNumericValue() / 60000);
+        var elapsedU = minsU < 60 ? minsU + 'm' : Math.floor(minsU / 60) + 'h ' + (minsU % 60) + 'm';
+
+        var bedInfo = '';
+        var wardInfo = '';
+        var bedRefD = grUnclaimed.getValue('bed');
+        if (bedRefD) {
+            var grBd = new GlideRecord('x_2307780_sentin_0_bed');
+            if (grBd.get(bedRefD)) {
+                bedInfo = grBd.getValue('bed_code') || '';
+                wardInfo = grBd.getValue('ward_label') || '';
+            }
+        }
+
+        data.delays.push({
+            sys_id: grUnclaimed.getUniqueValue(),
+            what: 'Unclaimed Task ' + (grUnclaimed.getValue('number') || ''),
+            type: grUnclaimed.getDisplayValue('work_type'),
+            elapsed: elapsedU,
+            target: '30m',
+            ward: wardInfo,
+            bed: bedInfo,
+            responsible: grUnclaimed.getDisplayValue('assignment_group') || 'Unassigned',
+            severity: 'warning'
+        });
+    }
+
+    /* Blocked beds > 2 hours */
+    var threshold2h = new GlideDateTime();
+    threshold2h.addSeconds(-7200);
+    var grBlocked = new GlideRecord('x_2307780_sentin_0_bed');
+    grBlocked.addQuery('readiness', 'blocked');
+    grBlocked.addQuery('in_service', true);
+    grBlocked.addQuery('readiness_since', '<=', threshold2h.getValue());
+    grBlocked.setLimit(50);
+    grBlocked.query();
+    while (grBlocked.next()) {
+        var bDT = new GlideDateTime(grBlocked.getValue('readiness_since'));
+        var durB = GlideDateTime.subtract(bDT, nowDT);
+        var minsB = Math.floor(durB.getNumericValue() / 60000);
+        var elapsedB = minsB < 60 ? minsB + 'm' : Math.floor(minsB / 60) + 'h ' + (minsB % 60) + 'm';
+
+        data.delays.push({
+            sys_id: grBlocked.getUniqueValue(),
+            what: 'Blocked Bed ' + (grBlocked.getValue('bed_code') || ''),
+            type: 'Blocked',
+            elapsed: elapsedB,
+            target: '2h',
+            ward: grBlocked.getValue('ward_label') || '',
+            bed: grBlocked.getValue('bed_code') || '',
+            responsible: grBlocked.getValue('block_reason') || 'Unknown',
+            severity: 'danger'
+        });
+    }
+
+    /* ── Hospital KPIs ────────────────────────────────────────────────────── */
+    var occupancyRate = totalBeds > 0 ? Math.round((totalOccupied / totalBeds) * 100) : 0;
+    data.kpi = {
+        totalBeds: totalBeds,
+        occupancyRate: occupancyRate,
+        available: totalAvailable,
+        waiting: totalWaiting,
+        held: totalHeld,
+        blocked: totalBlocked
+    };
+})();
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-11-26 08:07:21</sys_created_on>
+        <sys_id>d96d6042c5f7408b961d5963882859a1</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Capacity Dashboard</sys_name>
+        <sys_package display_value="Sentinels Bed Operations Pilot" source="x_2307780_sentin_0">d8fe43811b30db50b87da8a5624bcb6c</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Sentinels Bed Operations Pilot">d8fe43811b30db50b87da8a5624bcb6c</sys_scope>
+        <sys_update_name>sp_widget_d96d6042c5f7408b961d5963882859a1</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-11-26 08:07:21</sys_updated_on>
+        <template><![CDATA[<div class="cap-container">
+  <!-- Header -->
+  <div class="cap-header">
+    <h2 class="cap-title"><i class="fa fa-bar-chart"></i> Capacity Management</h2>
+    <button type="button" class="btn btn-default cap-refresh-btn" ng-click="c.refresh()" ng-disabled="c.submitting">
+      <i class="fa fa-refresh"></i> Refresh
+    </button>
+  </div>
+
+  <!-- Alert -->
+  <div class="alert cap-alert" ng-class="'alert-' + c.alertType" ng-if="c.alertMessage">
+    <button type="button" class="close" ng-click="c.alertMessage = ''"><span>&times;</span></button>
+    {{c.alertMessage}}
+  </div>
+
+  <!-- Hospital KPI Cards -->
+  <div class="row cap-kpi-row">
+    <div class="col-md-2 col-sm-4 col-xs-6">
+      <div class="cap-kpi-card cap-kpi-total">
+        <span class="cap-kpi-count">{{c.data.kpi.totalBeds}}</span>
+        <span class="cap-kpi-label">Total Beds</span>
+      </div>
+    </div>
+    <div class="col-md-2 col-sm-4 col-xs-6">
+      <div class="cap-kpi-card cap-kpi-occupancy">
+        <span class="cap-kpi-count">{{c.data.kpi.occupancyRate}}%</span>
+        <span class="cap-kpi-label">Occupancy Rate</span>
+      </div>
+    </div>
+    <div class="col-md-2 col-sm-4 col-xs-6">
+      <div class="cap-kpi-card cap-kpi-available">
+        <span class="cap-kpi-count">{{c.data.kpi.available}}</span>
+        <span class="cap-kpi-label">Available Now</span>
+      </div>
+    </div>
+    <div class="col-md-2 col-sm-4 col-xs-6">
+      <div class="cap-kpi-card cap-kpi-waiting">
+        <span class="cap-kpi-count">{{c.data.kpi.waiting}}</span>
+        <span class="cap-kpi-label">Waiting Demand</span>
+      </div>
+    </div>
+    <div class="col-md-2 col-sm-4 col-xs-6">
+      <div class="cap-kpi-card cap-kpi-held">
+        <span class="cap-kpi-count">{{c.data.kpi.held}}</span>
+        <span class="cap-kpi-label">Active Holds</span>
+      </div>
+    </div>
+    <div class="col-md-2 col-sm-4 col-xs-6">
+      <div class="cap-kpi-card cap-kpi-blocked">
+        <span class="cap-kpi-count">{{c.data.kpi.blocked}}</span>
+        <span class="cap-kpi-label">Blocked Beds</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Department Table -->
+  <div class="cap-panel">
+    <div class="cap-panel-header">
+      <h3 class="cap-panel-title"><i class="fa fa-building"></i> Department Overview</h3>
+    </div>
+    <table class="table cap-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Department</th>
+          <th>Total</th>
+          <th>Occupied</th>
+          <th>Available</th>
+          <th>Held</th>
+          <th>Waiting</th>
+          <th>Utilization</th>
+        </tr>
+      </thead>
+      <tbody ng-repeat="dept in c.data.departments track by dept.sys_id">
+        <tr class="cap-dept-row" ng-click="c.toggleDept(dept)">
+          <td class="cap-expand-cell">
+            <i class="fa" ng-class="{'fa-chevron-down': c.isDeptExpanded(dept), 'fa-chevron-right': !c.isDeptExpanded(dept)}"></i>
+          </td>
+          <td><strong>{{dept.name}}</strong></td>
+          <td>{{dept.total}}</td>
+          <td>{{dept.occupied}}</td>
+          <td class="cap-cell-available">{{dept.available}}</td>
+          <td>{{dept.held}}</td>
+          <td class="cap-cell-waiting">{{dept.waiting}}</td>
+          <td>
+            <span class="cap-util-badge" ng-class="c.getUtilizationClass(dept.utilization)">{{dept.utilization}}%</span>
+          </td>
+        </tr>
+        <!-- Ward detail rows -->
+        <tr ng-repeat="ward in dept.wards track by ward.sys_id" ng-if="c.isDeptExpanded(dept)" class="cap-ward-row">
+          <td></td>
+          <td class="cap-ward-name">&nbsp;&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {{ward.name}}</td>
+          <td>{{ward.total}}</td>
+          <td>{{ward.occupied}}</td>
+          <td class="cap-cell-available">{{ward.available}}</td>
+          <td>{{ward.held}}</td>
+          <td>&mdash;</td>
+          <td>
+            <span class="cap-util-badge" ng-class="c.getUtilizationClass(ward.utilization)">{{ward.utilization}}%</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="cap-empty" ng-if="!c.data.departments.length">
+      <i class="fa fa-building fa-3x"></i>
+      <p>No departments configured.</p>
+    </div>
+  </div>
+
+  <!-- Delays & Escalations -->
+  <div class="cap-panel" ng-if="c.data.delays.length">
+    <div class="cap-panel-header cap-panel-header-warn">
+      <h3 class="cap-panel-title"><i class="fa fa-exclamation-triangle"></i> Delays &amp; Escalations</h3>
+    </div>
+    <table class="table cap-table">
+      <thead>
+        <tr>
+          <th>What</th>
+          <th>Type</th>
+          <th>Elapsed</th>
+          <th>Target</th>
+          <th>Ward</th>
+          <th>Responsible</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="delay in c.data.delays track by delay.sys_id" ng-class="{'cap-row-danger': delay.severity === 'danger', 'cap-row-warning': delay.severity === 'warning'}">
+          <td><strong>{{delay.what}}</strong></td>
+          <td>{{delay.type}}</td>
+          <td class="cap-cell-elapsed">{{delay.elapsed}}</td>
+          <td>{{delay.target}}</td>
+          <td>{{delay.ward}}</td>
+          <td>{{delay.responsible}}</td>
+          <td>
+            <button type="button" class="btn btn-xs btn-default cap-ack-btn" ng-click="c.acknowledgeEscalation(delay)" ng-disabled="c.submitting">
+              <i class="fa fa-check"></i> Ack
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+]]></template>
+    </sp_widget>
+</record_update>

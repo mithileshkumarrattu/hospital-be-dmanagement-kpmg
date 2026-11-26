@@ -3,44 +3,44 @@
         <sys_ui_form_section action="INSERT_OR_UPDATE">
             <position>0</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:28:21</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:45</sys_created_on>
             <sys_domain>global</sys_domain>
             <sys_domain_path>/</sys_domain_path>
             <sys_id>149994af341843958e1904e28758e2d3</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_overrides/>
             <sys_ui_form display_value="x_2307780_sentin_0_bed_alloc" name="x_2307780_sentin_0_bed_alloc" sys_domain="global" view="Default view">568fd23902d14c6f8033f7d071a63c27</sys_ui_form>
-            <sys_ui_section display_value="">e6d2445ea9a34cb4a47512b9d151a501</sys_ui_section>
+            <sys_ui_section caption="Allocation" display_value="Allocation" name="x_2307780_sentin_0_bed_alloc" sys_domain="global" view="Default view">e6d2445ea9a34cb4a47512b9d151a501</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:28:21</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:45</sys_updated_on>
         </sys_ui_form_section>
         <sys_ui_form_section action="INSERT_OR_UPDATE">
             <position>1</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:28:21</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:45</sys_created_on>
             <sys_domain>global</sys_domain>
             <sys_domain_path>/</sys_domain_path>
             <sys_id>11e6b0e3063d407a9a3d2cd56b3d276e</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_overrides/>
             <sys_ui_form display_value="x_2307780_sentin_0_bed_alloc" name="x_2307780_sentin_0_bed_alloc" sys_domain="global" view="Default view">568fd23902d14c6f8033f7d071a63c27</sys_ui_form>
-            <sys_ui_section display_value="">b7dd8597d08047d088fb312b4b0c4670</sys_ui_section>
+            <sys_ui_section caption="Timing" display_value="Timing" name="x_2307780_sentin_0_bed_alloc" sys_domain="global" view="Default view">b7dd8597d08047d088fb312b4b0c4670</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:28:21</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:45</sys_updated_on>
         </sys_ui_form_section>
         <sys_ui_form_section action="INSERT_OR_UPDATE">
             <position>2</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:28:21</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:45</sys_created_on>
             <sys_domain>global</sys_domain>
             <sys_domain_path>/</sys_domain_path>
             <sys_id>ba43258a9c53487083a4700430a5d96e</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_overrides/>
             <sys_ui_form display_value="x_2307780_sentin_0_bed_alloc" name="x_2307780_sentin_0_bed_alloc" sys_domain="global" view="Default view">568fd23902d14c6f8033f7d071a63c27</sys_ui_form>
-            <sys_ui_section display_value="">17aa51bd53b44940be4c9ab465c50e94</sys_ui_section>
+            <sys_ui_section caption="Details" display_value="Details" name="x_2307780_sentin_0_bed_alloc" sys_domain="global" view="Default view">17aa51bd53b44940be4c9ab465c50e94</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:28:21</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:45</sys_updated_on>
         </sys_ui_form_section>
         <sys_ui_form action="INSERT_OR_UPDATE">
             <name>x_2307780_sentin_0_bed_alloc</name>

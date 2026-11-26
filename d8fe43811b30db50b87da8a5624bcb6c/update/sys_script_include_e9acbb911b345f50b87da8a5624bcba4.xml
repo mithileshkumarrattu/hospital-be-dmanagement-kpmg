@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_2307780_sentin_0.BedOpsCommandHandler</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description>Centralized bed operations command handler for all Sentinels portals</description>
+        <mobile_callable>false</mobile_callable>
+        <name>BedOpsCommandHandler</name>
+        <sandbox_callable>false</sandbox_callable>
+        <script><![CDATA[var BedOpsCommandHandler = Class.create();
+BedOpsCommandHandler.prototype = {
+    initialize: function() {},
+
+    findPatients: function(query, limit) {
+        var results = [];
+        if (!query || query.length < 2) return { success: false, message: "Search requires at least 2 characters" };
+        var gr = new GlideRecord("x_2307780_sentin_0_patient");
+        var qc = gr.addQuery("patient_number", query);
+        qc.addOrCondition("display_name", "CONTAINS", query);
+        qc.addOrCondition("phone_primary", query);
+        gr.setLimit(limit || 10);
+        gr.query();
+        while (gr.next()) {
+            results.push({ sys_id: gr.getUniqueValue(), patient_number: gr.getValue("patient_number"), display_name: gr.getValue("display_name"), date_of_birth: gr.getDisplayValue("date_of_birth"), gender: gr.getDisplayValue("gender"), phone_primary: gr.getValue("phone_primary") });
+        }
+        return { success: true, data: results };
+    },
+
+    createPatient: function(data) {
+        if (!data.display_name || data.display_name.trim() === "") return { success: false, message: "Display name is required" };
+        var gr = new GlideRecord("x_2307780_sentin_0_patient");
+        gr.initialize();
+        gr.setValue("display_name", data.display_name.trim());
+        if (data.given_name) gr.setValue("given_name", data.given_name.trim());
+        if (data.family_name) gr.setValue("family_name", data.family_name.trim());
+        if (data.date_of_birth) gr.setValue("date_of_birth", data.date_of_birth);
+        if (data.gender) gr.setValue("gender", data.gender);
+        if (data.phone_primary) gr.setValue("phone_primary", data.phone_primary);
+        if (data.email) gr.setValue("email", data.email);
+        var id = gr.insert();
+        if (!id) return { success: false, message: "Failed to create patient" };
+        return { success: true, data: { sys_id: id, patient_number: gr.getValue("patient_number"), display_name: gr.getValue("display_name") } };
+    },
+
+    createAdmission: function(data) {
+        if (!data.patient) return { success: false, message: "Patient is required" };
+        if (!data.department) return { success: false, message: "Department is required" };
+        var dup = new GlideRecord("x_2307780_sentin_0_adm");
+        dup.addQuery("patient", data.patient);
+        dup.addQuery("admission_state", "IN", "waiting,held,admitted,in_stay");
+        dup.query();
+        if (dup.next()) return { success: false, message: "Patient already has active admission: " + dup.getValue("number") };
+        var gr = new GlideRecord("x_2307780_sentin_0_adm");
+        gr.initialize();
+        gr.setValue("patient", data.patient);
+        gr.setValue("department", data.department);
+        gr.setValue("admission_type", data.admission_type || "emergency");
+        gr.setValue("authorized_priority", data.priority || "routine");
+        if (data.care_level) gr.setValue("authorized_care_level", data.care_level);
+        if (data.requirements) gr.setValue("requirements", data.requirements);
+        if (data.waiting_location) gr.setValue("waiting_location", data.waiting_location);
+        gr.setValue("admission_state", "waiting");
+        gr.setValue("queue_entered_at", new GlideDateTime().getDisplayValue());
+        var id = gr.insert();
+        if (!id) return { success: false, message: "Failed to create admission" };
+        var matchResult = this._tryMatchBed(id, data.department, data.care_level);
+        return { success: true, data: { sys_id: id, number: gr.getValue("number"), state: matchResult.matched ? "held" : "waiting", bed_held: matchResult.bed_code || null }, message: matchResult.matched ? "Bed " + matchResult.bed_code + " held" : "Waiting for bed" };
+    },
+
+    startCleaning: function(bedId) {
+        var bed = new GlideRecord("x_2307780_sentin_0_bed");
+        if (!bed.get(bedId)) return { success: false, message: "Bed not found" };
+        if (bed.getValue("occupancy") != "vacant" || bed.getValue("readiness") != "awaiting_cleaning" || bed.getValue("in_service") != "1")
+            return { success: false, message: "Invalid state for cleaning" };
+        bed.setValue("readiness", "cleaning_in_progress");
+        bed.update();
+        this._createWorkTask(bedId, "cleaning", bed);
+        this._logEvent(bedId, "cleaning_started", "Cleaning started");
+        return { success: true, message: "Cleaning started for " + bed.getValue("bed_code") };
+    },
+
+    completeCleaning: function(bedId) {
+        var bed = new GlideRecord("x_2307780_sentin_0_bed");
+        if (!bed.get(bedId)) return { success: false, message: "Bed not found" };
+        if (bed.getValue("readiness") != "cleaning_in_progress") return { success: false, message: "Invalid state" };
+        bed.setValue("readiness", "awaiting_nurse_check");
+        bed.update();
+        this._closeWorkTasks(bedId, "cleaning");
+        this._createWorkTask(bedId, "inspection", bed);
+        this._logEvent(bedId, "cleaning_completed", "Awaiting nurse inspection");
+        return { success: true, message: "Cleaning done. Nurse inspection needed for " + bed.getValue("bed_code") };
+    },
+
+    confirmReady: function(bedId) {
+        var bed = new GlideRecord("x_2307780_sentin_0_bed");
+        if (!bed.get(bedId)) return { success: false, message: "Bed not found" };
+        if (bed.getValue("readiness") != "awaiting_nurse_check") return { success: false, message: "Invalid state" };
+        bed.setValue("readiness", "ready");
+        bed.setValue("block_reason", "");
+        bed.update();
+        this._closeWorkTasks(bedId, "inspection");
+        this._logEvent(bedId, "confirmed_ready", "Ready for allocation");
+        this._tryMatchWaitingAdmission(bed);
+        return { success: true, message: "Bed " + bed.getValue("bed_code") + " ready" };
+    },
+
+    reportFault: function(bedId, reason) {
+        var bed = new GlideRecord("x_2307780_sentin_0_bed");
+        if (!bed.get(bedId)) return { success: false, message: "Bed not found" };
+        if (!reason || reason.trim() === "") return { success: false, message: "Reason required" };
+        if (bed.getValue("occupancy") == "occupied") {
+            this._logEvent(bedId, "fault_flagged", "Occupied bed fault: " + reason);
+            return { success: true, message: "Fault flagged on occupied bed" };
+        }
+        bed.setValue("readiness", "blocked");
+        bed.setValue("block_reason", reason.trim());
+        bed.update();
+        this._createWorkTask(bedId, "repair", bed);
+        this._logEvent(bedId, "fault_reported", reason);
+        return { success: true, message: "Fault reported for " + bed.getValue("bed_code") };
+    },
+
+    returnForRecleaning: function(bedId) {
+        var bed = new GlideRecord("x_2307780_sentin_0_bed");
+        if (!bed.get(bedId)) return { success: false, message: "Bed not found" };
+        if (bed.getValue("readiness") != "awaiting_nurse_check") return { success: false, message: "Invalid state" };
+        bed.setValue("readiness", "awaiting_cleaning");
+        bed.update();
+        this._closeWorkTasks(bedId, "inspection");
+        this._createWorkTask(bedId, "cleaning", bed);
+        this._logEvent(bedId, "recleaning", "Failed inspection");
+        return { success: true, message: "Returned for recleaning" };
+    },
+
+    dischargeAndTurnover: function(admissionId) {
+        var adm = new GlideRecord("x_2307780_sentin_0_adm");
+        if (!adm.get(admissionId)) return { success: false, message: "Admission not found" };
+        var validStates = "discharge_authorized,in_stay";
+        if (validStates.indexOf(adm.getValue("admission_state")) < 0) return { success: false, message: "Invalid admission state" };
+        var alloc = new GlideRecord("x_2307780_sentin_0_bed_alloc");
+        alloc.addQuery("admission", admissionId);
+        alloc.addQuery("status", "occupied");
+        alloc.query();
+        if (!alloc.next()) return { success: false, message: "No active allocation" };
+        var bedId = alloc.getValue("bed");
+        alloc.setValue("status", "completed");
+        alloc.setValue("departed_at", new GlideDateTime().getDisplayValue());
+        alloc.update();
+        adm.setValue("admission_state", "discharged");
+        adm.setValue("actual_discharge_dt", new GlideDateTime().getDisplayValue());
+        adm.update();
+        var bed = new GlideRecord("x_2307780_sentin_0_bed");
+        if (bed.get(bedId)) {
+            bed.setValue("occupancy", "vacant");
+            bed.setValue("readiness", "awaiting_cleaning");
+            bed.update();
+            this._createWorkTask(bedId, "cleaning", bed);
+        }
+        this._logEvent(bedId, "discharge_turnover", "Discharged, turnover started");
+        return { success: true, message: "Discharge complete, bed awaiting cleaning" };
+    },
+
+    confirmArrival: function(allocationId) {
+        var alloc = new GlideRecord("x_2307780_sentin_0_bed_alloc");
+        if (!alloc.get(allocationId)) return { success: false, message: "Allocation not found" };
+        if (alloc.getValue("status") != "held") return { success: false, message: "Must be held" };
+        alloc.setValue("status", "occupied");
+        alloc.setValue("arrived_at", new GlideDateTime().getDisplayValue());
+        alloc.update();
+        var bed = new GlideRecord("x_2307780_sentin_0_bed");
+        if (bed.get(alloc.getValue("bed"))) { bed.setValue("occupancy", "occupied"); bed.update(); }
+        var adm = new GlideRecord("x_2307780_sentin_0_adm");
+        if (adm.get(alloc.getValue("admission"))) { adm.setValue("admission_state", "in_stay"); adm.setValue("arrived_at", new GlideDateTime().getDisplayValue()); adm.update(); }
+        this._logEvent(alloc.getValue("bed"), "arrival_confirmed", "Patient arrived");
+        return { success: true, message: "Arrival confirmed" };
+    },
+
+    requestLinen: function(bedId) {
+        var bed = new GlideRecord("x_2307780_sentin_0_bed");
+        if (!bed.get(bedId)) return { success: false, message: "Bed not found" };
+        var existing = new GlideRecord("x_2307780_sentin_0_bed_work");
+        existing.addQuery("bed", bedId);
+        existing.addQuery("work_type", "linen");
+        existing.addQuery("state", "IN", "1,2");
+        existing.query();
+        if (existing.next()) return { success: true, message: "Linen request open: " + existing.getValue("number"), data: { number: existing.getValue("number") } };
+        var num = this._createWorkTask(bedId, "linen", bed);
+        return { success: true, message: "Linen request created", data: { number: num } };
+    },
+
+    _createWorkTask: function(bedId, workType, bed) {
+        var task = new GlideRecord("x_2307780_sentin_0_bed_work");
+        task.initialize();
+        task.setValue("bed", bedId);
+        task.setValue("work_type", workType);
+        task.setValue("short_description", workType.charAt(0).toUpperCase() + workType.slice(1) + " - " + bed.getValue("bed_code"));
+        task.setValue("state", "1");
+        var room = new GlideRecord("x_2307780_sentin_0_room");
+        if (room.get(bed.getValue("room"))) {
+            var ward = new GlideRecord("x_2307780_sentin_0_ward");
+            if (ward.get(room.getValue("ward"))) {
+                var grpField = workType == "repair" ? "maintenance_group" : (workType == "inspection" ? "nursing_group" : "housekeeping_group");
+                if (ward.getValue(grpField)) task.setValue("assignment_group", ward.getValue(grpField));
+            }
+        }
+        task.insert();
+        return task.getValue("number");
+    },
+
+    _closeWorkTasks: function(bedId, workType) {
+        var gr = new GlideRecord("x_2307780_sentin_0_bed_work");
+        gr.addQuery("bed", bedId);
+        gr.addQuery("work_type", workType);
+        gr.addQuery("state", "IN", "1,2");
+        gr.query();
+        while (gr.next()) { gr.setValue("state", "3"); gr.update(); }
+    },
+
+    _logEvent: function(bedId, eventType, desc) {
+        var ev = new GlideRecord("x_2307780_sentin_0_op_event");
+        ev.initialize();
+        ev.setValue("bed", bedId);
+        ev.setValue("event_type", eventType);
+        ev.setValue("description", desc);
+        ev.setValue("actor", gs.getUserID());
+        ev.setValue("event_time", new GlideDateTime().getDisplayValue());
+        ev.insert();
+    },
+
+    _tryMatchBed: function(admId, deptId, careLevel) {
+        var bed = new GlideRecord("x_2307780_sentin_0_bed");
+        bed.addQuery("in_service", true);
+        bed.addQuery("occupancy", "vacant");
+        bed.addQuery("readiness", "ready");
+        bed.addQuery("room.ward.department", deptId);
+        if (careLevel) bed.addQuery("care_level", careLevel);
+        bed.orderBy("display_order");
+        bed.setLimit(1);
+        bed.query();
+        if (bed.next()) {
+            var alloc = new GlideRecord("x_2307780_sentin_0_bed_alloc");
+            alloc.initialize();
+            alloc.setValue("bed", bed.getUniqueValue());
+            alloc.setValue("admission", admId);
+            alloc.setValue("status", "held");
+            var exp = new GlideDateTime(); exp.addSeconds(3600);
+            alloc.setValue("expires_at", exp.getDisplayValue());
+            alloc.insert();
+            bed.setValue("occupancy", "held"); bed.update();
+            var adm = new GlideRecord("x_2307780_sentin_0_adm");
+            if (adm.get(admId)) { adm.setValue("admission_state", "held"); adm.update(); }
+            return { matched: true, bed_code: bed.getValue("bed_code") };
+        }
+        return { matched: false };
+    },
+
+    _tryMatchWaitingAdmission: function(bed) {
+        var room = new GlideRecord("x_2307780_sentin_0_room");
+        if (!room.get(bed.getValue("room"))) return;
+        var ward = new GlideRecord("x_2307780_sentin_0_ward");
+        if (!ward.get(room.getValue("ward"))) return;
+        var adm = new GlideRecord("x_2307780_sentin_0_adm");
+        adm.addQuery("admission_state", "waiting");
+        adm.addQuery("department", ward.getValue("department"));
+        adm.orderBy("queue_entered_at");
+        adm.setLimit(1);
+        adm.query();
+        if (adm.next()) {
+            var alloc = new GlideRecord("x_2307780_sentin_0_bed_alloc");
+            alloc.initialize();
+            alloc.setValue("bed", bed.getUniqueValue());
+            alloc.setValue("admission", adm.getUniqueValue());
+            alloc.setValue("status", "held");
+            var exp = new GlideDateTime(); exp.addSeconds(3600);
+            alloc.setValue("expires_at", exp.getDisplayValue());
+            alloc.insert();
+            bed.setValue("occupancy", "held"); bed.update();
+            adm.setValue("admission_state", "held"); adm.update();
+        }
+    },
+
+    type: "BedOpsCommandHandler"
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-11-26 07:46:46</sys_created_on>
+        <sys_id>e9acbb911b345f50b87da8a5624bcba4</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>BedOpsCommandHandler</sys_name>
+        <sys_package display_value="Sentinels Bed Operations Pilot" source="x_2307780_sentin_0">d8fe43811b30db50b87da8a5624bcb6c</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Sentinels Bed Operations Pilot">d8fe43811b30db50b87da8a5624bcb6c</sys_scope>
+        <sys_update_name>sys_script_include_e9acbb911b345f50b87da8a5624bcba4</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-11-26 07:46:46</sys_updated_on>
+    </sys_script_include>
+</record_update>

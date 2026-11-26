@@ -3,16 +3,16 @@
         <sys_ui_form_section action="INSERT_OR_UPDATE">
             <position>0</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:18:27</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:46</sys_created_on>
             <sys_domain>global</sys_domain>
             <sys_domain_path>/</sys_domain_path>
             <sys_id>44e4850b747644b998030ff41f031103</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_overrides/>
             <sys_ui_form display_value="x_2307780_sentin_0_dept" name="x_2307780_sentin_0_dept" sys_domain="global" view="Default view">9c8228bbb97945528e43214e52c062b8</sys_ui_form>
-            <sys_ui_section display_value="">fdfb89c0d65c4647b8628d22c388872a</sys_ui_section>
+            <sys_ui_section caption="Details" display_value="Details" name="x_2307780_sentin_0_dept" sys_domain="global" view="Default view">fdfb89c0d65c4647b8628d22c388872a</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:18:27</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:46</sys_updated_on>
         </sys_ui_form_section>
         <sys_ui_form action="INSERT_OR_UPDATE">
             <name>x_2307780_sentin_0_dept</name>

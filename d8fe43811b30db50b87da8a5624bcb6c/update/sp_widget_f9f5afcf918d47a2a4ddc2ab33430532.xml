@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function () {
+    var c = this;
+
+    c.submitting = false;
+    c.alertMessage = '';
+    c.alertType = '';
+
+    c.requestLinen = function (grant) {
+        if (!grant.bed_id || c.submitting) return;
+        c.submitting = true;
+        c.data.action = 'request_linen';
+        c.data.bed_id = grant.bed_id;
+        c.server.update().then(function () {
+            c.submitting = false;
+            if (c.data.actionResult) {
+                c.alertMessage = c.data.actionResult.message;
+                c.alertType = c.data.actionResult.success ? 'success' : 'danger';
+                c.data.action = null;
+                c.data.actionResult = null;
+            }
+            /* Refresh grant data */
+            c.server.refresh();
+        });
+    };
+
+    c.refresh = function () {
+        c.server.refresh();
+    };
+};
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css>/* ═══════════════════════════════════════════════════════════════════════════
+   Family Dashboard — Phone-first, warm, reassuring
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.fam-container { background: #F7F8FA; min-height: 100vh; padding: 16px; color: #2D3748; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; max-width: 480px; margin: 0 auto; }
+
+/* ── Header ────────────────────────────────────────────────────────────────── */
+.fam-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.fam-title { margin: 0; font-size: 24px; font-weight: 700; color: #172C32; }
+.fam-title .fa { color: #D97706; margin-right: 8px; }
+.fam-refresh-btn { border-radius: 50%; width: 44px; height: 44px; padding: 0; font-size: 18px; border: 1px solid #E2E8F0; background: #FFFFFF; color: #53656A; }
+.fam-refresh-btn:hover { background: #F0F2F4; }
+
+/* ── Alert ─────────────────────────────────────────────────────────────────── */
+.fam-alert { border-radius: 10px; font-size: 15px; margin-bottom: 16px; }
+
+/* ── Cards ─────────────────────────────────────────────────────────────────── */
+.fam-card { background: #FFFFFF; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 16px; overflow: hidden; }
+.fam-card-header { padding: 14px 18px; font-size: 14px; font-weight: 700; color: #53656A; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #F0F2F4; }
+.fam-card-header .fa { color: #08656A; margin-right: 8px; }
+.fam-card-body { padding: 18px; }
+
+/* ── Info Rows ─────────────────────────────────────────────────────────────── */
+.fam-info-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #F7F8FA; }
+.fam-info-row:last-child { border-bottom: none; }
+.fam-label { font-size: 14px; color: #718096; font-weight: 500; }
+.fam-value { font-size: 16px; color: #2D3748; font-weight: 600; text-align: right; }
+.fam-patient-name { font-size: 18px; color: #172C32; }
+.fam-status-badge { display: inline-block; padding: 5px 14px; border-radius: 20px; font-size: 14px; font-weight: 600; background: #DBEAFE; color: #1E40AF; }
+
+/* ── Location Flow ─────────────────────────────────────────────────────────── */
+.fam-location-flow { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+.fam-loc-item { text-align: center; flex: 1; min-width: 80px; }
+.fam-loc-label { display: block; font-size: 11px; color: #718096; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.fam-loc-value { display: block; font-size: 18px; font-weight: 700; color: #08656A; }
+.fam-loc-arrow { color: #CBD5E1; font-size: 14px; }
+
+/* ── Discharge Card ────────────────────────────────────────────────────────── */
+.fam-card-discharge .fam-card-header .fa { color: #D97706; }
+.fam-discharge-date { font-size: 24px; font-weight: 700; color: #172C32; text-align: center; margin-bottom: 8px; }
+.fam-discharge-note { font-size: 13px; color: #718096; text-align: center; margin: 0; line-height: 1.4; }
+
+/* ── Linen Section ─────────────────────────────────────────────────────────── */
+.fam-linen-pending { text-align: center; }
+.fam-pending-badge { display: inline-block; padding: 8px 20px; border-radius: 20px; font-size: 15px; font-weight: 600; background: #FEF3C7; color: #92400E; margin-bottom: 12px; }
+.fam-pending-badge .fa { margin-right: 6px; }
+.fam-linen-task { font-size: 14px; color: #53656A; padding: 4px 0; }
+.fam-task-number { font-weight: 600; margin-right: 8px; }
+.fam-task-state { color: #718096; }
+
+.fam-linen-action { text-align: center; }
+.fam-linen-hint { font-size: 14px; color: #718096; margin-bottom: 16px; line-height: 1.5; }
+.fam-linen-btn { display: block; width: 100%; padding: 14px 24px; font-size: 17px; font-weight: 600; border-radius: 12px; background: #08656A; color: #FFFFFF; border: none; min-height: 44px; }
+.fam-linen-btn:hover, .fam-linen-btn:focus { background: #065550; color: #FFFFFF; }
+.fam-linen-btn:disabled { background: #CBD5E1; color: #718096; }
+.fam-linen-btn .fa { margin-right: 8px; }
+
+/* ── Empty State ───────────────────────────────────────────────────────────── */
+.fam-empty { padding: 60px 24px; text-align: center; color: #53656A; }
+.fam-empty .fa { color: #CBD5E1; margin-bottom: 16px; }
+.fam-empty h3 { font-size: 20px; font-weight: 700; color: #172C32; margin-bottom: 8px; }
+.fam-empty p { font-size: 15px; line-height: 1.5; margin: 0; }
+
+/* ── Responsive (already phone-first, but ensure desktop looks OK) ────────── */
+@media (min-width: 768px) {
+  .fam-container { padding: 32px; max-width: 520px; }
+  .fam-card { border-radius: 16px; }
+}
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description>Family/attendant view: grant-authorized admission status, location, and linen requests.</description>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>x_2307780_sentin_0_family_dashboard</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {
+}]]></link>
+        <name>Family Dashboard</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function () {
+    /* ── Handle linen request action ─────────────────────────────────────── */
+    if (input && input.action === 'request_linen') {
+        try {
+            var handler = new x_2307780_sentin_0.BedOpsCommandHandler();
+            var result = handler.requestLinen(input.bed_id);
+            data.actionResult = result || { success: true, message: 'Linen request submitted.' };
+        } catch (e) {
+            data.actionResult = { success: false, message: 'Request failed: ' + e.message };
+        }
+        return;
+    }
+
+    /* ── Load active access grants for the current user ──────────────────── */
+    var userId = gs.getUserID();
+    var grants = [];
+
+    var grGrant = new GlideRecord('x_2307780_sentin_0_acc_grant');
+    grGrant.addQuery('portal_user', userId);
+    grGrant.addQuery('access_status', 'active');
+    grGrant.setLimit(10);
+    grGrant.query();
+
+    while (grGrant.next()) {
+        var grant = {
+            sys_id: grGrant.getUniqueValue(),
+            can_view_location: grGrant.getValue('can_view_location') === '1' || grGrant.getValue('can_view_location') === 'true',
+            can_view_discharge_est: grGrant.getValue('can_view_discharge_est') === '1' || grGrant.getValue('can_view_discharge_est') === 'true',
+            can_request_linen: grGrant.getValue('can_request_linen') === '1' || grGrant.getValue('can_request_linen') === 'true',
+            admission_id: grGrant.getValue('admission'),
+            patient_name: '',
+            admission_number: '',
+            admission_state: '',
+            expected_discharge_day: '',
+            bed_code: '',
+            ward_name: '',
+            room_label: '',
+            bed_id: '',
+            linen_tasks: [],
+            has_pending_linen: false
+        };
+
+        /* ── Load admission details ──────────────────────────────────── */
+        var grAdm = new GlideRecord('x_2307780_sentin_0_adm');
+        if (grAdm.get(grant.admission_id)) {
+            grant.admission_number = grAdm.getValue('number') || '';
+            grant.admission_state = grAdm.getDisplayValue('admission_state') || '';
+
+            /* Patient display name only */
+            var patRef = grAdm.getValue('patient');
+            if (patRef) {
+                var grPat = new GlideRecord('x_2307780_sentin_0_patient');
+                if (grPat.get(patRef)) {
+                    grant.patient_name = grPat.getValue('display_name') || '';
+                }
+            }
+
+            /* Discharge estimate (only if grant permits) */
+            if (grant.can_view_discharge_est) {
+                grant.expected_discharge_day = grAdm.getValue('expected_discharge_day') || '';
+            }
+
+            /* ── Current bed from active allocation ─────────────────── */
+            if (grant.can_view_location) {
+                var grAlloc = new GlideRecord('x_2307780_sentin_0_bed_alloc');
+                grAlloc.addQuery('admission', grant.admission_id);
+                grAlloc.addQuery('status', 'occupied');
+                grAlloc.setLimit(1);
+                grAlloc.query();
+                if (grAlloc.next()) {
+                    var bedRef = grAlloc.getValue('bed');
+                    if (bedRef) {
+                        grant.bed_id = bedRef;
+                        var grBed = new GlideRecord('x_2307780_sentin_0_bed');
+                        if (grBed.get(bedRef)) {
+                            grant.bed_code = grBed.getValue('bed_code') || '';
+                            grant.ward_name = grBed.getValue('ward_label') || '';
+                            grant.room_label = grBed.getValue('room_label') || '';
+                        }
+                    }
+                }
+            }
+
+            /* ── Linen tasks for this bed ────────────────────────────── */
+            if (grant.can_request_linen && grant.bed_id) {
+                var grLinen = new GlideRecord('x_2307780_sentin_0_bed_work');
+                grLinen.addQuery('bed', grant.bed_id);
+                grLinen.addQuery('work_type', 'linen');
+                grLinen.addQuery('state', 'IN', '1,2');
+                grLinen.setLimit(5);
+                grLinen.query();
+                while (grLinen.next()) {
+                    grant.has_pending_linen = true;
+                    grant.linen_tasks.push({
+                        number: grLinen.getValue('number') || '',
+                        state: grLinen.getDisplayValue('state') || ''
+                    });
+                }
+            }
+        }
+
+        grants.push(grant);
+    }
+
+    data.grants = grants;
+    data.hasGrants = grants.length > 0;
+})();
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-11-26 08:07:21</sys_created_on>
+        <sys_id>f9f5afcf918d47a2a4ddc2ab33430532</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Family Dashboard</sys_name>
+        <sys_package display_value="Sentinels Bed Operations Pilot" source="x_2307780_sentin_0">d8fe43811b30db50b87da8a5624bcb6c</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Sentinels Bed Operations Pilot">d8fe43811b30db50b87da8a5624bcb6c</sys_scope>
+        <sys_update_name>sp_widget_f9f5afcf918d47a2a4ddc2ab33430532</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-11-26 08:07:21</sys_updated_on>
+        <template><![CDATA[<div class="fam-container">
+  <!-- Header -->
+  <div class="fam-header">
+    <h2 class="fam-title"><i class="fa fa-heart"></i> My Stay</h2>
+    <button type="button" class="btn btn-default fam-refresh-btn" ng-click="c.refresh()" ng-disabled="c.submitting">
+      <i class="fa fa-refresh"></i>
+    </button>
+  </div>
+
+  <!-- Alert -->
+  <div class="alert fam-alert" ng-class="'alert-' + c.alertType" ng-if="c.alertMessage">
+    <button type="button" class="close" ng-click="c.alertMessage = ''"><span>&times;</span></button>
+    {{c.alertMessage}}
+  </div>
+
+  <!-- No active grants -->
+  <div class="fam-empty" ng-if="!c.data.hasGrants">
+    <i class="fa fa-info-circle fa-3x"></i>
+    <h3>No Active Stay Found</h3>
+    <p>There are no active access grants associated with your account. If you believe this is an error, please contact the reception desk.</p>
+  </div>
+
+  <!-- Grant cards -->
+  <div ng-repeat="grant in c.data.grants track by grant.sys_id">
+    <!-- Patient & Status Card -->
+    <div class="fam-card">
+      <div class="fam-card-header">
+        <i class="fa fa-user-circle"></i> Patient Information
+      </div>
+      <div class="fam-card-body">
+        <div class="fam-info-row">
+          <span class="fam-label">Patient</span>
+          <span class="fam-value fam-patient-name">{{grant.patient_name}}</span>
+        </div>
+        <div class="fam-info-row">
+          <span class="fam-label">Admission #</span>
+          <span class="fam-value">{{grant.admission_number}}</span>
+        </div>
+        <div class="fam-info-row">
+          <span class="fam-label">Status</span>
+          <span class="fam-status-badge">{{grant.admission_state}}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Location Card (only if grant permits) -->
+    <div class="fam-card" ng-if="grant.can_view_location && grant.ward_name">
+      <div class="fam-card-header">
+        <i class="fa fa-map-marker"></i> Current Location
+      </div>
+      <div class="fam-card-body">
+        <div class="fam-location-flow">
+          <div class="fam-loc-item">
+            <span class="fam-loc-label">Ward</span>
+            <span class="fam-loc-value">{{grant.ward_name}}</span>
+          </div>
+          <i class="fa fa-chevron-right fam-loc-arrow"></i>
+          <div class="fam-loc-item">
+            <span class="fam-loc-label">Room</span>
+            <span class="fam-loc-value">{{grant.room_label}}</span>
+          </div>
+          <i class="fa fa-chevron-right fam-loc-arrow"></i>
+          <div class="fam-loc-item">
+            <span class="fam-loc-label">Bed</span>
+            <span class="fam-loc-value">{{grant.bed_code}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Discharge Estimate Card (only if grant permits and date available) -->
+    <div class="fam-card fam-card-discharge" ng-if="grant.can_view_discharge_est && grant.expected_discharge_day">
+      <div class="fam-card-header">
+        <i class="fa fa-calendar"></i> Expected Discharge
+      </div>
+      <div class="fam-card-body">
+        <div class="fam-discharge-date">{{grant.expected_discharge_day}}</div>
+        <p class="fam-discharge-note">This is an estimate and may change based on the care team's assessment.</p>
+      </div>
+    </div>
+
+    <!-- Linen Service Card (only if grant permits) -->
+    <div class="fam-card" ng-if="grant.can_request_linen">
+      <div class="fam-card-header">
+        <i class="fa fa-bed"></i> Linen Service
+      </div>
+      <div class="fam-card-body">
+        <!-- Pending request -->
+        <div class="fam-linen-pending" ng-if="grant.has_pending_linen">
+          <div class="fam-pending-badge">
+            <i class="fa fa-clock-o"></i> Request Pending
+          </div>
+          <div class="fam-linen-task" ng-repeat="task in grant.linen_tasks track by task.number">
+            <span class="fam-task-number">{{task.number}}</span>
+            <span class="fam-task-state">{{task.state}}</span>
+          </div>
+        </div>
+
+        <!-- Request button (only when no pending request) -->
+        <div class="fam-linen-action" ng-if="!grant.has_pending_linen">
+          <p class="fam-linen-hint">Need fresh linen? Tap the button below to request a linen service for your bed.</p>
+          <button type="button" class="btn fam-linen-btn" ng-click="c.requestLinen(grant)" ng-disabled="c.submitting || !grant.bed_id">
+            <i class="fa fa-plus-circle"></i> Request Linen
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+]]></template>
+    </sp_widget>
+</record_update>

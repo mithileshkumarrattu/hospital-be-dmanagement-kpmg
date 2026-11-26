@@ -16,7 +16,7 @@
         <label>Transfer Request</label>
         <live_feed_enabled>false</live_feed_enabled>
         <name>x_2307780_sentin_0_transfer</name>
-        <number_ref display_value="">76ca22c4917f4d42b14b0abb1eefeb75</number_ref>
+        <number_ref display_value="TRF">76ca22c4917f4d42b14b0abb1eefeb75</number_ref>
         <provider_class/>
         <read_access>true</read_access>
         <scriptable_table>false</scriptable_table>

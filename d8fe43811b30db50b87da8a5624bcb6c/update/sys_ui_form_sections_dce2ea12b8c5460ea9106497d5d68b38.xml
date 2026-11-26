@@ -3,44 +3,44 @@
         <sys_ui_form_section action="INSERT_OR_UPDATE">
             <position>0</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:18:27</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:46</sys_created_on>
             <sys_domain>global</sys_domain>
             <sys_domain_path>/</sys_domain_path>
             <sys_id>a47c52c7cd85459f88d39f0ccb290b1d</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_overrides/>
             <sys_ui_form display_value="x_2307780_sentin_0_patient" name="x_2307780_sentin_0_patient" sys_domain="global" view="Default view">dce2ea12b8c5460ea9106497d5d68b38</sys_ui_form>
-            <sys_ui_section display_value="">813e956940294cb38d4aacc76d2af759</sys_ui_section>
+            <sys_ui_section caption="Identity" display_value="Identity" name="x_2307780_sentin_0_patient" sys_domain="global" view="Default view">813e956940294cb38d4aacc76d2af759</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:18:27</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:46</sys_updated_on>
         </sys_ui_form_section>
         <sys_ui_form_section action="INSERT_OR_UPDATE">
             <position>1</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:18:27</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:46</sys_created_on>
             <sys_domain>global</sys_domain>
             <sys_domain_path>/</sys_domain_path>
             <sys_id>d92384f352f4460a8ba29a7e6ef9ebf8</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_overrides/>
             <sys_ui_form display_value="x_2307780_sentin_0_patient" name="x_2307780_sentin_0_patient" sys_domain="global" view="Default view">dce2ea12b8c5460ea9106497d5d68b38</sys_ui_form>
-            <sys_ui_section display_value="">c54f43110de547fc8710f7b2501a4c8c</sys_ui_section>
+            <sys_ui_section caption="Contact" display_value="Contact" name="x_2307780_sentin_0_patient" sys_domain="global" view="Default view">c54f43110de547fc8710f7b2501a4c8c</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:18:27</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:46</sys_updated_on>
         </sys_ui_form_section>
         <sys_ui_form_section action="INSERT_OR_UPDATE">
             <position>2</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:18:27</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:46</sys_created_on>
             <sys_domain>global</sys_domain>
             <sys_domain_path>/</sys_domain_path>
             <sys_id>70610b8b134d4f12a836645805d156b3</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_overrides/>
             <sys_ui_form display_value="x_2307780_sentin_0_patient" name="x_2307780_sentin_0_patient" sys_domain="global" view="Default view">dce2ea12b8c5460ea9106497d5d68b38</sys_ui_form>
-            <sys_ui_section display_value="">6400829e179443438566908b35a9d1de</sys_ui_section>
+            <sys_ui_section caption="Identification" display_value="Identification" name="x_2307780_sentin_0_patient" sys_domain="global" view="Default view">6400829e179443438566908b35a9d1de</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:18:27</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:46</sys_updated_on>
         </sys_ui_form_section>
         <sys_ui_form action="INSERT_OR_UPDATE">
             <name>x_2307780_sentin_0_patient</name>

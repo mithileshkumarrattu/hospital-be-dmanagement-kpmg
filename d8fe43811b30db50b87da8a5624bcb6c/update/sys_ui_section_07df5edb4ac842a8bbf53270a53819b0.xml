@@ -4,13 +4,13 @@
             <element>.begin_split</element>
             <position>0</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:18:27</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:47</sys_created_on>
             <sys_id>79d30e9504754ae68b1b2d07ba6d220c</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Capacity &amp; Pricing" display_value="Capacity &amp; Pricing" name="x_2307780_sentin_0_room" sys_domain="global" view="Default view">07df5edb4ac842a8bbf53270a53819b0</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:18:27</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:47</sys_updated_on>
             <sys_user/>
             <type>.begin_split</type>
         </sys_ui_element>
@@ -18,13 +18,13 @@
             <element>bed_capacity</element>
             <position>1</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:18:27</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:47</sys_created_on>
             <sys_id>814452fa8a494beba237f6a9c93ab3aa</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Capacity &amp; Pricing" display_value="Capacity &amp; Pricing" name="x_2307780_sentin_0_room" sys_domain="global" view="Default view">07df5edb4ac842a8bbf53270a53819b0</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:18:27</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:47</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
@@ -32,13 +32,13 @@
             <element>daily_rate</element>
             <position>2</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:18:27</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:47</sys_created_on>
             <sys_id>294a78f5d73142e5be565aa3cf768240</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Capacity &amp; Pricing" display_value="Capacity &amp; Pricing" name="x_2307780_sentin_0_room" sys_domain="global" view="Default view">07df5edb4ac842a8bbf53270a53819b0</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:18:27</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:47</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
@@ -46,13 +46,13 @@
             <element>.split</element>
             <position>3</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:18:27</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:47</sys_created_on>
             <sys_id>83737c1d8d304e77be4091fe101b2c74</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Capacity &amp; Pricing" display_value="Capacity &amp; Pricing" name="x_2307780_sentin_0_room" sys_domain="global" view="Default view">07df5edb4ac842a8bbf53270a53819b0</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:18:27</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:47</sys_updated_on>
             <sys_user/>
             <type>.split</type>
         </sys_ui_element>
@@ -60,13 +60,13 @@
             <element>rate_basis</element>
             <position>4</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:18:27</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:47</sys_created_on>
             <sys_id>d0d60f2d05dc4cc5adb501efa59eeb1a</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Capacity &amp; Pricing" display_value="Capacity &amp; Pricing" name="x_2307780_sentin_0_room" sys_domain="global" view="Default view">07df5edb4ac842a8bbf53270a53819b0</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:18:27</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:47</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
@@ -74,13 +74,13 @@
             <element>rate_effective_from</element>
             <position>5</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:18:27</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:47</sys_created_on>
             <sys_id>35e66b09f2164375bafd82fd4f9e17c7</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Capacity &amp; Pricing" display_value="Capacity &amp; Pricing" name="x_2307780_sentin_0_room" sys_domain="global" view="Default view">07df5edb4ac842a8bbf53270a53819b0</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:18:27</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:47</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
@@ -88,13 +88,13 @@
             <element>.end_split</element>
             <position>6</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:18:27</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:47</sys_created_on>
             <sys_id>55ffdb3e1a1543249ea3d2942c60f317</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Capacity &amp; Pricing" display_value="Capacity &amp; Pricing" name="x_2307780_sentin_0_room" sys_domain="global" view="Default view">07df5edb4ac842a8bbf53270a53819b0</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:18:27</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:47</sys_updated_on>
             <sys_user/>
             <type>.end_split</type>
         </sys_ui_element>
@@ -102,13 +102,13 @@
             <element>active</element>
             <position>7</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:18:27</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:47</sys_created_on>
             <sys_id>37a0f9be61cd4f31911148fb0957c903</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Capacity &amp; Pricing" display_value="Capacity &amp; Pricing" name="x_2307780_sentin_0_room" sys_domain="global" view="Default view">07df5edb4ac842a8bbf53270a53819b0</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:18:27</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:47</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>

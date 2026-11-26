@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element audit="true" db_object_id="b383efff2fd14d4db011bf0bb6f3e107" extends="task" label="Transfer Request" name="x_2307780_sentin_0_transfer" type="collection">
+        <element label="Cancellation Reason" max_length="500" name="cancellation_reason" type="string"/>
+        <element label="Authorization Reference" max_length="200" name="authorization_reference" type="string"/>
+        <element label="Source Allocation" name="source_allocation" reference="x_2307780_sentin_0_bed_alloc" reference_cascade_rule="none" type="reference"/>
+        <element label="Destination Department" name="dest_department" reference="x_2307780_sentin_0_dept" type="reference"/>
+        <element label="Requested At" name="requested_at" type="glide_date_time"/>
+        <element label="Requested By" name="requested_by" reference="sys_user" type="reference"/>
+        <element label="Destination Ward" name="dest_ward" reference="x_2307780_sentin_0_ward" type="reference"/>
+        <element label="Cancelled At" name="cancelled_at" type="glide_date_time"/>
+        <element label="Transfer Reason" mandatory="true" name="transfer_reason" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Condition Upgrade" sequence="1" value="condition_upgrade"/>
+                <element inactive_on_update="false" label="Patient Request" sequence="4" value="patient_request"/>
+                <element inactive_on_update="false" label="Clinical Requirement" sequence="6" value="clinical"/>
+                <element inactive_on_update="false" label="Other" sequence="7" value="other"/>
+                <element inactive_on_update="false" label="Condition Downgrade" sequence="2" value="condition_downgrade"/>
+                <element inactive_on_update="false" label="Ward Full" sequence="3" value="ward_full"/>
+                <element inactive_on_update="false" label="Isolation Needed" sequence="5" value="isolation_needed"/>
+            </choice>
+        </element>
+        <element label="Required Care Level" name="required_care_level" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Psychiatric" sequence="9" value="psychiatric"/>
+                <element inactive_on_update="false" label="Emergency" sequence="7" value="emergency"/>
+                <element inactive_on_update="false" label="General" sequence="1" value="general"/>
+                <element inactive_on_update="false" label="HDU" sequence="2" value="hdu"/>
+                <element inactive_on_update="false" label="Pediatric" sequence="4" value="pediatric"/>
+                <element inactive_on_update="false" label="Surgical" sequence="6" value="surgical"/>
+                <element inactive_on_update="false" label="ICU" sequence="3" value="icu"/>
+                <element inactive_on_update="false" label="Isolation" sequence="8" value="isolation"/>
+                <element inactive_on_update="false" label="Maternity" sequence="5" value="maternity"/>
+            </choice>
+        </element>
+        <element label="Destination Allocation" name="dest_allocation" reference="x_2307780_sentin_0_bed_alloc" reference_cascade_rule="none" type="reference"/>
+        <element label="Departed At" name="departed_at" type="glide_date_time"/>
+        <element default="requested" label="Transfer State" mandatory="true" name="transfer_state" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Destination Held" sequence="3" value="dest_held"/>
+                <element inactive_on_update="false" label="Completed" sequence="5" value="completed"/>
+                <element inactive_on_update="false" label="Approved" sequence="2" value="approved"/>
+                <element inactive_on_update="false" label="In Transit" sequence="4" value="in_transit"/>
+                <element inactive_on_update="false" label="Requested" sequence="1" value="requested"/>
+                <element inactive_on_update="false" label="Cancelled" sequence="6" value="cancelled"/>
+            </choice>
+        </element>
+        <element label="Arrived At" name="arrived_at" type="glide_date_time"/>
+        <element label="Accepted By" name="accepted_by" reference="sys_user" type="reference"/>
+        <element label="Operational Note" max_length="1000" name="operational_note" type="string"/>
+        <element label="Destination Bed" name="dest_bed" reference="x_2307780_sentin_0_bed" type="reference"/>
+        <element label="Admission" mandatory="true" name="admission" reference="x_2307780_sentin_0_adm" reference_cascade_rule="none" type="reference"/>
+        <element label="Accepted At" name="accepted_at" type="glide_date_time"/>
+    </element>
+</database>

@@ -4,13 +4,13 @@
             <element>.begin_split</element>
             <position>0</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:18:28</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:49</sys_created_on>
             <sys_id>668ce0bbc1764ee1845042da29a3f5dd</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Capabilities" display_value="Capabilities" name="x_2307780_sentin_0_bed" sys_domain="global" view="Default view">5dc98cec1c8149be9868618d4d05e0b8</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:18:28</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:49</sys_updated_on>
             <sys_user/>
             <type>.begin_split</type>
         </sys_ui_element>
@@ -18,13 +18,13 @@
             <element>isolation_capable</element>
             <position>1</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:18:28</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:49</sys_created_on>
             <sys_id>fce040fd378042f797036e9637b6bbe7</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Capabilities" display_value="Capabilities" name="x_2307780_sentin_0_bed" sys_domain="global" view="Default view">5dc98cec1c8149be9868618d4d05e0b8</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:18:28</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:49</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
@@ -32,13 +32,13 @@
             <element>oxygen_available</element>
             <position>2</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:18:28</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:49</sys_created_on>
             <sys_id>9d26424f8c514e8cab246849270cdbf1</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Capabilities" display_value="Capabilities" name="x_2307780_sentin_0_bed" sys_domain="global" view="Default view">5dc98cec1c8149be9868618d4d05e0b8</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:18:28</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:49</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
@@ -46,13 +46,13 @@
             <element>.split</element>
             <position>3</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:18:28</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:49</sys_created_on>
             <sys_id>4449d2dc3098429d8a2a0362f7ed57fa</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Capabilities" display_value="Capabilities" name="x_2307780_sentin_0_bed" sys_domain="global" view="Default view">5dc98cec1c8149be9868618d4d05e0b8</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:18:28</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:49</sys_updated_on>
             <sys_user/>
             <type>.split</type>
         </sys_ui_element>
@@ -60,13 +60,13 @@
             <element>ventilator_capable</element>
             <position>4</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:18:28</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:49</sys_created_on>
             <sys_id>78c28173858f46c29379482334cce1a3</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Capabilities" display_value="Capabilities" name="x_2307780_sentin_0_bed" sys_domain="global" view="Default view">5dc98cec1c8149be9868618d4d05e0b8</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:18:28</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:49</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
@@ -74,13 +74,13 @@
             <element>grid_row</element>
             <position>5</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:18:28</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:49</sys_created_on>
             <sys_id>efe3178efffc4f168a5c691655a34d19</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Capabilities" display_value="Capabilities" name="x_2307780_sentin_0_bed" sys_domain="global" view="Default view">5dc98cec1c8149be9868618d4d05e0b8</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:18:28</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:49</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
@@ -88,13 +88,13 @@
             <element>.end_split</element>
             <position>6</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:18:28</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:49</sys_created_on>
             <sys_id>abe2778f31d64829bcd32cdd0e3a82f6</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Capabilities" display_value="Capabilities" name="x_2307780_sentin_0_bed" sys_domain="global" view="Default view">5dc98cec1c8149be9868618d4d05e0b8</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:18:28</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:49</sys_updated_on>
             <sys_user/>
             <type>.end_split</type>
         </sys_ui_element>
@@ -102,13 +102,13 @@
             <element>.begin_split</element>
             <position>7</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:18:28</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:49</sys_created_on>
             <sys_id>d787e22e830d49aba04eed9ac603d7df</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Capabilities" display_value="Capabilities" name="x_2307780_sentin_0_bed" sys_domain="global" view="Default view">5dc98cec1c8149be9868618d4d05e0b8</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:18:28</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:49</sys_updated_on>
             <sys_user/>
             <type>.begin_split</type>
         </sys_ui_element>
@@ -116,13 +116,13 @@
             <element>display_order</element>
             <position>8</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:18:28</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:49</sys_created_on>
             <sys_id>1c88e35417b54312bed068806ee563a6</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Capabilities" display_value="Capabilities" name="x_2307780_sentin_0_bed" sys_domain="global" view="Default view">5dc98cec1c8149be9868618d4d05e0b8</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:18:28</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:49</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
@@ -130,13 +130,13 @@
             <element>.split</element>
             <position>9</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:18:28</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:49</sys_created_on>
             <sys_id>c4569aead3f94bb4916ac7b90c8268bb</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Capabilities" display_value="Capabilities" name="x_2307780_sentin_0_bed" sys_domain="global" view="Default view">5dc98cec1c8149be9868618d4d05e0b8</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:18:28</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:49</sys_updated_on>
             <sys_user/>
             <type>.split</type>
         </sys_ui_element>
@@ -144,13 +144,13 @@
             <element>grid_column</element>
             <position>10</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:18:28</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:49</sys_created_on>
             <sys_id>001430685b024e5894d2c144270e9050</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Capabilities" display_value="Capabilities" name="x_2307780_sentin_0_bed" sys_domain="global" view="Default view">5dc98cec1c8149be9868618d4d05e0b8</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:18:28</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:49</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
@@ -158,13 +158,13 @@
             <element>.end_split</element>
             <position>11</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:18:28</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:49</sys_created_on>
             <sys_id>12ff5e2904de404e8e6001df8ec35eb0</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Capabilities" display_value="Capabilities" name="x_2307780_sentin_0_bed" sys_domain="global" view="Default view">5dc98cec1c8149be9868618d4d05e0b8</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:18:28</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:49</sys_updated_on>
             <sys_user/>
             <type>.end_split</type>
         </sys_ui_element>

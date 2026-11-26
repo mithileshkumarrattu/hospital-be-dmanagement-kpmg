@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_theme">
+    <sp_theme action="INSERT_OR_UPDATE">
+        <css_variables>
+// ===================================================================
+// Sentinels Hospital Theme — SCSS Variables
+// Brand: Teal Primary (#08656A), Indigo Accent (#2C3E6B),
+//        Petrol Secondary (#1A4A5A)
+// Canvas: Light (#F7F8FA), Panels: White, Text: Charcoal (#2D3748)
+// ===================================================================
+
+// Grays
+$gray-base: #000000;
+$gray-dark: sp-rgb(--now-color--neutral-16, #2D3748) !default;
+$gray-darker: sp-rgb(--now-color--neutral-18, #1A202C) !default;
+$gray-light: sp-rgb(--now-color--neutral-9, #718096) !default;
+$gray-lighter: sp-rgb(--now-color--neutral-1, #F7F8FA) !default;
+$gray: sp-rgb(--now-color--neutral-11, #4A5568) !default;
+
+// Brand colors
+$brand-primary: sp-rgb(--now-color--primary-1, #08656A) !default;
+$brand-success: sp-rgb(--now-color_alert--positive-3, #3E8600) !default;
+$brand-warning: sp-rgb(--now-color_alert--warning-3, #B29800) !default;
+$brand-danger: sp-rgb(--now-color_alert--critical-3, #E52239) !default;
+$brand-info: sp-rgb(--now-color_alert--info-3, #2C3E6B) !default;
+
+// Background
+$body-bg: sp-rgb(--now-color_background--primary, #F7F8FA) !default;
+$background-primary: sp-rgb(--now-color_background--primary, #FFFFFF);
+$background-secondary: sp-rgb(--now-color_background--secondary, #F7F8FA);
+$background-tertiary: sp-rgb(--now-color_background--tertiary, #E2E8F0);
+
+// Text
+$text-color: sp-rgb(--now-color_text--primary, #2D3748) !default;
+$text-primary: sp-rgb(--now-color_text--primary, #2D3748);
+$text-secondary: sp-rgb(--now-color_text--secondary, #4A5568) !default;
+$text-tertiary: sp-rgb(--now-color_text--tertiary, #718096);
+$text-muted: sp-rgb(--now-color_text--tertiary, #718096) !default;
+
+// Links
+$link-color: sp-rgb(--now-color--link-2, #08656A);
+$link-hover-color: sp-rgb(--now-color--link-3, #1A4A5A);
+
+// Navbar — dark teal inverse
+$navbar-inverse-bg: sp-rgb(--now-color_background--primary, #08656A) !default;
+$navbar-inverse-link-color: sp-rgb(--now-color_text--primary, #FFFFFF) !default;
+$navbar-inverse-link-hover-color: sp-rgb(--now-color_text--primary, #FFFFFF) !default;
+$navbar-inverse-link-hover-bg: sp-rgb(--now-color--primary-0, #1A4A5A) !default;
+$navbar-inverse-link-active-bg: sp-rgb(--now-color_background--secondary, #1A4A5A) !default;
+$sp-navbar-divider-color: sp-rgb(--now-color_divider--tertiary, #1A4A5A) !default;
+$sp-navbar-bottom-width: 0 !default;
+
+// Logo
+$sp-logo-margin-x: $sp-space-3 !default;
+$sp-logo-margin-y: $sp-space-2 !default;
+$sp-logo-max-height: 40px !default;
+$sp-logo-max-width: 200px !default;
+$sp-logo-mobile-max-width: 160px !default;
+
+// Toggle
+$sp-navbar-toggle-border-color: rgba(255, 255, 255, 0.3) !default;
+
+// Borders
+$border-primary: sp-rgb(--now-color_border--primary, #A0AEC0);
+$border-secondary: sp-rgb(--now-color_border--secondary, #CBD5E0);
+$border-tertiary: sp-rgb(--now-color_border--tertiary, #E2E8F0);
+$input-border: sp-rgb(--now-color_border--primary, #A0AEC0) !default;
+$input-border-focus: sp-rgb(--now-color--focus-ring, #08656A) !default;
+
+// Buttons
+$btn-primary-color: sp-rgb(--now-color_text--primary-actionable, #FFFFFF) !default;
+$btn-primary-bg: sp-rgb(--now-color--primary-2, #08656A);
+$btn-primary-border: sp-rgb(--now-color--primary-2, #08656A);
+$btn-default-bg: sp-rgb(--now-color_background--primary, #FFFFFF);
+$btn-default-border: sp-rgb(--now-color_border--tertiary, #E2E8F0) !default;
+
+// Panels
+$panel-bg: sp-rgb(--now-color_background--primary, #FFFFFF);
+$panel-default-border: sp-rgb(--now-color_border--tertiary, #E2E8F0);
+$panel-primary-heading-bg: sp-rgb(--now-color--primary-1, #08656A);
+$panel-primary-text: sp-rgb(--now-color_text--primary-actionable, #FFFFFF) !default;
+
+// Alerts / States
+$state-success-bg: sp-rgb(--now-color_alert--positive-0, #C6F6D5) !default;
+$state-warning-bg: sp-rgb(--now-color_alert--warning-0, #FEFCBF) !default;
+$state-danger-bg: sp-rgb(--now-color_alert--critical-0, #FED7D7) !default;
+$state-info-bg: sp-rgb(--now-color_alert--info-0, #BEE3F8) !default;
+</css_variables>
+        <footer/>
+        <footer_fixed>true</footer_fixed>
+        <header display_value="Sentinels Hospital Header">6c7f204fda584396a08bb29e07d068a8</header>
+        <icon/>
+        <logo/>
+        <logo_alt_text/>
+        <matching_now_experience_theme/>
+        <name>Sentinels Hospital Theme</name>
+        <navbar_fixed>true</navbar_fixed>
+        <sys_class_name>sp_theme</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-11-26 08:07:20</sys_created_on>
+        <sys_id>0ee4b289978e49039083e8b4f901f2e4</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Sentinels Hospital Theme</sys_name>
+        <sys_package display_value="Sentinels Bed Operations Pilot" source="x_2307780_sentin_0">d8fe43811b30db50b87da8a5624bcb6c</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Sentinels Bed Operations Pilot">d8fe43811b30db50b87da8a5624bcb6c</sys_scope>
+        <sys_update_name>sp_theme_0ee4b289978e49039083e8b4f901f2e4</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-11-26 08:07:20</sys_updated_on>
+        <turn_off_scss_compilation>false</turn_off_scss_compilation>
+    </sp_theme>
+    <sys_translated_text action="delete_multiple" query="documentkey=0ee4b289978e49039083e8b4f901f2e4"/>
+</record_update>

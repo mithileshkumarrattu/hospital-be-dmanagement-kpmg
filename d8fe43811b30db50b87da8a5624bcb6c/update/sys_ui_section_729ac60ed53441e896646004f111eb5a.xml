@@ -4,13 +4,13 @@
             <element>.begin_split</element>
             <position>0</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:18:29</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:49</sys_created_on>
             <sys_id>00d820d353a842eebbf5ee25545a25bc</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Status" display_value="Status" name="x_2307780_sentin_0_bed" sys_domain="global" view="Default view">729ac60ed53441e896646004f111eb5a</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:18:29</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:49</sys_updated_on>
             <sys_user/>
             <type>.begin_split</type>
         </sys_ui_element>
@@ -18,13 +18,13 @@
             <element>occupancy</element>
             <position>1</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:18:29</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:50</sys_created_on>
             <sys_id>6521bd6c832c4e99827d1e50af00658c</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Status" display_value="Status" name="x_2307780_sentin_0_bed" sys_domain="global" view="Default view">729ac60ed53441e896646004f111eb5a</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:18:29</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:50</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
@@ -32,13 +32,13 @@
             <element>readiness</element>
             <position>2</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:18:29</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:50</sys_created_on>
             <sys_id>342c6f3634b34fbf837f1985616db2bb</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Status" display_value="Status" name="x_2307780_sentin_0_bed" sys_domain="global" view="Default view">729ac60ed53441e896646004f111eb5a</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:18:29</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:50</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
@@ -46,13 +46,13 @@
             <element>.split</element>
             <position>3</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:18:29</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:50</sys_created_on>
             <sys_id>a3699d94c6b84f53a89de3b09587e4aa</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Status" display_value="Status" name="x_2307780_sentin_0_bed" sys_domain="global" view="Default view">729ac60ed53441e896646004f111eb5a</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:18:29</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:50</sys_updated_on>
             <sys_user/>
             <type>.split</type>
         </sys_ui_element>
@@ -60,13 +60,13 @@
             <element>in_service</element>
             <position>4</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:18:29</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:50</sys_created_on>
             <sys_id>7d1127a4d1874d61960bc47d876be32b</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Status" display_value="Status" name="x_2307780_sentin_0_bed" sys_domain="global" view="Default view">729ac60ed53441e896646004f111eb5a</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:18:29</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:50</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
@@ -74,13 +74,13 @@
             <element>readiness_since</element>
             <position>5</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:18:29</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:50</sys_created_on>
             <sys_id>2544a7c6164f4e03bd5b6bc3313fe86d</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Status" display_value="Status" name="x_2307780_sentin_0_bed" sys_domain="global" view="Default view">729ac60ed53441e896646004f111eb5a</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:18:29</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:50</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
@@ -88,13 +88,13 @@
             <element>.end_split</element>
             <position>6</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:18:29</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:50</sys_created_on>
             <sys_id>fa4fffc64b274c5289efffc64f4d968b</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Status" display_value="Status" name="x_2307780_sentin_0_bed" sys_domain="global" view="Default view">729ac60ed53441e896646004f111eb5a</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:18:29</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:50</sys_updated_on>
             <sys_user/>
             <type>.end_split</type>
         </sys_ui_element>

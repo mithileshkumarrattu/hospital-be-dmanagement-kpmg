@@ -3,44 +3,44 @@
         <sys_ui_form_section action="INSERT_OR_UPDATE">
             <position>0</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:28:21</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:44</sys_created_on>
             <sys_domain>global</sys_domain>
             <sys_domain_path>/</sys_domain_path>
             <sys_id>d6271d1af79849bc985e8830249c16f9</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_overrides/>
             <sys_ui_form display_value="x_2307780_sentin_0_op_event" name="x_2307780_sentin_0_op_event" sys_domain="global" view="Default view">3a0c1946a7d640818fbf4b4c2c8fd590</sys_ui_form>
-            <sys_ui_section display_value="">dfbf642e2199423a8151aa7a28b1eb3c</sys_ui_section>
+            <sys_ui_section caption="Event" display_value="Event" name="x_2307780_sentin_0_op_event" sys_domain="global" view="Default view">dfbf642e2199423a8151aa7a28b1eb3c</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:28:21</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:44</sys_updated_on>
         </sys_ui_form_section>
         <sys_ui_form_section action="INSERT_OR_UPDATE">
             <position>1</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:28:21</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:44</sys_created_on>
             <sys_domain>global</sys_domain>
             <sys_domain_path>/</sys_domain_path>
             <sys_id>f4e5f9aec5fa439c8386d4d258d061df</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_overrides/>
             <sys_ui_form display_value="x_2307780_sentin_0_op_event" name="x_2307780_sentin_0_op_event" sys_domain="global" view="Default view">3a0c1946a7d640818fbf4b4c2c8fd590</sys_ui_form>
-            <sys_ui_section display_value="">75c0407e1fd1416bb76d6badc198a829</sys_ui_section>
+            <sys_ui_section caption="References" display_value="References" name="x_2307780_sentin_0_op_event" sys_domain="global" view="Default view">75c0407e1fd1416bb76d6badc198a829</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:28:21</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:44</sys_updated_on>
         </sys_ui_form_section>
         <sys_ui_form_section action="INSERT_OR_UPDATE">
             <position>2</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2026-11-26 06:28:21</sys_created_on>
+            <sys_created_on>2026-11-26 08:07:44</sys_created_on>
             <sys_domain>global</sys_domain>
             <sys_domain_path>/</sys_domain_path>
             <sys_id>6968874626f64e2bbb68f9b7741dd2d7</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_overrides/>
             <sys_ui_form display_value="x_2307780_sentin_0_op_event" name="x_2307780_sentin_0_op_event" sys_domain="global" view="Default view">3a0c1946a7d640818fbf4b4c2c8fd590</sys_ui_form>
-            <sys_ui_section display_value="">9a67e616354d40ae88d0419966260e1f</sys_ui_section>
+            <sys_ui_section caption="Details" display_value="Details" name="x_2307780_sentin_0_op_event" sys_domain="global" view="Default view">9a67e616354d40ae88d0419966260e1f</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2026-11-26 06:28:21</sys_updated_on>
+            <sys_updated_on>2026-11-26 08:07:44</sys_updated_on>
         </sys_ui_form_section>
         <sys_ui_form action="INSERT_OR_UPDATE">
             <name>x_2307780_sentin_0_op_event</name>

@@ -5,7 +5,7 @@
         <description>Hospital operations administrator</description>
         <elevated_privilege>false</elevated_privilege>
         <encryption_context/>
-        <federated_id/>
+        <federated_id>jycfnlDkXWpbz5HAUTHkUPnyVGt7I11/EOKOlEqOglQ=</federated_id>
         <grantable>true</grantable>
         <includes_roles/>
         <name>x_2307780_sentin_0.hospital_admin</name>

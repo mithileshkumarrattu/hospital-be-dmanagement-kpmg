@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element audit="true" db_object_id="f30fc943d4a147f5ab5b32c57774e26f" label="Department" name="x_2307780_sentin_0_dept" type="collection">
+        <element default="true" label="Active" name="active" type="boolean"/>
+        <element display="true" label="Department Name" mandatory="true" max_length="100" name="name" type="string"/>
+        <element label="Department Head" name="department_head" reference="sys_user" type="reference"/>
+        <element label="Display Order" name="display_order" type="integer"/>
+        <element label="Department Code" mandatory="true" max_length="20" name="code" type="string"/>
+        <index name="index" unique="true">
+            <element name="code"/>
+        </index>
+        <index name="index2">
+            <element name="department_head"/>
+        </index>
+    </element>
+</database>
