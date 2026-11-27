@@ -4,7 +4,6 @@
         <can_delegate>true</can_delegate>
         <description>Admission reception staff - read-only bed visibility</description>
         <elevated_privilege>false</elevated_privilege>
-        <encryption_context/>
         <federated_id>MImund9y5bO52JMZA7UqPoYhbx/Q6LPCa32AuqzDwRs=</federated_id>
         <grantable>true</grantable>
         <includes_roles/>

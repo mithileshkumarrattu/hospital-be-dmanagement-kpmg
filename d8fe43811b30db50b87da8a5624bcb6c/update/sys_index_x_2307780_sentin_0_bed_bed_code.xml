@@ -2,8 +2,7 @@
     <sys_index action="INSERT_OR_UPDATE">
         <access_method/>
         <col_name_string>bed_code</col_name_string>
-        <index_col_name element="bed_code" name="x_2307780_sentin_0_bed">823b8a0ca34a4d3494b391c0b9b8dd1f<sys_dictionary element="bed_code" name="x_2307780_sentin_0_bed">823b8a0ca34a4d3494b391c0b9b8dd1f</sys_dictionary>
-        </index_col_name>
+        <index_col_name element="bed_code" name="x_2307780_sentin_0_bed">c843bc7147f8d710af59b60e316d43cf</index_col_name>
         <logical_table_name>x_2307780_sentin_0_bed</logical_table_name>
         <sys_class_name>sys_index</sys_class_name>
         <sys_created_by>admin</sys_created_by>

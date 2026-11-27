@@ -1,41 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?><database>
     <element audit="true" db_object_id="f6ce1d7ba9f04c62bea3a2cca02a99ea" label="Bed Allocation" name="x_2307780_sentin_0_bed_alloc" type="collection">
-        <element label="Departure Type" name="departure_type" type="choice">
+        <element label="Expires At" max_length="40" name="expires_at" type="glide_date_time"/>
+        <element label="Bed" mandatory="true" max_length="32" name="bed" reference="x_2307780_sentin_0_bed" reference_cascade_rule="none" type="reference"/>
+        <element default="held" display="true" label="Status" mandatory="true" max_length="40" name="status" type="choice">
             <choice>
-                <element inactive_on_update="false" label="Temporary Absence" sequence="3" value="temporary_absence"/>
-                <element inactive_on_update="false" label="Discharge" sequence="1" value="discharge"/>
-                <element inactive_on_update="false" label="Transfer Out" sequence="2" value="transfer_out"/>
-            </choice>
-        </element>
-        <element label="Arrival Confirmed By" name="arrival_confirmed_by" reference="sys_user" type="reference"/>
-        <element label="Held By" name="held_by" reference="sys_user" type="reference"/>
-        <element label="Operation ID" max_length="100" name="operation_id" type="string"/>
-        <element label="Release Reason" max_length="255" name="release_reason" type="string"/>
-        <element label="Expires At" name="expires_at" type="glide_date_time"/>
-        <element label="Claim Key" max_length="100" name="claim_key" type="string"/>
-        <element label="Admission" mandatory="true" name="admission" reference="x_2307780_sentin_0_adm" reference_cascade_rule="none" type="reference"/>
-        <element label="Departure Confirmed By" name="departure_confirmed_by" reference="sys_user" type="reference"/>
-        <element label="Arrived At" name="arrived_at" type="glide_date_time"/>
-        <element label="Bed" mandatory="true" name="bed" reference="x_2307780_sentin_0_bed" reference_cascade_rule="none" type="reference"/>
-        <element label="Purpose" mandatory="true" name="purpose" type="choice">
-            <choice>
-                <element inactive_on_update="false" label="Initial Admission" sequence="1" value="initial"/>
-                <element inactive_on_update="false" label="Transfer" sequence="2" value="transfer"/>
-            </choice>
-        </element>
-        <element label="Source Allocation" name="source_allocation" reference="x_2307780_sentin_0_bed_alloc" reference_cascade_rule="none" type="reference"/>
-        <element label="Transfer Request" name="transfer_request" reference="x_2307780_sentin_0_transfer" reference_cascade_rule="none" type="reference"/>
-        <element label="Departed At" name="departed_at" type="glide_date_time"/>
-        <element default="held" display="true" label="Status" mandatory="true" name="status" type="choice">
-            <choice>
-                <element inactive_on_update="false" label="Occupied" sequence="2" value="occupied"/>
                 <element inactive_on_update="false" label="Expired" sequence="5" value="expired"/>
                 <element inactive_on_update="false" label="Held" sequence="1" value="held"/>
-                <element inactive_on_update="false" label="Ended" sequence="3" value="ended"/>
                 <element inactive_on_update="false" label="Released" sequence="4" value="released"/>
+                <element inactive_on_update="false" label="Ended" sequence="3" value="ended"/>
+                <element inactive_on_update="false" label="Occupied" sequence="2" value="occupied"/>
             </choice>
         </element>
-        <element label="Held At" name="held_at" type="glide_date_time"/>
+        <element label="Arrival Confirmed By" max_length="32" name="arrival_confirmed_by" reference="sys_user" type="reference"/>
+        <element label="Held By" max_length="32" name="held_by" reference="sys_user" type="reference"/>
+        <element label="Claim Key" max_length="100" name="claim_key" type="string"/>
+        <element label="Purpose" mandatory="true" max_length="40" name="purpose" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Transfer" sequence="2" value="transfer"/>
+                <element inactive_on_update="false" label="Initial Admission" sequence="1" value="initial"/>
+            </choice>
+        </element>
+        <element label="Held At" max_length="40" name="held_at" type="glide_date_time"/>
+        <element label="Operation ID" max_length="100" name="operation_id" type="string"/>
+        <element label="Admission" mandatory="true" max_length="32" name="admission" reference="x_2307780_sentin_0_adm" reference_cascade_rule="none" type="reference"/>
+        <element label="Source Allocation" max_length="32" name="source_allocation" reference="x_2307780_sentin_0_bed_alloc" reference_cascade_rule="none" type="reference"/>
+        <element label="Departure Type" max_length="40" name="departure_type" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Temporary Absence" sequence="3" value="temporary_absence"/>
+                <element inactive_on_update="false" label="Transfer Out" sequence="2" value="transfer_out"/>
+                <element inactive_on_update="false" label="Discharge" sequence="1" value="discharge"/>
+            </choice>
+        </element>
+        <element label="Release Reason" max_length="255" name="release_reason" type="string"/>
+        <element label="Arrived At" max_length="40" name="arrived_at" type="glide_date_time"/>
+        <element label="Departed At" max_length="40" name="departed_at" type="glide_date_time"/>
+        <element label="Departure Confirmed By" max_length="32" name="departure_confirmed_by" reference="sys_user" type="reference"/>
+        <element label="Transfer Request" max_length="32" name="transfer_request" reference="x_2307780_sentin_0_transfer" reference_cascade_rule="none" type="reference"/>
         <index name="index">
             <element name="admission"/>
         </index>

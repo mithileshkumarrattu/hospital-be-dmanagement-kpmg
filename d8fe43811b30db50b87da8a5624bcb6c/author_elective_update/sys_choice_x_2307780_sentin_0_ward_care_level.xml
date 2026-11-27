@@ -6,6 +6,7 @@
             <sys_class_name>sys_choice_set</sys_class_name>
             <sys_created_by>admin</sys_created_by>
             <sys_created_on>2026-11-26 06:18:19</sys_created_on>
+            <sys_id>1143b0b147f8d710af59b60e316d43bf</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_name>care_level</sys_name>
             <sys_package display_value="Sentinels Bed Operations Pilot" source="x_2307780_sentin_0">d8fe43811b30db50b87da8a5624bcb6c</sys_package>
@@ -29,6 +30,7 @@
             <sys_created_on>2026-11-26 08:07:37</sys_created_on>
             <sys_domain>global</sys_domain>
             <sys_domain_path>/</sys_domain_path>
+            <sys_id>3693f43947f8d710af59b60e316d4338</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_updated_by>admin</sys_updated_by>
             <sys_updated_on>2026-11-26 08:07:37</sys_updated_on>
@@ -48,6 +50,7 @@
             <sys_created_on>2026-11-26 08:07:37</sys_created_on>
             <sys_domain>global</sys_domain>
             <sys_domain_path>/</sys_domain_path>
+            <sys_id>fa93f43947f8d710af59b60e316d4339</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_updated_by>admin</sys_updated_by>
             <sys_updated_on>2026-11-26 08:07:37</sys_updated_on>
@@ -67,6 +70,7 @@
             <sys_created_on>2026-11-26 08:07:37</sys_created_on>
             <sys_domain>global</sys_domain>
             <sys_domain_path>/</sys_domain_path>
+            <sys_id>b293f43947f8d710af59b60e316d433b</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_updated_by>admin</sys_updated_by>
             <sys_updated_on>2026-11-26 08:07:37</sys_updated_on>
@@ -86,6 +90,7 @@
             <sys_created_on>2026-11-26 08:07:37</sys_created_on>
             <sys_domain>global</sys_domain>
             <sys_domain_path>/</sys_domain_path>
+            <sys_id>7a93f43947f8d710af59b60e316d433c</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_updated_by>admin</sys_updated_by>
             <sys_updated_on>2026-11-26 08:07:37</sys_updated_on>
@@ -105,6 +110,7 @@
             <sys_created_on>2026-11-26 08:07:37</sys_created_on>
             <sys_domain>global</sys_domain>
             <sys_domain_path>/</sys_domain_path>
+            <sys_id>3293f43947f8d710af59b60e316d433e</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_updated_by>admin</sys_updated_by>
             <sys_updated_on>2026-11-26 08:07:37</sys_updated_on>
@@ -124,6 +130,7 @@
             <sys_created_on>2026-11-26 08:07:37</sys_created_on>
             <sys_domain>global</sys_domain>
             <sys_domain_path>/</sys_domain_path>
+            <sys_id>f693f43947f8d710af59b60e316d433f</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_updated_by>admin</sys_updated_by>
             <sys_updated_on>2026-11-26 08:07:37</sys_updated_on>
@@ -143,6 +150,7 @@
             <sys_created_on>2026-11-26 08:07:37</sys_created_on>
             <sys_domain>global</sys_domain>
             <sys_domain_path>/</sys_domain_path>
+            <sys_id>be93f43947f8d710af59b60e316d4340</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_updated_by>admin</sys_updated_by>
             <sys_updated_on>2026-11-26 08:07:37</sys_updated_on>
@@ -162,6 +170,7 @@
             <sys_created_on>2026-11-26 08:07:37</sys_created_on>
             <sys_domain>global</sys_domain>
             <sys_domain_path>/</sys_domain_path>
+            <sys_id>7693f43947f8d710af59b60e316d4342</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_updated_by>admin</sys_updated_by>
             <sys_updated_on>2026-11-26 08:07:37</sys_updated_on>
@@ -181,6 +190,7 @@
             <sys_created_on>2026-11-26 08:07:37</sys_created_on>
             <sys_domain>global</sys_domain>
             <sys_domain_path>/</sys_domain_path>
+            <sys_id>3e93f43947f8d710af59b60e316d4343</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_updated_by>admin</sys_updated_by>
             <sys_updated_on>2026-11-26 08:07:37</sys_updated_on>

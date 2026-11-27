@@ -73,7 +73,6 @@
         <file_path/>
         <instance_id>36b1ce93eb1c931ce9bbfddacad0cd4d</instance_id>
         <instance_name>dev475475</instance_name>
-        <merge_base/>
         <name>sp_instance_d7e424c7024b4b538f2557ee623295c3</name>
         <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_instance">
   <sp_instance action="INSERT_OR_UPDATE" apply_defaults="true">

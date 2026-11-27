@@ -4,7 +4,6 @@
         <can_delegate>true</can_delegate>
         <description>Bed operations administrator</description>
         <elevated_privilege>false</elevated_privilege>
-        <encryption_context/>
         <federated_id>JVYjxPezLbU0122Fy3y9utCsVSduhOutvzxq+4bbi6k=</federated_id>
         <grantable>true</grantable>
         <includes_roles/>

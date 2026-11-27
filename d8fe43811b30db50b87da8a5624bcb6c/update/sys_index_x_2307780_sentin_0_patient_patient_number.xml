@@ -2,8 +2,7 @@
     <sys_index action="INSERT_OR_UPDATE">
         <access_method/>
         <col_name_string>patient_number</col_name_string>
-        <index_col_name element="patient_number" name="x_2307780_sentin_0_patient">6fb3832ba51b45d69a7e1c799984884b<sys_dictionary element="patient_number" name="x_2307780_sentin_0_patient">6fb3832ba51b45d69a7e1c799984884b</sys_dictionary>
-        </index_col_name>
+        <index_col_name element="patient_number" name="x_2307780_sentin_0_patient">9843fc7147f8d710af59b60e316d43d3</index_col_name>
         <logical_table_name>x_2307780_sentin_0_patient</logical_table_name>
         <sys_class_name>sys_index</sys_class_name>
         <sys_created_by>admin</sys_created_by>

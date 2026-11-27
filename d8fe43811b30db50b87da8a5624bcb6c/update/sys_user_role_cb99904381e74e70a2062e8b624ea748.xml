@@ -4,7 +4,6 @@
         <can_delegate>true</can_delegate>
         <description>Ward nurse - readiness verification</description>
         <elevated_privilege>false</elevated_privilege>
-        <encryption_context/>
         <federated_id>tG+Mzd16mL/lO0apf1CauOnhPty4K4X6XWmL0LOVYJM=</federated_id>
         <grantable>true</grantable>
         <includes_roles/>

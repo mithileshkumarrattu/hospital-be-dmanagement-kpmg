@@ -1,58 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?><database>
     <element audit="true" db_object_id="36c824cad07a433e8d56ffeb72ae972d" label="Operational Event" name="x_2307780_sentin_0_op_event" read_only="true" read_only_option="instance_configured" type="collection">
-        <element label="Allocation" name="allocation" reference="x_2307780_sentin_0_bed_alloc" reference_cascade_rule="none" type="reference"/>
-        <element default="internal" label="Visibility" name="visibility" type="choice">
+        <element label="Transfer" max_length="32" name="transfer" reference="x_2307780_sentin_0_transfer" reference_cascade_rule="none" type="reference"/>
+        <element label="Reason Code" max_length="50" name="reason_code" type="string"/>
+        <element label="Allocation" max_length="32" name="allocation" reference="x_2307780_sentin_0_bed_alloc" reference_cascade_rule="none" type="reference"/>
+        <element label="Bed" max_length="32" name="bed" reference="x_2307780_sentin_0_bed" reference_cascade_rule="none" type="reference"/>
+        <element label="Admission" max_length="32" name="admission" reference="x_2307780_sentin_0_adm" reference_cascade_rule="none" type="reference"/>
+        <element label="Actor Kind" max_length="40" name="actor_kind" type="choice">
             <choice>
+                <element inactive_on_update="false" label="User" sequence="1" value="user"/>
+                <element inactive_on_update="false" label="Timer" sequence="3" value="timer"/>
+                <element inactive_on_update="false" label="System" sequence="2" value="system"/>
+            </choice>
+        </element>
+        <element label="Work Task" max_length="32" name="work_task" reference="x_2307780_sentin_0_bed_work" reference_cascade_rule="none" type="reference"/>
+        <element default="internal" label="Visibility" max_length="40" name="visibility" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Family Visible" sequence="3" value="family"/>
                 <element inactive_on_update="false" label="Staff Visible" sequence="2" value="staff"/>
                 <element inactive_on_update="false" label="Internal Only" sequence="1" value="internal"/>
-                <element inactive_on_update="false" label="Family Visible" sequence="3" value="family"/>
             </choice>
         </element>
         <element label="Correlation Key" max_length="100" name="correlation_key" type="string"/>
-        <element label="Actor" name="actor_user" reference="sys_user" type="reference"/>
-        <element label="Bed" name="bed" reference="x_2307780_sentin_0_bed" reference_cascade_rule="none" type="reference"/>
-        <element label="Admission" name="admission" reference="x_2307780_sentin_0_adm" reference_cascade_rule="none" type="reference"/>
         <element label="Outcome" max_length="100" name="outcome" type="string"/>
-        <element label="Previous State" max_length="50" name="previous_state" type="string"/>
-        <element label="Transfer" name="transfer" reference="x_2307780_sentin_0_transfer" reference_cascade_rule="none" type="reference"/>
-        <element label="Actor Kind" name="actor_kind" type="choice">
+        <element label="Occurred At" mandatory="true" max_length="40" name="occurred_at" type="glide_date_time"/>
+        <element display="true" label="Event Type" mandatory="true" max_length="40" name="event_type" type="choice">
             <choice>
-                <element inactive_on_update="false" label="Timer" sequence="3" value="timer"/>
-                <element inactive_on_update="false" label="System" sequence="2" value="system"/>
-                <element inactive_on_update="false" label="User" sequence="1" value="user"/>
-            </choice>
-        </element>
-        <element label="Occurred At" mandatory="true" name="occurred_at" type="glide_date_time"/>
-        <element label="New State" max_length="50" name="new_state" type="string"/>
-        <element label="Reason Code" max_length="50" name="reason_code" type="string"/>
-        <element label="Work Task" name="work_task" reference="x_2307780_sentin_0_bed_work" reference_cascade_rule="none" type="reference"/>
-        <element display="true" label="Event Type" mandatory="true" name="event_type" type="choice">
-            <choice>
+                <element inactive_on_update="false" label="Cleaning Completed" sequence="13" value="cleaning_completed"/>
                 <element inactive_on_update="false" label="Discharge Authorized" sequence="10" value="discharge_authorized"/>
-                <element inactive_on_update="false" label="Arrival Confirmed" sequence="5" value="arrival_confirmed"/>
-                <element inactive_on_update="false" label="Contact Attempted" sequence="19" value="contact_attempted"/>
+                <element inactive_on_update="false" label="Estimate Updated" sequence="6" value="estimate_updated"/>
+                <element inactive_on_update="false" label="Escalation Raised" sequence="21" value="escalation_raised"/>
+                <element inactive_on_update="false" label="Bed Held" sequence="3" value="bed_held"/>
                 <element inactive_on_update="false" label="Inspection Failed" sequence="17" value="inspection_failed"/>
+                <element inactive_on_update="false" label="Arrival Confirmed" sequence="5" value="arrival_confirmed"/>
+                <element inactive_on_update="false" label="Linen Service" sequence="20" value="linen_service"/>
+                <element inactive_on_update="false" label="Queue Entered" sequence="2" value="queue_entered"/>
+                <element inactive_on_update="false" label="Inspection Passed" sequence="16" value="inspection_passed"/>
+                <element inactive_on_update="false" label="Cleaning Dispatched" sequence="12" value="cleaning_dispatched"/>
                 <element inactive_on_update="false" label="Transfer Arrived" sequence="9" value="transfer_arrived"/>
-                <element inactive_on_update="false" label="State Change" sequence="22" value="state_change"/>
                 <element inactive_on_update="false" label="Transfer Departed" sequence="8" value="transfer_departed"/>
                 <element inactive_on_update="false" label="Hold Expired" sequence="4" value="hold_expired"/>
-                <element inactive_on_update="false" label="Patient Departed" sequence="11" value="patient_departed"/>
-                <element inactive_on_update="false" label="Linen Service" sequence="20" value="linen_service"/>
-                <element inactive_on_update="false" label="Inspection Passed" sequence="16" value="inspection_passed"/>
+                <element inactive_on_update="false" label="Contact Attempted" sequence="19" value="contact_attempted"/>
+                <element inactive_on_update="false" label="Admission Created" sequence="1" value="admission_created"/>
                 <element inactive_on_update="false" label="Repair Completed" sequence="15" value="repair_completed"/>
                 <element inactive_on_update="false" label="Bed Ready" sequence="18" value="bed_ready"/>
-                <element inactive_on_update="false" label="Estimate Updated" sequence="6" value="estimate_updated"/>
-                <element inactive_on_update="false" label="Admission Created" sequence="1" value="admission_created"/>
-                <element inactive_on_update="false" label="Cleaning Dispatched" sequence="12" value="cleaning_dispatched"/>
-                <element inactive_on_update="false" label="Queue Entered" sequence="2" value="queue_entered"/>
-                <element inactive_on_update="false" label="Transfer Requested" sequence="7" value="transfer_requested"/>
-                <element inactive_on_update="false" label="Cleaning Completed" sequence="13" value="cleaning_completed"/>
-                <element inactive_on_update="false" label="Bed Held" sequence="3" value="bed_held"/>
                 <element inactive_on_update="false" label="Fault Reported" sequence="14" value="fault_reported"/>
-                <element inactive_on_update="false" label="Escalation Raised" sequence="21" value="escalation_raised"/>
+                <element inactive_on_update="false" label="Patient Departed" sequence="11" value="patient_departed"/>
+                <element inactive_on_update="false" label="Transfer Requested" sequence="7" value="transfer_requested"/>
+                <element inactive_on_update="false" label="State Change" sequence="22" value="state_change"/>
             </choice>
         </element>
         <element label="Summary" max_length="500" name="summary" type="string"/>
+        <element label="Actor" max_length="32" name="actor_user" reference="sys_user" type="reference"/>
+        <element label="Previous State" max_length="50" name="previous_state" type="string"/>
+        <element label="New State" max_length="50" name="new_state" type="string"/>
         <index name="index">
             <element name="actor_user"/>
         </index>

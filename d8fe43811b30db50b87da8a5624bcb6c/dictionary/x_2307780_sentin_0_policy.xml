@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?><database>
     <element audit="true" db_object_id="ad9150db982e42498c36ddcd94999ee9" label="Service Policy" name="x_2307780_sentin_0_policy" type="collection">
-        <element default="15" label="Pickup Target (min)" name="pickup_target_min" type="integer"/>
-        <element default="120" label="Repair Target (min)" name="repair_target_min" type="integer"/>
-        <element default="60" label="Hold Window - Emergency (min)" name="hold_window_emergency" type="integer"/>
+        <element label="Effective To" max_length="40" name="effective_to" type="glide_date"/>
+        <element display="true" label="Policy Name" mandatory="true" max_length="200" name="name" type="string"/>
         <element label="Version" max_length="10" name="version" type="string"/>
         <element label="Policy Code" mandatory="true" max_length="30" name="code" type="string"/>
-        <element default="15" label="Nurse Check Target (min)" name="check_target_min" type="integer"/>
-        <element default="120" label="Hold Window - Walk-in (min)" name="hold_window_walkin" type="integer"/>
-        <element label="Effective To" name="effective_to" type="glide_date"/>
-        <element default="30" label="Escalation Threshold (min)" name="escalation_threshold_min" type="integer"/>
-        <element default="72" label="Linen Interval (hours)" name="linen_interval_hrs" type="integer"/>
-        <element default="true" label="Active" name="active" type="boolean"/>
-        <element display="true" label="Policy Name" mandatory="true" max_length="200" name="name" type="string"/>
-        <element default="45" label="Cleaning Target (min)" name="cleaning_target_min" type="integer"/>
-        <element default="240" label="Hold Window - Planned (min)" name="hold_window_planned" type="integer"/>
-        <element label="Effective From" name="effective_from" type="glide_date"/>
+        <element default="30" label="Escalation Threshold (min)" max_length="40" name="escalation_threshold_min" type="integer"/>
+        <element default="15" label="Pickup Target (min)" max_length="40" name="pickup_target_min" type="integer"/>
+        <element default="45" label="Cleaning Target (min)" max_length="40" name="cleaning_target_min" type="integer"/>
+        <element default="120" label="Repair Target (min)" max_length="40" name="repair_target_min" type="integer"/>
+        <element default="15" label="Nurse Check Target (min)" max_length="40" name="check_target_min" type="integer"/>
+        <element default="72" label="Linen Interval (hours)" max_length="40" name="linen_interval_hrs" type="integer"/>
+        <element default="240" label="Hold Window - Planned (min)" max_length="40" name="hold_window_planned" type="integer"/>
+        <element default="60" label="Hold Window - Emergency (min)" max_length="40" name="hold_window_emergency" type="integer"/>
+        <element default="120" label="Hold Window - Walk-in (min)" max_length="40" name="hold_window_walkin" type="integer"/>
+        <element default="true" label="Active" max_length="40" name="active" type="boolean"/>
+        <element label="Effective From" max_length="40" name="effective_from" type="glide_date"/>
         <index name="index" unique="true">
             <element name="code"/>
         </index>

@@ -4,22 +4,22 @@
         <license_condition/>
         <license_model>none</license_model>
         <license_roles/>
-        <name>x_2307780_sentin_0_patient</name>
+        <name>x_2307780_sentin_0_transfer</name>
         <op_delete>true</op_delete>
         <op_insert>true</op_insert>
         <op_update>true</op_update>
         <owner_condition/>
         <sys_class_name>ua_table_licensing_config</sys_class_name>
         <sys_created_by>admin</sys_created_by>
-        <sys_created_on>2026-11-26 06:18:07</sys_created_on>
-        <sys_id>fa586fd11b705f50b87da8a5624bcbe2</sys_id>
+        <sys_created_on>2026-11-26 06:27:55</sys_created_on>
+        <sys_id>0343f8b147f8d710af59b60e316d433d</sys_id>
         <sys_mod_count>0</sys_mod_count>
-        <sys_name>x_2307780_sentin_0_patient</sys_name>
+        <sys_name>x_2307780_sentin_0_transfer</sys_name>
         <sys_package display_value="Sentinels Bed Operations Pilot" source="x_2307780_sentin_0">d8fe43811b30db50b87da8a5624bcb6c</sys_package>
         <sys_policy/>
         <sys_scope display_value="Sentinels Bed Operations Pilot">d8fe43811b30db50b87da8a5624bcb6c</sys_scope>
-        <sys_update_name>ua_table_licensing_config_fa586fd11b705f50b87da8a5624bcbe2</sys_update_name>
+        <sys_update_name>ua_table_licensing_config_0343f8b147f8d710af59b60e316d433d</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-11-26 06:18:07</sys_updated_on>
+        <sys_updated_on>2026-11-26 06:27:55</sys_updated_on>
     </ua_table_licensing_config>
 </record_update>

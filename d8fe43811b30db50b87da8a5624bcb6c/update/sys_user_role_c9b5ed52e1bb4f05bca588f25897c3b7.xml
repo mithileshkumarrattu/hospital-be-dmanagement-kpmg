@@ -4,7 +4,6 @@
         <can_delegate>true</can_delegate>
         <description>Ward manager - operational exceptions</description>
         <elevated_privilege>false</elevated_privilege>
-        <encryption_context/>
         <federated_id>OEbqPr/AQ1SDSCwXYLtQ6JL9xe4NCcVpyqxiGptrj40=</federated_id>
         <grantable>true</grantable>
         <includes_roles/>

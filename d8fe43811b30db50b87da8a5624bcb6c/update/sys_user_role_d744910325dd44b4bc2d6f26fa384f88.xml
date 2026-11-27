@@ -4,7 +4,6 @@
         <can_delegate>true</can_delegate>
         <description>Housekeeping staff - cleaning workflow</description>
         <elevated_privilege>false</elevated_privilege>
-        <encryption_context/>
         <federated_id>RsysgZLvpcOOgw2fWesJwI6caAKaYpDOLP7WyWEy5Kg=</federated_id>
         <grantable>true</grantable>
         <includes_roles/>

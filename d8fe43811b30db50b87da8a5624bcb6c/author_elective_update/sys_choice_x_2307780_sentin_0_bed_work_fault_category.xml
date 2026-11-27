@@ -6,6 +6,7 @@
             <sys_class_name>sys_choice_set</sys_class_name>
             <sys_created_by>admin</sys_created_by>
             <sys_created_on>2026-11-26 06:28:04</sys_created_on>
+            <sys_id>1c5330f147f8d710af59b60e316d4377</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_name>fault_category</sys_name>
             <sys_package display_value="Sentinels Bed Operations Pilot" source="x_2307780_sentin_0">d8fe43811b30db50b87da8a5624bcb6c</sys_package>
@@ -29,6 +30,7 @@
             <sys_created_on>2026-11-26 08:07:30</sys_created_on>
             <sys_domain>global</sys_domain>
             <sys_domain_path>/</sys_domain_path>
+            <sys_id>7593303947f8d710af59b60e316d43d1</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_updated_by>admin</sys_updated_by>
             <sys_updated_on>2026-11-26 08:07:30</sys_updated_on>
@@ -48,6 +50,7 @@
             <sys_created_on>2026-11-26 08:07:30</sys_created_on>
             <sys_domain>global</sys_domain>
             <sys_domain_path>/</sys_domain_path>
+            <sys_id>f193303947f8d710af59b60e316d43e0</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_updated_by>admin</sys_updated_by>
             <sys_updated_on>2026-11-26 08:07:30</sys_updated_on>
@@ -67,6 +70,7 @@
             <sys_created_on>2026-11-26 08:07:31</sys_created_on>
             <sys_domain>global</sys_domain>
             <sys_domain_path>/</sys_domain_path>
+            <sys_id>7193303947f8d710af59b60e316d43ef</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_updated_by>admin</sys_updated_by>
             <sys_updated_on>2026-11-26 08:07:31</sys_updated_on>
@@ -86,6 +90,7 @@
             <sys_created_on>2026-11-26 08:07:31</sys_created_on>
             <sys_domain>global</sys_domain>
             <sys_domain_path>/</sys_domain_path>
+            <sys_id>fd93303947f8d710af59b60e316d43fd</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_updated_by>admin</sys_updated_by>
             <sys_updated_on>2026-11-26 08:07:31</sys_updated_on>
@@ -105,6 +110,7 @@
             <sys_created_on>2026-11-26 08:07:31</sys_created_on>
             <sys_domain>global</sys_domain>
             <sys_domain_path>/</sys_domain_path>
+            <sys_id>7d93703947f8d710af59b60e316d430c</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_updated_by>admin</sys_updated_by>
             <sys_updated_on>2026-11-26 08:07:31</sys_updated_on>
@@ -124,6 +130,7 @@
             <sys_created_on>2026-11-26 08:07:31</sys_created_on>
             <sys_domain>global</sys_domain>
             <sys_domain_path>/</sys_domain_path>
+            <sys_id>f993703947f8d710af59b60e316d431b</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_updated_by>admin</sys_updated_by>
             <sys_updated_on>2026-11-26 08:07:31</sys_updated_on>

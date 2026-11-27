@@ -6,6 +6,7 @@
             <sys_class_name>sys_choice_set</sys_class_name>
             <sys_created_by>admin</sys_created_by>
             <sys_created_on>2026-11-26 06:28:06</sys_created_on>
+            <sys_id>d843fc7147f8d710af59b60e316d438d</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_name>visibility</sys_name>
             <sys_package display_value="Sentinels Bed Operations Pilot" source="x_2307780_sentin_0">d8fe43811b30db50b87da8a5624bcb6c</sys_package>
@@ -29,6 +30,7 @@
             <sys_created_on>2026-11-26 08:07:33</sys_created_on>
             <sys_domain>global</sys_domain>
             <sys_domain_path>/</sys_domain_path>
+            <sys_id>ce93f03947f8d710af59b60e316d4361</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_updated_by>admin</sys_updated_by>
             <sys_updated_on>2026-11-26 08:07:33</sys_updated_on>
@@ -48,6 +50,7 @@
             <sys_created_on>2026-11-26 08:07:33</sys_created_on>
             <sys_domain>global</sys_domain>
             <sys_domain_path>/</sys_domain_path>
+            <sys_id>8693f03947f8d710af59b60e316d4363</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_updated_by>admin</sys_updated_by>
             <sys_updated_on>2026-11-26 08:07:33</sys_updated_on>
@@ -67,6 +70,7 @@
             <sys_created_on>2026-11-26 08:07:33</sys_created_on>
             <sys_domain>global</sys_domain>
             <sys_domain_path>/</sys_domain_path>
+            <sys_id>4e93f03947f8d710af59b60e316d4364</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_updated_by>admin</sys_updated_by>
             <sys_updated_on>2026-11-26 08:07:33</sys_updated_on>

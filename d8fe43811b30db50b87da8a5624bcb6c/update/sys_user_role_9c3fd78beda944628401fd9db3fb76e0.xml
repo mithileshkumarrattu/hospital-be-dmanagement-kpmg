@@ -4,7 +4,6 @@
         <can_delegate>true</can_delegate>
         <description>Hospital operations administrator</description>
         <elevated_privilege>false</elevated_privilege>
-        <encryption_context/>
         <federated_id>jycfnlDkXWpbz5HAUTHkUPnyVGt7I11/EOKOlEqOglQ=</federated_id>
         <grantable>true</grantable>
         <includes_roles/>

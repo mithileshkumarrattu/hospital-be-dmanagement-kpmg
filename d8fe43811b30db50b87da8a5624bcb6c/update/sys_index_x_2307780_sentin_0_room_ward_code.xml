@@ -2,9 +2,7 @@
     <sys_index action="INSERT_OR_UPDATE">
         <access_method/>
         <col_name_string>ward,code</col_name_string>
-        <index_col_name>205f11362e5d4fe18841513114c2c2b1,a53e2cbb91ff4a49b35b57c440de4fec<sys_dictionary element="ward" name="x_2307780_sentin_0_room">205f11362e5d4fe18841513114c2c2b1</sys_dictionary>
-            <sys_dictionary element="code" name="x_2307780_sentin_0_room">a53e2cbb91ff4a49b35b57c440de4fec</sys_dictionary>
-        </index_col_name>
+        <index_col_name>7733bc7147f8d710af59b60e316d432f,f733bc7147f8d710af59b60e316d4346</index_col_name>
         <logical_table_name>x_2307780_sentin_0_room</logical_table_name>
         <sys_class_name>sys_index</sys_class_name>
         <sys_created_by>admin</sys_created_by>

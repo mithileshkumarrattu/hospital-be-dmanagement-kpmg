@@ -1,111 +1,111 @@
 <?xml version="1.0" encoding="UTF-8"?><database>
     <element audit="true" db_object_id="b0fca705f5c14fd79ddf26ae0a8a67ca" extends="task" label="Admission" name="x_2307780_sentin_0_adm" type="collection">
-        <element label="Isolation Required" name="isolation_required" type="boolean"/>
-        <element label="Authorized By" max_length="200" name="authorized_by" type="string"/>
-        <element label="Authorized At" name="authorized_at" type="glide_date_time"/>
-        <element label="Required Care Level" mandatory="true" name="required_care_level" type="choice">
-            <choice>
-                <element inactive_on_update="false" label="Surgical" sequence="6" value="surgical"/>
-                <element inactive_on_update="false" label="Maternity" sequence="5" value="maternity"/>
-                <element inactive_on_update="false" label="Emergency" sequence="7" value="emergency"/>
-                <element inactive_on_update="false" label="General" sequence="1" value="general"/>
-                <element inactive_on_update="false" label="Isolation" sequence="8" value="isolation"/>
-                <element inactive_on_update="false" label="ICU" sequence="3" value="icu"/>
-                <element inactive_on_update="false" label="HDU" sequence="2" value="hdu"/>
-                <element inactive_on_update="false" label="Pediatric" sequence="4" value="pediatric"/>
-                <element inactive_on_update="false" label="Psychiatric" sequence="9" value="psychiatric"/>
-            </choice>
-        </element>
-        <element label="Confirmed Rate" name="confirmed_rate" type="currency2"/>
-        <element label="Clearance Blocker" max_length="255" name="clearance_blocker" type="string"/>
-        <element label="Earliest Hold Time" name="earliest_hold_time" type="glide_date_time"/>
-        <element label="Payer Type" name="payer_type" type="choice">
-            <choice>
-                <element inactive_on_update="false" label="Self Pay" sequence="1" value="self_pay"/>
-                <element inactive_on_update="false" label="Government" sequence="4" value="government"/>
-                <element inactive_on_update="false" label="Corporate" sequence="3" value="corporate"/>
-                <element inactive_on_update="false" label="Insurance" sequence="2" value="insurance"/>
-            </choice>
-        </element>
-        <element label="Queue Entered At" name="queue_entered_at" type="glide_date_time"/>
-        <element label="Planned Arrival" name="planned_arrival" type="glide_date_time"/>
-        <element label="Requested Tier" name="requested_tier" type="choice">
+        <element label="Requested Tier" max_length="40" name="requested_tier" type="choice">
             <choice>
                 <element inactive_on_update="false" label="Isolation" sequence="5" value="isolation"/>
-                <element inactive_on_update="false" label="Semi-Private" sequence="2" value="semi_private"/>
                 <element inactive_on_update="false" label="Private" sequence="3" value="private"/>
-                <element inactive_on_update="false" label="Deluxe" sequence="4" value="deluxe"/>
                 <element inactive_on_update="false" label="Shared" sequence="1" value="shared"/>
+                <element inactive_on_update="false" label="Deluxe" sequence="4" value="deluxe"/>
+                <element inactive_on_update="false" label="Semi-Private" sequence="2" value="semi_private"/>
             </choice>
         </element>
-        <element default="pending" label="Admission State" mandatory="true" name="admission_state" type="choice">
+        <element label="Required Care Level" mandatory="true" max_length="40" name="required_care_level" type="choice">
             <choice>
-                <element inactive_on_update="false" label="Bed Held" sequence="3" value="held"/>
-                <element inactive_on_update="false" label="Waiting" sequence="2" value="waiting"/>
-                <element inactive_on_update="false" label="Departed" sequence="7" value="departed"/>
-                <element inactive_on_update="false" label="In Stay" sequence="5" value="in_stay"/>
-                <element inactive_on_update="false" label="Pending" sequence="1" value="pending"/>
-                <element inactive_on_update="false" label="Rejected" sequence="9" value="rejected"/>
-                <element inactive_on_update="false" label="Admitted" sequence="4" value="admitted"/>
-                <element inactive_on_update="false" label="Discharge Authorized" sequence="6" value="discharge_authorized"/>
-                <element inactive_on_update="false" label="Cancelled" sequence="8" value="cancelled"/>
+                <element inactive_on_update="false" label="General" sequence="1" value="general"/>
+                <element inactive_on_update="false" label="Isolation" sequence="8" value="isolation"/>
+                <element inactive_on_update="false" label="Surgical" sequence="6" value="surgical"/>
+                <element inactive_on_update="false" label="Pediatric" sequence="4" value="pediatric"/>
+                <element inactive_on_update="false" label="HDU" sequence="2" value="hdu"/>
+                <element inactive_on_update="false" label="Psychiatric" sequence="9" value="psychiatric"/>
+                <element inactive_on_update="false" label="Emergency" sequence="7" value="emergency"/>
+                <element inactive_on_update="false" label="Maternity" sequence="5" value="maternity"/>
+                <element inactive_on_update="false" label="ICU" sequence="3" value="icu"/>
             </choice>
         </element>
-        <element label="Wait Location" name="wait_location" type="choice">
+        <element label="Departed At" max_length="40" name="departed_at" type="glide_date_time"/>
+        <element label="Estimate Reviewed At" max_length="40" name="estimate_reviewed_at" type="glide_date_time"/>
+        <element label="Wait Location" max_length="40" name="wait_location" type="choice">
             <choice>
-                <element inactive_on_update="false" label="At Home" sequence="2" value="at_home"/>
+                <element inactive_on_update="false" label="Emergency Department" sequence="3" value="emergency_dept"/>
                 <element inactive_on_update="false" label="At Reception" sequence="1" value="at_reception"/>
                 <element inactive_on_update="false" label="En Route" sequence="5" value="en_route"/>
-                <element inactive_on_update="false" label="Emergency Department" sequence="3" value="emergency_dept"/>
+                <element inactive_on_update="false" label="At Home" sequence="2" value="at_home"/>
                 <element inactive_on_update="false" label="Other Facility" sequence="4" value="other_facility"/>
             </choice>
         </element>
-        <element label="Department" mandatory="true" name="department" reference="x_2307780_sentin_0_dept" type="reference"/>
-        <element label="Admission Type" mandatory="true" name="admission_type" type="choice">
+        <element label="Confirmed Rate Basis" max_length="40" name="confirmed_rate_basis" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Package" sequence="3" value="package"/>
+                <element inactive_on_update="false" label="Per Day" sequence="1" value="per_day"/>
+                <element inactive_on_update="false" label="Per Bed Day" sequence="2" value="per_bed_day"/>
+            </choice>
+        </element>
+        <element label="Department" mandatory="true" max_length="32" name="department" reference="x_2307780_sentin_0_dept" type="reference"/>
+        <element label="Disposition" max_length="40" name="disposition" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="External Transfer" sequence="2" value="external_transfer"/>
+                <element inactive_on_update="false" label="Deceased" sequence="5" value="deceased"/>
+                <element inactive_on_update="false" label="Left Against Medical Advice" sequence="3" value="ama"/>
+                <element inactive_on_update="false" label="Routine Discharge" sequence="1" value="routine_discharge"/>
+                <element inactive_on_update="false" label="Absconded" sequence="4" value="absconded"/>
+            </choice>
+        </element>
+        <element label="Ventilator Required" max_length="40" name="ventilator_required" type="boolean"/>
+        <element label="Earliest Hold Time" max_length="40" name="earliest_hold_time" type="glide_date_time"/>
+        <element label="Preferred Ward" max_length="32" name="preferred_ward" reference="x_2307780_sentin_0_ward" type="reference"/>
+        <element label="Queue Entered At" max_length="40" name="queue_entered_at" type="glide_date_time"/>
+        <element label="Sensitive Case" max_length="40" name="sensitivity_flag" type="boolean"/>
+        <element label="Confirmed Rate" max_length="32" name="confirmed_rate" type="currency2"/>
+        <element label="Estimate Shareable with Family" max_length="40" name="estimate_shareable" type="boolean"/>
+        <element label="Expected Discharge Time" max_length="40" name="expected_discharge_time" type="glide_date_time"/>
+        <element label="Isolation Required" max_length="40" name="isolation_required" type="boolean"/>
+        <element label="Accept Alternative Tier" max_length="40" name="accept_alternative_tier" type="boolean"/>
+        <element label="Estimate Reviewed By" max_length="32" name="estimate_reviewed_by" reference="sys_user" type="reference"/>
+        <element label="Expected Discharge Date" max_length="40" name="expected_discharge_day" type="glide_date"/>
+        <element label="Oxygen Required" max_length="40" name="oxygen_required" type="boolean"/>
+        <element default="routine" label="Authorized Priority" mandatory="true" max_length="40" name="authorized_priority" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Routine" sequence="3" value="routine"/>
+                <element inactive_on_update="false" label="Urgent" sequence="2" value="urgent"/>
+                <element inactive_on_update="false" label="Elective" sequence="4" value="elective"/>
+                <element inactive_on_update="false" label="Emergency" sequence="1" value="emergency"/>
+            </choice>
+        </element>
+        <element label="Admission Type" mandatory="true" max_length="40" name="admission_type" type="choice">
             <choice>
                 <element inactive_on_update="false" label="Planned" sequence="3" value="planned"/>
-                <element inactive_on_update="false" label="Readmission" sequence="4" value="readmission"/>
                 <element inactive_on_update="false" label="Walk-in" sequence="1" value="walkin"/>
+                <element inactive_on_update="false" label="Readmission" sequence="4" value="readmission"/>
                 <element inactive_on_update="false" label="Emergency" sequence="2" value="emergency"/>
             </choice>
         </element>
-        <element default="routine" label="Authorized Priority" mandatory="true" name="authorized_priority" type="choice">
+        <element label="Authorized At" max_length="40" name="authorized_at" type="glide_date_time"/>
+        <element label="Payer Type" max_length="40" name="payer_type" type="choice">
             <choice>
-                <element inactive_on_update="false" label="Emergency" sequence="1" value="emergency"/>
-                <element inactive_on_update="false" label="Urgent" sequence="2" value="urgent"/>
-                <element inactive_on_update="false" label="Elective" sequence="4" value="elective"/>
-                <element inactive_on_update="false" label="Routine" sequence="3" value="routine"/>
+                <element inactive_on_update="false" label="Insurance" sequence="2" value="insurance"/>
+                <element inactive_on_update="false" label="Corporate" sequence="3" value="corporate"/>
+                <element inactive_on_update="false" label="Government" sequence="4" value="government"/>
+                <element inactive_on_update="false" label="Self Pay" sequence="1" value="self_pay"/>
             </choice>
         </element>
-        <element label="Expected Discharge Date" name="expected_discharge_day" type="glide_date"/>
-        <element label="Confirmed Rate Basis" name="confirmed_rate_basis" type="choice">
+        <element default="pending" label="Admission State" mandatory="true" max_length="40" name="admission_state" type="choice">
             <choice>
-                <element inactive_on_update="false" label="Per Bed Day" sequence="2" value="per_bed_day"/>
-                <element inactive_on_update="false" label="Package" sequence="3" value="package"/>
-                <element inactive_on_update="false" label="Per Day" sequence="1" value="per_day"/>
+                <element inactive_on_update="false" label="Discharge Authorized" sequence="6" value="discharge_authorized"/>
+                <element inactive_on_update="false" label="Admitted" sequence="4" value="admitted"/>
+                <element inactive_on_update="false" label="Waiting" sequence="2" value="waiting"/>
+                <element inactive_on_update="false" label="Departed" sequence="7" value="departed"/>
+                <element inactive_on_update="false" label="In Stay" sequence="5" value="in_stay"/>
+                <element inactive_on_update="false" label="Bed Held" sequence="3" value="held"/>
+                <element inactive_on_update="false" label="Cancelled" sequence="8" value="cancelled"/>
+                <element inactive_on_update="false" label="Rejected" sequence="9" value="rejected"/>
+                <element inactive_on_update="false" label="Pending" sequence="1" value="pending"/>
             </choice>
         </element>
-        <element label="Accept Alternative Tier" name="accept_alternative_tier" type="boolean"/>
-        <element label="Preferred Ward" name="preferred_ward" reference="x_2307780_sentin_0_ward" type="reference"/>
-        <element label="Estimate Shareable with Family" name="estimate_shareable" type="boolean"/>
-        <element label="Patient" mandatory="true" name="patient" reference="x_2307780_sentin_0_patient" type="reference"/>
-        <element label="Estimate Reviewed At" name="estimate_reviewed_at" type="glide_date_time"/>
-        <element label="Departed At" name="departed_at" type="glide_date_time"/>
-        <element label="Arrived At" name="arrived_at" type="glide_date_time"/>
-        <element label="Expected Discharge Time" name="expected_discharge_time" type="glide_date_time"/>
-        <element label="Estimate Reviewed By" name="estimate_reviewed_by" reference="sys_user" type="reference"/>
-        <element label="Sensitive Case" name="sensitivity_flag" type="boolean"/>
-        <element label="Oxygen Required" name="oxygen_required" type="boolean"/>
-        <element label="Disposition" name="disposition" type="choice">
-            <choice>
-                <element inactive_on_update="false" label="Deceased" sequence="5" value="deceased"/>
-                <element inactive_on_update="false" label="Absconded" sequence="4" value="absconded"/>
-                <element inactive_on_update="false" label="External Transfer" sequence="2" value="external_transfer"/>
-                <element inactive_on_update="false" label="Left Against Medical Advice" sequence="3" value="ama"/>
-                <element inactive_on_update="false" label="Routine Discharge" sequence="1" value="routine_discharge"/>
-            </choice>
-        </element>
+        <element label="Arrived At" max_length="40" name="arrived_at" type="glide_date_time"/>
+        <element label="Authorized By" max_length="200" name="authorized_by" type="string"/>
+        <element label="Patient" mandatory="true" max_length="32" name="patient" reference="x_2307780_sentin_0_patient" type="reference"/>
+        <element label="Planned Arrival" max_length="40" name="planned_arrival" type="glide_date_time"/>
+        <element label="Clearance Blocker" max_length="255" name="clearance_blocker" type="string"/>
         <element label="Cancellation Reason" max_length="500" name="cancellation_reason" type="string"/>
-        <element label="Ventilator Required" name="ventilator_required" type="boolean"/>
     </element>
 </database>
